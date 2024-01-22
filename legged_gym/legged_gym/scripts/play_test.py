@@ -134,48 +134,55 @@ def play(args):
     infos = {}
     infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
 
+
+############################################# loop starts from here
     for i in range(1*int(env.max_episode_length)):
         print("##################################################################################")
         print("i is ", i)
         print("nv.max_episode_length is ", int(env.max_episode_length))
-        if args.use_jit:
-            if env.cfg.depth.use_camera:
-                if infos["depth"] is not None:
-                    depth_latent = torch.ones((env_cfg.env.num_envs, 32), device=env.device)
-                    actions, depth_latent = policy_jit(obs.detach(), True, infos["depth"], depth_latent)
-                else:
-                    depth_buffer = torch.ones((env_cfg.env.num_envs, 58, 87), device=env.device)
-                    actions, depth_latent = policy_jit(obs.detach(), False, depth_buffer, depth_latent)
-            else:
-                obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
-                actions = policy(obs_jit)
+        # if args.use_jit:
+        #     if env.cfg.depth.use_camera:
+        #         if infos["depth"] is not None:
+        #             depth_latent = torch.ones((env_cfg.env.num_envs, 32), device=env.device)
+        #             actions, depth_latent = policy_jit(obs.detach(), True, infos["depth"], depth_latent)
+        #         else:
+        #             depth_buffer = torch.ones((env_cfg.env.num_envs, 58, 87), device=env.device)
+        #             actions, depth_latent = policy_jit(obs.detach(), False, depth_buffer, depth_latent)
+        #     else:
+        #         obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
+        #         actions = policy(obs_jit)
+        # else:
+        if env.cfg.depth.use_camera:
+            if infos["depth"] is not None:
+                obs_student = obs[:, :env.cfg.env.n_proprio].clone()
+                obs_student[:, 6:8] = 0
+                print("env.cfg.env.n_proprio is : ", env.cfg.env.n_proprio)
+                print("infos[depth] is ", infos["depth"])
+                print("infos[depth] size is ", infos["depth"].size())   #infos[depth] size is  torch.Size([1, 58, 87])
+                print("obs_student size is ", obs_student.size())       #obs_student size is  torch.Size([1, 53])
+                depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+                print("depth_latent_and_yaw is : ", depth_latent_and_yaw)
+                print("depth_latent_and_yaw size is : ", depth_latent_and_yaw.size())
+                depth_latent = depth_latent_and_yaw[:, :-2]
+                yaw = depth_latent_and_yaw[:, -2:]
+            obs[:, 6:8] = 1.5*yaw
+            print("it is using depth camera")
+            print("yaw is ", yaw)
+            print("##################################################################################")
         else:
-            if env.cfg.depth.use_camera:
-                if infos["depth"] is not None:
-                    obs_student = obs[:, :env.cfg.env.n_proprio].clone()
-                    obs_student[:, 6:8] = 0
-                    # print("obs_student is ", obs_student)
-                    depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
-                    depth_latent = depth_latent_and_yaw[:, :-2]
-                    yaw = depth_latent_and_yaw[:, -2:]
-                obs[:, 6:8] = 1.5*yaw
-                print("it is using depth camera")
-                print("yaw is ", yaw)
-                print("##################################################################################")
-            else:
-                depth_latent = None
-                print("it is not using depth camera")
-            
-            if hasattr(ppo_runner.alg, "depth_actor"):
-                actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
-                print("it is using hasattr with depth")
-                # print("obs.detach is : ", obs.detach())
-                print("obs.detach dim is : ", obs.detach().dim())
-                print("obs.detach size is : ", obs.detach().size())
-                print("##################################################################################")
-            else:
-                actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
-                print("it is using hasattr without depth")
+            depth_latent = None
+            print("it is not using depth camera")
+        
+        if hasattr(ppo_runner.alg, "depth_actor"):
+            actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            print("it is using hasattr with depth")
+            # print("obs.detach is : ", obs.detach())
+            print("obs.detach dim is : ", obs.detach().dim())
+            print("obs.detach size is : ", obs.detach().size())
+            print("##################################################################################")
+        else:
+            actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            print("it is using hasattr without depth")
         print("actions is ", actions)
         print("actions detach is ", actions.detach())  # detached item is the item without gradient information
         print("##################################################################################")

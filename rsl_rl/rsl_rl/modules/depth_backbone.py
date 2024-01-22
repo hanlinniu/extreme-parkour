@@ -27,13 +27,19 @@ class RecurrentDepthBackbone(nn.Module):
                                 last_activation
                             )
         self.hidden_states = None
+        print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS in depth_backbone.py")
+        print("base_backbone is : ", base_backbone)
 
     def forward(self, depth_image, proprioception):
+        print("Before depth_backbone.py, depth_image size is : ", depth_image.size()) #Before depth_backbone.py, depth_image size is :  torch.Size([1, 58, 87])
         depth_image = self.base_backbone(depth_image)
+        print("After depth_backbone.py, depth_image size is : ", depth_image.size()) #In depth_backbone.py, depth_image size is :  torch.Size([1, 32])
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
         # depth_latent = self.base_backbone(depth_image)
         depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
         depth_latent = self.output_mlp(depth_latent.squeeze(1))
+        print("Forwardddddddddddddddddddddddddddddddddddddddddddddddddddd in depth_backbone.py")
+        print("In depth_backbone.py, proprioception size is : ", proprioception.size()) #In depth_backbone.py, proprioception size is :  torch.Size([1, 53])
         
         return depth_latent
 

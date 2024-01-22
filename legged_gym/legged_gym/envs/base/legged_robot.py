@@ -1133,9 +1133,9 @@ class LeggedRobot(BaseTask):
             for i in range(4):
                 pose = gymapi.Transform(gymapi.Vec3(feet_pos[self.lookat_id, i, 0], feet_pos[self.lookat_id, i, 1], feet_pos[self.lookat_id, i, 2]), r=None)
                 if self.feet_at_edge[self.lookat_id, i]:
-                    gymutil.draw_lines(edge_geom, self.gym, self.viewer, self.envs[i], pose)
+                    gymutil.draw_lines(edge_geom, self.gym, self.viewer, self.envs[0], pose)
                 else:
-                    gymutil.draw_lines(non_edge_geom, self.gym, self.viewer, self.envs[i], pose)
+                    gymutil.draw_lines(non_edge_geom, self.gym, self.viewer, self.envs[0], pose)
     
     def _init_height_points(self):
         """ Returns points at which the height measurments are sampled (in base frame)
