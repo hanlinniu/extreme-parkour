@@ -4,8 +4,8 @@ import sys
 import torchvision
 
 class RecurrentDepthBackbone(nn.Module):
-    def __init__(self, base_backbone, env_cfg) -> None:
-        super().__init__()
+    def __init__(self, base_backbone, env_cfg) -> None:                 # this is used in depth_encoder = RecurrentDepthBackbone(depth_backbone, env.cfg).to(self.device) of on_policy_runner.py
+        super().__init__()                                              # the depth_backbone is a DepthOnlyFCBackbone58x87 function. 
         activation = nn.ELU()
         last_activation = nn.Tanh()
         self.base_backbone = base_backbone
@@ -30,9 +30,9 @@ class RecurrentDepthBackbone(nn.Module):
         print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS in depth_backbone.py")
         print("base_backbone is : ", base_backbone)
 
-    def forward(self, depth_image, proprioception):
+    def forward(self, depth_image, proprioception):   # this function is used in "depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)" in play_test.py
         print("Before depth_backbone.py, depth_image size is : ", depth_image.size()) #Before depth_backbone.py, depth_image size is :  torch.Size([1, 58, 87])
-        depth_image = self.base_backbone(depth_image)
+        depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
         print("After depth_backbone.py, depth_image size is : ", depth_image.size()) #In depth_backbone.py, depth_image size is :  torch.Size([1, 32])
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
         # depth_latent = self.base_backbone(depth_image)
