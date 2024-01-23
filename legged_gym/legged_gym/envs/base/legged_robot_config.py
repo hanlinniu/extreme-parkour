@@ -54,10 +54,6 @@ class LeggedRobotCfg(BaseConfig):
         episode_length_s = 20 # episode length in seconds
         obs_type = "og"
 
-
-        
-        
-        
         history_encoding = True
         reorder_dofs = True
         
