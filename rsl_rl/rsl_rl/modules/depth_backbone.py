@@ -34,6 +34,7 @@ class RecurrentDepthBackbone(nn.Module):
         print("Before depth_backbone.py, depth_image size is : ", depth_image.size()) #Before depth_backbone.py, depth_image size is :  torch.Size([1, 58, 87])
         depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
         print("After depth_backbone.py, depth_image size is : ", depth_image.size()) #In depth_backbone.py, depth_image size is :  torch.Size([1, 32])
+        print("proprioception size is : ", proprioception.size())
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
         # depth_latent = self.base_backbone(depth_image)
         depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
