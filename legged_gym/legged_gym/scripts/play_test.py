@@ -167,6 +167,7 @@ def play(args):
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:]
             obs[:, 6:8] = 1.5*yaw
+            print("obs size is : ", obs.size()) # obs size is :  torch.Size([1, 753])
             print("it is using depth camera")
             print("yaw is ", yaw)
             print("##################################################################################")
