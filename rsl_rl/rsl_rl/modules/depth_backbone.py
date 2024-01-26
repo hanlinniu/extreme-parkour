@@ -31,17 +31,23 @@ class RecurrentDepthBackbone(nn.Module):
         print("base_backbone is : ", base_backbone)
 
     def forward(self, depth_image, proprioception):   # this function is used in "depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)" in play_test.py
-        print("Before depth_backbone.py, depth_image size is : ", depth_image.size()) #Before depth_backbone.py, depth_image size is :  torch.Size([1, 58, 87])
-        depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
-        print("After depth_backbone.py, depth_image size is : ", depth_image.size()) #In depth_backbone.py, depth_image size is :  torch.Size([1, 32])
-        print("proprioception size is : ", proprioception.size())
-        depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
-        # depth_latent = self.base_backbone(depth_image)
-        depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
-        depth_latent = self.output_mlp(depth_latent.squeeze(1))
-        print("Forwardddddddddddddddddddddddddddddddddddddddddddddddddddd in depth_backbone.py")
-        print("In depth_backbone.py, proprioception size is : ", proprioception.size()) #In depth_backbone.py, proprioception size is :  torch.Size([1, 53])
         
+        print("Before base_backbone.py, depth_image size is : ", depth_image.size()) #Before base_backbone, depth_image size is :  torch.Size([1, 58, 87])
+        depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
+        print("After base_backbone.py, depth_image size is : ", depth_image.size()) # In base_backbone, depth_image size is :  torch.Size([1, 32])
+        
+        
+        print("In depth_backbone.py, proprioception size is : ", proprioception.size()) # In depth_backbone.py, proprioception size is :  torch.Size([1, 53])
+        depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
+        depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
+        
+        print("Before output_mlp, depth_latent size is : ", depth_latent.size()) # Before output_mlp, depth_latent size is :  torch.Size([1, 1, 512])
+        depth_latent = self.output_mlp(depth_latent.squeeze(1))
+        # print("self.hidden_states is : ", self.hidden_states), this one is very large and complex!
+        
+        print("Forwardddddddddddddddddddddddddddddddddddddddddddddddddddd in depth_backbone.py")
+        print("After output_mlp, depth_latent size is : ", depth_latent.size()) #After output_mlp, depth_latent size is :  torch.Size([1, 34])
+
         return depth_latent
 
     def detach_hidden_states(self):

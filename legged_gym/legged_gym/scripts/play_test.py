@@ -162,7 +162,8 @@ def play(args):
                 print("obs_student size is ", obs_student.size())       #obs_student size is  torch.Size([1, 53])
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
                 print("depth_latent_and_yaw is : ", depth_latent_and_yaw)
-                print("depth_latent_and_yaw size is : ", depth_latent_and_yaw.size())
+                print("depth_latent_and_yaw size is : ", depth_latent_and_yaw.size()) # depth_latent_and_yaw size is :  torch.Size([1, 34])
+
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:]
             obs[:, 6:8] = 1.5*yaw

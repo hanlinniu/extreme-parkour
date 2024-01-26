@@ -65,6 +65,7 @@ class RecurrentDepthBackbone(nn.Module):
         depth_latent = self.output_mlp(depth_latent.squeeze(1))
         print("Forwardddddddddddddddddddddddddddddddddddddddddddddddddddd in depth_backbone.py")
         print("In depth_backbone.py, proprioception size is : ", proprioception.size()) #In depth_backbone.py, proprioception size is :  torch.Size([1, 53])
+        print("After output_mlp, depth_latent size is : ", depth_latent.size())
         
         return depth_latent
 
