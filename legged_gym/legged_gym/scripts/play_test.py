@@ -194,12 +194,15 @@ def play(args):
         # actions detach is  tensor([[-0.5199, -1.7247, -1.4516, -0.8407, -1.2734,  2.2303,  1.0678,  0.4783, -0.1185,  0.1896,  1.4402, -0.3728]], device='cuda:0')
         print("##################################################################################")
         obs, _, rews, dones, infos = env.step(actions.detach())
+
+        #######################################################################################
         if args.web:
             web_viewer.render(fetch_results=True,
                         step_graphics=True,
                         render_all_camera_sensors=True,
                         wait_for_page_load=True)
-            
+        #######################################################################################
+                
         print("time:", env.episode_length_buf[env.lookat_id].item() / 50, 
               "cmd vx", env.commands[env.lookat_id, 0].item(),
               "actual vx", env.base_lin_vel[env.lookat_id, 0].item(), )
