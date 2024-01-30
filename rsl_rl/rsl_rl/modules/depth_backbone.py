@@ -31,12 +31,12 @@ class RecurrentDepthBackbone(nn.Module):
         print("base_backbone is : ", base_backbone)
 
     def forward(self, depth_image, proprioception):   # this function is used in "depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)" in play_test.py
-        
+        ######################################################################################################
         # Input: depth_image size is :  torch.Size([1, 58, 87])
         # Output: depth_image size is :  torch.Size([1, 32])
         depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
 
-        
+        ######################################################################################################
         # Input: depth_image size is :  torch.Size([1, 32]), proprioception size is :  torch.Size([1, 53])
         # Output: depth_latent size is :  torch.Size([1, 32])
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
