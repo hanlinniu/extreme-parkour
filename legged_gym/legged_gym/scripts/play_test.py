@@ -118,14 +118,15 @@ def play(args):
     train_cfg.runner.resume = True
     ppo_runner, train_cfg, log_pth = task_registry.make_alg_runner(log_root = log_pth, env=env, name=args.task, args=args, train_cfg=train_cfg, return_log_dir=True)
     
-    if args.use_jit:
-        path = os.path.join(log_pth, "traced")
-        model, checkpoint = get_load_path(root=path, checkpoint=args.checkpoint)
-        path = os.path.join(path, model)
-        print("Loading jit for policy: ", path)
-        policy_jit = torch.jit.load(path, map_location=env.device)
-    else:
-        policy = ppo_runner.get_inference_policy(device=env.device)
+    # if args.use_jit:
+    #     path = os.path.join(log_pth, "traced")
+    #     model, checkpoint = get_load_path(root=path, checkpoint=args.checkpoint)
+    #     path = os.path.join(path, model)
+    #     print("Loading jit for policy: ", path)
+    #     policy_jit = torch.jit.load(path, map_location=env.device)
+    # else:
+    #     policy = ppo_runner.get_inference_policy(device=env.device)
+    
     estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
     if env.cfg.depth.use_camera:
         depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)
@@ -162,13 +163,11 @@ def play(args):
                 # Output: obs_student size is : torch.Size([1, 53])
                 obs_student = obs[:, :env.cfg.env.n_proprio].clone()
                 obs_student[:, 6:8] = 0
-
                 ##################################################################################
                 # Input: infos[depth] size is  torch.Size([1, 58, 87]), obs_student size is  torch.Size([1, 53]), obs size is :  torch.Size([1, 753])
                 # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
                 ##################################################################################
-
                 # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
                 # Output:  depth_latent size is :  torch.Size([1, 32])
                 depth_latent = depth_latent_and_yaw[:, :-2]
