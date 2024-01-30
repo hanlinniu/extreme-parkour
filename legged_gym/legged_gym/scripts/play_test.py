@@ -169,7 +169,7 @@ def play(args):
             obs[:, 6:8] = 1.5*yaw
             print("obs size is : ", obs.size()) # obs size is :  torch.Size([1, 753])
             print("it is using depth camera")
-            print("yaw is ", yaw)
+            print("yaw is ", yaw) # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
             print("##################################################################################")
         else:
             depth_latent = None
@@ -179,16 +179,18 @@ def play(args):
             actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             print("it is using hasattr with depth")
             # print("obs.detach is : ", obs.detach())
-            print("obs.detach dim is : ", obs.detach().dim())
-            print("obs.detach size is : ", obs.detach().size())
+            # print("obs.detach dim is : ", obs.detach().dim()) # obs.detach dim is :  2
+            print("obs.detach size is : ", obs.detach().size()) # obs.detach size is :  torch.Size([1, 753])
             print("##################################################################################")
         else:
             actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             print("it is using hasattr without depth")
-        print("actions is ", actions)
+        # print("actions is ", actions) # action has gradient information, and actions.detach() does not have gradient
         print("actions detach is ", actions.detach())  # detached item is the item without gradient information
+        # actions detach is  tensor([[-0.5199, -1.7247, -1.4516, -0.8407, -1.2734,  2.2303,  1.0678,  0.4783, -0.1185,  0.1896,  1.4402, -0.3728]], device='cuda:0')
         print("##################################################################################")
         obs, _, rews, dones, infos = env.step(actions.detach())
+        
         if args.web:
             web_viewer.render(fetch_results=True,
                         step_graphics=True,
