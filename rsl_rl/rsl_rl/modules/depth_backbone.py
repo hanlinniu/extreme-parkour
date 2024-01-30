@@ -32,24 +32,24 @@ class RecurrentDepthBackbone(nn.Module):
 
     def forward(self, depth_image, proprioception):   # this function is used in "depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)" in play_test.py
         
-        print("Before base_backbone.py, depth_image size is : ", depth_image.size()) #Before base_backbone, depth_image size is :  torch.Size([1, 58, 87])
+        # Input: depth_image size is :  torch.Size([1, 58, 87])
+        # Output: depth_image size is :  torch.Size([1, 32])
         depth_image = self.base_backbone(depth_image)       # this base_backbone used DepthOnlyFCBackbone58x87.forward function in depth_backbone.py
-        print("After base_backbone.py, depth_image size is : ", depth_image.size()) # In base_backbone, depth_image size is :  torch.Size([1, 32])
+
         
-        
-        print("In depth_backbone.py, proprioception size is : ", proprioception.size()) # In depth_backbone.py, proprioception size is :  torch.Size([1, 53])
+        # Input: depth_image size is :  torch.Size([1, 32]), proprioception size is :  torch.Size([1, 53])
+        # Output: depth_latent size is :  torch.Size([1, 32])
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
         depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)  # this is GRU (Gated Recurrent Unit) part, which needs a hidden states hat captures information from previous time steps.
         # The hidden state is updated at each time step, influenced by the current input and the previous hidden state.
         # print("self.hidden_states is : ", self.hidden_states), this one is very large and complex!
         
-        print("Before output_mlp, depth_latent size is : ", depth_latent.size()) # Before output_mlp, depth_latent size is :  torch.Size([1, 1, 512])
+        ######################################################################################################
+        # Input: depth_latent size is :  torch.Size([1, 1, 512])
+        # Output: depth_latent size is :  torch.Size([1, 34])
         depth_latent = self.output_mlp(depth_latent.squeeze(1))
-        
-        
-        print("Forwardddddddddddddddddddddddddddddddddddddddddddddddddddd in depth_backbone.py")
-        print("After output_mlp, depth_latent size is : ", depth_latent.size()) #After output_mlp, depth_latent size is :  torch.Size([1, 34])
-
+        print("depth_backbone.py is running")
+   
         return depth_latent
 
     def detach_hidden_states(self):

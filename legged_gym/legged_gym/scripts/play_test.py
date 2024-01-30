@@ -126,7 +126,7 @@ def play(args):
     #     policy_jit = torch.jit.load(path, map_location=env.device)
     # else:
     #     policy = ppo_runner.get_inference_policy(device=env.device)
-    
+
     estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
     if env.cfg.depth.use_camera:
         depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)
@@ -154,10 +154,9 @@ def play(args):
         #         actions = policy(obs_jit)
         # else:
         if env.cfg.depth.use_camera:
-            
             if infos["depth"] is not None:
                 print("#####################################################################")
-                print("it is using depth camera")
+                print("it is using depth camera, infos has depth info")
                 ##################################################################################
                 # Input: obs size is :  torch.Size([1, 753]), env.cfg.env.n_proprio is :  53
                 # Output: obs_student size is : torch.Size([1, 53])
@@ -173,8 +172,10 @@ def play(args):
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:] # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
                 ##################################################################################
-
+            else:
+                print("it is using depth camera, infos has no depth info")
             obs[:, 6:8] = 1.5*yaw
+            
         else:
             print("it is not using depth camera")
             depth_latent = None
@@ -192,11 +193,11 @@ def play(args):
         obs, _, rews, dones, infos = env.step(actions.detach())
 
         #######################################################################################
-        if args.web:
-            web_viewer.render(fetch_results=True,
-                        step_graphics=True,
-                        render_all_camera_sensors=True,
-                        wait_for_page_load=True)
+        # if args.web:
+        #     web_viewer.render(fetch_results=True,
+        #                 step_graphics=True,
+        #                 render_all_camera_sensors=True,
+        #                 wait_for_page_load=True)
         #######################################################################################
                 
         print("time:", env.episode_length_buf[env.lookat_id].item() / 50, 
