@@ -137,7 +137,7 @@ def play(args):
 
 ############################################# loop starts from here
     for i in range(1*int(env.max_episode_length)):
-        print("##################################################################################")
+        print("#####################################################################")
         print("i is ", i)
         print("nv.max_episode_length is ", int(env.max_episode_length))
         # if args.use_jit:
@@ -153,46 +153,43 @@ def play(args):
         #         actions = policy(obs_jit)
         # else:
         if env.cfg.depth.use_camera:
+            
             if infos["depth"] is not None:
+                print("#####################################################################")
+                print("it is using depth camera")
+                ##################################################################################
+                # Input: obs size is :  torch.Size([1, 753]), env.cfg.env.n_proprio is :  53
+                # Output: obs_student size is : torch.Size([1, 53])
                 obs_student = obs[:, :env.cfg.env.n_proprio].clone()
                 obs_student[:, 6:8] = 0
 
-                print("env.cfg.env.n_proprio is : ", env.cfg.env.n_proprio)
-                print("infos[depth] is ", infos["depth"])
-                print("infos[depth] size is ", infos["depth"].size())   #infos[depth] size is  torch.Size([1, 58, 87])
-                print("obs_student size is ", obs_student.size())       #obs_student size is  torch.Size([1, 53])
-
+                ##################################################################################
+                # Input: infos[depth] size is  torch.Size([1, 58, 87]), obs_student size is  torch.Size([1, 53]), obs size is :  torch.Size([1, 753])
+                # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+                ##################################################################################
 
-                print("depth_latent_and_yaw is : ", depth_latent_and_yaw)
-                print("depth_latent_and_yaw size is : ", depth_latent_and_yaw.size()) # depth_latent_and_yaw size is :  torch.Size([1, 34])
-
+                # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
+                # Output:  depth_latent size is :  torch.Size([1, 32])
                 depth_latent = depth_latent_and_yaw[:, :-2]
-                yaw = depth_latent_and_yaw[:, -2:]
+                yaw = depth_latent_and_yaw[:, -2:] # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
+                ##################################################################################
 
             obs[:, 6:8] = 1.5*yaw
-            print("obs size is : ", obs.size()) # obs size is :  torch.Size([1, 753])
-            print("it is using depth camera")
-            print("yaw is ", yaw) # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
-            print("##################################################################################")
         else:
-            depth_latent = None
             print("it is not using depth camera")
+            depth_latent = None
         
         if hasattr(ppo_runner.alg, "depth_actor"):
-            actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             print("it is using hasattr with depth")
-            # print("obs.detach is : ", obs.detach())
-            # print("obs.detach dim is : ", obs.detach().dim()) # obs.detach dim is :  2
-            print("obs.detach size is : ", obs.detach().size()) # obs.detach size is :  torch.Size([1, 753])
-            print("##################################################################################")
+            # Input: obs size is torch.Size([1, 753])
+            # Output: actions size is torch.Size([1, 12])
+            actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
         else:
-            actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             print("it is using hasattr without depth")
-        # print("actions is ", actions) # action has gradient information, and actions.detach() does not have gradient
-        print("actions detach is ", actions.detach())  # detached item is the item without gradient information
-        # actions detach is  tensor([[-0.5199, -1.7247, -1.4516, -0.8407, -1.2734,  2.2303,  1.0678,  0.4783, -0.1185,  0.1896,  1.4402, -0.3728]], device='cuda:0')
-        print("##################################################################################")
+            actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            
+        print("#####################################################################")
         obs, _, rews, dones, infos = env.step(actions.detach())
 
         #######################################################################################
@@ -206,9 +203,10 @@ def play(args):
         print("time:", env.episode_length_buf[env.lookat_id].item() / 50, 
               "cmd vx", env.commands[env.lookat_id, 0].item(),
               "actual vx", env.base_lin_vel[env.lookat_id, 0].item(), )
-        print("##################################################################################")
+        print("#####################################################################")
         
         id = env.lookat_id
+        # print("look at id is : ", id)
         
 
 if __name__ == '__main__':
