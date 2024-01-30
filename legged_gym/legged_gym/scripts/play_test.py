@@ -156,16 +156,20 @@ def play(args):
             if infos["depth"] is not None:
                 obs_student = obs[:, :env.cfg.env.n_proprio].clone()
                 obs_student[:, 6:8] = 0
+
                 print("env.cfg.env.n_proprio is : ", env.cfg.env.n_proprio)
                 print("infos[depth] is ", infos["depth"])
                 print("infos[depth] size is ", infos["depth"].size())   #infos[depth] size is  torch.Size([1, 58, 87])
                 print("obs_student size is ", obs_student.size())       #obs_student size is  torch.Size([1, 53])
+
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+
                 print("depth_latent_and_yaw is : ", depth_latent_and_yaw)
                 print("depth_latent_and_yaw size is : ", depth_latent_and_yaw.size()) # depth_latent_and_yaw size is :  torch.Size([1, 34])
 
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:]
+
             obs[:, 6:8] = 1.5*yaw
             print("obs size is : ", obs.size()) # obs size is :  torch.Size([1, 753])
             print("it is using depth camera")
@@ -190,12 +194,12 @@ def play(args):
         # actions detach is  tensor([[-0.5199, -1.7247, -1.4516, -0.8407, -1.2734,  2.2303,  1.0678,  0.4783, -0.1185,  0.1896,  1.4402, -0.3728]], device='cuda:0')
         print("##################################################################################")
         obs, _, rews, dones, infos = env.step(actions.detach())
-        
         if args.web:
             web_viewer.render(fetch_results=True,
                         step_graphics=True,
                         render_all_camera_sensors=True,
                         wait_for_page_load=True)
+            
         print("time:", env.episode_length_buf[env.lookat_id].item() / 50, 
               "cmd vx", env.commands[env.lookat_id, 0].item(),
               "actual vx", env.base_lin_vel[env.lookat_id, 0].item(), )
