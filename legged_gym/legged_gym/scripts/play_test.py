@@ -163,7 +163,7 @@ def play(args):
                 obs_student = obs[:, :env.cfg.env.n_proprio].clone()
                 obs_student[:, 6:8] = 0
                 ##################################################################################
-                # Input: infos[depth] size is  torch.Size([1, 58, 87]), obs_student size is  torch.Size([1, 53]), obs size is :  torch.Size([1, 753])
+                # Input: infos[depth] size is  torch.Size([1, 58, 87]), obs_student size is  torch.Size([1, 53])         ## obs size is :  torch.Size([1, 753])
                 # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
                 ##################################################################################
