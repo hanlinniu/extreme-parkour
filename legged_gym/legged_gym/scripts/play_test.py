@@ -129,7 +129,7 @@ def play(args):
 
     estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
     if env.cfg.depth.use_camera:
-        depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)
+        depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)     # it is from on_policy_runner.py
 
     actions = torch.zeros(env.num_envs, 12, device=env.device, requires_grad=False)
     infos = {}
