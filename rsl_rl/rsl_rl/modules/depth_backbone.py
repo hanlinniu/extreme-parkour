@@ -40,10 +40,12 @@ class RecurrentDepthBackbone(nn.Module):
         # Input: depth_image size is :  torch.Size([1, 32]), proprioception size is :  torch.Size([1, 53])
         # Output: depth_latent size is :  torch.Size([1, 32])
         depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
-        depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)  
+        
+        # Input: depth_latent[:, None, :] size is :  torch.Size([1, 1, 32]. self.hidden_states size is : torch.Size([1, 1, 52]
+        # Output: depth_latent size is :  torch.Size([1, 1, 512]), self.hidden_states size is :  torch.Size([1, 1, 512])
+        depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
         # this is GRU (Gated Recurrent Unit) part, which needs a hidden states hat captures information from previous time steps.
         # The hidden state is updated at each time step, influenced by the current input and the previous hidden state.
-        # print("self.hidden_states is : ", self.hidden_states), this one is very large and complex!
         
         ######################################################################################################
         # Input: depth_latent size is :  torch.Size([1, 1, 512])
