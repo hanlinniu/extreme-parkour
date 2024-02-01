@@ -132,11 +132,13 @@ class LeggedRobot(BaseTask):
 
         self.global_counter += 1
         self.total_env_steps_counter += 1
-        clip_actions = self.cfg.normalization.clip_actions / self.cfg.control.action_scale
+
+        clip_actions = self.cfg.normalization.clip_actions / self.cfg.control.action_scale   # clip_actions is :  4.8
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
+
         self.render()
 
-        for _ in range(self.cfg.control.decimation):
+        for _ in range(self.cfg.control.decimation):   # self.cfg.control.decimation is :  4
             self.torques = self._compute_torques(self.actions).view(self.torques.shape)
             self.gym.set_dof_actuation_force_tensor(self.sim, gymtorch.unwrap_tensor(self.torques))
             self.gym.simulate(self.sim)
@@ -144,10 +146,13 @@ class LeggedRobot(BaseTask):
             self.gym.refresh_dof_state_tensor(self.sim)
         self.post_physics_step()
 
-        clip_obs = self.cfg.normalization.clip_observations
+        clip_obs = self.cfg.normalization.clip_observations   # clip_obs is :  100.0
         self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)
-        if self.privileged_obs_buf is not None:
+
+
+        if self.privileged_obs_buf is not None:  # it is not executed
             self.privileged_obs_buf = torch.clip(self.privileged_obs_buf, -clip_obs, clip_obs)
+
         self.extras["delta_yaw_ok"] = self.delta_yaw < 0.6
         if self.cfg.depth.use_camera and self.global_counter % self.cfg.depth.update_interval == 0:
             self.extras["depth"] = self.depth_buffer[:, -2]  # have already selected last one
