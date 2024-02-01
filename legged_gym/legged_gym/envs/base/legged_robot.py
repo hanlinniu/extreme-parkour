@@ -147,7 +147,7 @@ class LeggedRobot(BaseTask):
         self.post_physics_step()
 
         clip_obs = self.cfg.normalization.clip_observations   # clip_obs is :  100.0
-        self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)
+        self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)  # obs_buf size is :  torch.Size([1, 753])
 
 
         if self.privileged_obs_buf is not None:  # it is not executed
