@@ -134,6 +134,11 @@ def play(args):
     actions = torch.zeros(env.num_envs, 12, device=env.device, requires_grad=False)
     infos = {}
     infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
+    # infos size is  torch.Size([1, 58, 87])
+
+    # print("infos is ", infos)
+    # print("infos depth is ", infos["depth"])
+    # print("infos size is ", infos["depth"].size())
 
 
 ############################################# loop starts from here
