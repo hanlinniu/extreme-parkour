@@ -152,6 +152,7 @@ class LeggedRobot(BaseTask):
 
         if self.privileged_obs_buf is not None:  # it is not executed
             self.privileged_obs_buf = torch.clip(self.privileged_obs_buf, -clip_obs, clip_obs)
+            
 
         self.extras["delta_yaw_ok"] = self.delta_yaw < 0.6
         if self.cfg.depth.use_camera and self.global_counter % self.cfg.depth.update_interval == 0:

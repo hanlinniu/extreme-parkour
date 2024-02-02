@@ -154,6 +154,7 @@ def play(args):
         #         obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
         #         actions = policy(obs_jit)
         # else:
+        print("infos[depth] is : ", infos["depth"])
         if env.cfg.depth.use_camera:
             if infos["depth"] is not None:
                 print("#####################################################################")
@@ -191,7 +192,7 @@ def play(args):
             actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             
         print("#####################################################################")
-        obs, privileged_obs_buf, rews, dones, infos = env.step(actions.detach())
+        obs, privileged_obs_buf, rews, dones, infos = env.step(actions.detach())   # infos is updated by legged_robot.py
 
         #######################################################################################
         # if args.web:
