@@ -134,18 +134,14 @@ def play(args):
     actions = torch.zeros(env.num_envs, 12, device=env.device, requires_grad=False)
     infos = {}
     infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
-    # infos size is  torch.Size([1, 58, 87])
-
-    # print("infos is ", infos)
-    # print("infos depth is ", infos["depth"])
-    # print("infos size is ", infos["depth"].size())
+    # infos["depth"] size is  torch.Size([1, 58, 87])
 
 
 ############################################# loop starts from here
     for i in range(1*int(env.max_episode_length)):
         print("#####################################################################")
         print("i is ", i)
-        print("nv.max_episode_length is ", int(env.max_episode_length))
+        # print("nv.max_episode_length is ", int(env.max_episode_length))
         # if args.use_jit:
         #     if env.cfg.depth.use_camera:
         #         if infos["depth"] is not None:
