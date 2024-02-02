@@ -17,7 +17,7 @@ class RecurrentDepthBackbone(nn.Module):
                                 )
         else:
             self.combination_mlp = nn.Sequential(
-                                        nn.Linear(32 + env_cfg.env.n_proprio, 128),
+                                        nn.Linear(32 + env_cfg.env.n_proprio, 128),    # 32 + n_proprio(53) = 85
                                         activation,
                                         nn.Linear(128, 32)
                                     )
@@ -39,9 +39,9 @@ class RecurrentDepthBackbone(nn.Module):
         ######################################################################################################
         # Input: depth_image size is :  torch.Size([1, 32]), proprioception size is :  torch.Size([1, 53])
         # Output: depth_latent size is :  torch.Size([1, 32])
-        depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))
+        depth_latent = self.combination_mlp(torch.cat((depth_image, proprioception), dim=-1))    # -1 means concatenating these two tensors along the last dimension 
         
-        # Input: depth_latent[:, None, :] size is :  torch.Size([1, 1, 32]. self.hidden_states size is : torch.Size([1, 1, 52]
+        # Input: depth_latent[:, None, :] size is :  torch.Size([1, 1, 32]. self.hidden_states size is : torch.Size([1, 1, 512]
         # Output: depth_latent size is :  torch.Size([1, 1, 512]), self.hidden_states size is :  torch.Size([1, 1, 512])
         depth_latent, self.hidden_states = self.rnn(depth_latent[:, None, :], self.hidden_states)
         # this is GRU (Gated Recurrent Unit) part, which needs a hidden states hat captures information from previous time steps.
