@@ -144,7 +144,7 @@ class LeggedRobot(BaseTask):
             self.gym.simulate(self.sim)
             self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
-        self.post_physics_step()
+        self.post_physics_step()        # this step is used for updating the observations
 
         clip_obs = self.cfg.normalization.clip_observations   # clip_obs is :  100.0
         self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)  # obs_buf size is :  torch.Size([1, 753])
