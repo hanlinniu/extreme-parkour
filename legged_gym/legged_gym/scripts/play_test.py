@@ -184,7 +184,7 @@ def play(args):
         
         if hasattr(ppo_runner.alg, "depth_actor"):
             print("it is using hasattr with depth")
-            # Input: obs size is torch.Size([1, 753])
+            # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
             # Output: actions size is torch.Size([1, 12])
             actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
         else:
