@@ -409,6 +409,29 @@ class LeggedRobot(BaseTask):
                             self.reindex(self.action_history_buf[:, -1]),
                             self.reindex_feet(self.contact_filt.float()-0.5),
                             ),dim=-1)
+        
+        print("self.base_ang_vel is: ", self.base_ang_vel)  # self.base_ang_vel is:  tensor([[ 0.0464, -0.2849, -0.2755]], device='cuda:0')
+        print("self.obs_scales.ang_vel is: ", self.obs_scales.ang_vel) # self.obs_scales.ang_vel is:  0.25
+        print("imu_obs is: ", imu_obs) # imu_obs is:  tensor([[0.0485, 0.0242]], device='cuda:0')
+        print("0*self.delta_yaw[:, None] is: ", 0*self.delta_yaw[:, None]) # 0*self.delta_yaw[:, None] is:  tensor([[0.]], device='cuda:0')
+        print("self.delta_yaw[:, None] is: ", self.delta_yaw[:, None]) # self.delta_yaw[:, None] is:  tensor([[0.0150]], device='cuda:0')
+        print("self.delta_next_yaw[:, None] is: ", self.delta_next_yaw[:, None]) # self.delta_next_yaw[:, None] is:  tensor([[-0.1275]], device='cuda:0')
+        print("0*self.commands[:, 0:2] is: ", self.commands[:, 0:2].size()) # 0*self.commands[:, 0:2] is:  tensor([[0., 0.]], device='cuda:0'), torch.Size([1, 2]
+        print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
+        print("self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
+        print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')
+        print("self.dof_pos is: ", self.dof_pos) # self.dof_pos is:  tensor([[ 0.0136,  0.8286, -1.5374, -0.1634,  0.3541, -1.8591,  0.0653,  0.9042, -1.7504, -0.1747,  0.8909, -1.6740]], device='cuda:0')
+        print("self.default_dof_pos_all is: ", self.default_dof_pos_all) # self.default_dof_pos_all is:  tensor([[ 0.1000,  0.8000, -1.5000, -0.1000,  0.8000, -1.5000,  0.1000,  1.0000, -1.5000, -0.1000,  1.0000, -1.5000]], device='cuda:0')
+        print("self.obs_scales.dof_pos is: ", self.obs_scales.dof_pos) # self.obs_scales.dof_pos is:  1.0
+        print("self.dof_vel is: ", self.dof_vel) # self.dof_vel is:  tensor([[-0.4667,  1.9083,  0.8580,  0.0050, -2.0108,  1.7907,  0.6926, -2.5343, -2.6336, -0.6898,  1.5044,  1.0122]], device='cuda:0')
+        print("self.obs_scales.dof_vel) is: ", self.obs_scales.dof_vel) # self.obs_scales.dof_vel) is:  0.05
+        print("self.action_history_buf[:, -1] is: ", self.action_history_buf[:, -1]) # self.action_history_buf[:, -1] is:  tensor([[-0.6797, -0.1288,  0.9153, -0.2940, -1.9257, -1.0479,  0.1157, -0.8192, -1.2619,  0.1995, -0.2665,  0.3668]], device='cuda:0')
+        print("self.contact_filt.float()-0.5 is: ", self.contact_filt.float()-0.5) # self.contact_filt.float()-0.5 is:  tensor([[ 0.5000, -0.5000, -0.5000,  0.5000]], device='cuda:0')
+        # print("obs_buf is: ", obs_buf)
+        print("obs_buf size is: ", obs_buf.size()) # obs_buf size is:  torch.Size([1, 53])
+
+
+
         priv_explicit = torch.cat((self.base_lin_vel * self.obs_scales.lin_vel,
                                    0 * self.base_lin_vel,
                                    0 * self.base_lin_vel), dim=-1)
@@ -421,9 +444,15 @@ class LeggedRobot(BaseTask):
         if self.cfg.terrain.measure_heights:
             heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.3 - self.measured_heights, -1, 1.)
             self.obs_buf = torch.cat([obs_buf, heights, priv_explicit, priv_latent, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+            print("heights size is: ", heights.size()) # heights size is:  torch.Size([1, 132])
+            print("priv_explicit size is: ", priv_explicit.size()) # priv_explicit size is:  torch.Size([1, 9])
+            print("priv_latent size is: ", priv_latent.size()) # priv_latent size is:  torch.Size([1, 29])
+            print("self.obs_history_buf.view(self.num_envs, -1) is : ", self.obs_history_buf.view(self.num_envs, -1).size()) # torch.Size([1, 530])
+            print("self.obs_buf size is: ", self.obs_buf.size()) # self.obs_buf size is:  torch.Size([1, 753])
         else:
             self.obs_buf = torch.cat([obs_buf, priv_explicit, priv_latent, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
         obs_buf[:, 6:8] = 0  # mask yaw in proprioceptive history
+
         self.obs_history_buf = torch.where(
             (self.episode_length_buf <= 1)[:, None, None], 
             torch.stack([obs_buf] * self.cfg.env.history_len, dim=1),
