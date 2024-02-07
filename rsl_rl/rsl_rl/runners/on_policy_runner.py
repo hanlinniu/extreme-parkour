@@ -82,7 +82,7 @@ class OnPolicyRunner:
                                                     self.depth_encoder_cfg["hidden_dims"],
                                                     )
             depth_encoder = RecurrentDepthBackbone(depth_backbone, env.cfg).to(self.device)
-            depth_actor = deepcopy(actor_critic.actor)
+            depth_actor = deepcopy(actor_critic.actor) # it is defined in actor_critic.py line 232, self.actor = Actor(num_prop, num_scan, num_actions, scan_encoder_dims, actor_hidden_dims, priv_encoder_dims, num_priv_latent, num_priv_explicit, num_hist, activation, tanh_encoder_output=kwargs['tanh_encoder_output'])
         else:
             depth_encoder = None
             depth_actor = None
