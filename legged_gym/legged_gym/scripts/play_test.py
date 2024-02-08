@@ -154,7 +154,7 @@ def play(args):
         #         obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
         #         actions = policy(obs_jit)
         # else:
-        print("infos[depth] is : ", infos["depth"])
+        # print("infos[depth] is : ", infos["depth"])
         if env.cfg.depth.use_camera:
             if infos["depth"] is not None:
                 print("#####################################################################")
