@@ -203,9 +203,9 @@ class LeggedRobot(BaseTask):
             depth_image = gymtorch.wrap_tensor(depth_image_)  
             # Input (crop): depth_image_ size is :  torch.Size([60, 106])
             # Output: depth_image_ size is :  torch.Size([58, 87])
-            print("before process, depth_image  is : ", depth_image)
             depth_image = self.process_depth_image(depth_image, i)  # including crop, clip, squeeze, and normalize
-            print("processed depth_image  is : ", depth_image)
+            if i==7:
+                print("The 8th current depth_image is : ", depth_image)
 
             init_flag = self.episode_length_buf <= 1
             if init_flag[i]:
