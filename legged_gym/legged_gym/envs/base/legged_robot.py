@@ -390,24 +390,24 @@ class LeggedRobot(BaseTask):
         """ 
         Computes observations
         """
-        imu_obs = torch.stack((self.roll, self.pitch), dim=1)
+        imu_obs = torch.stack((self.roll, self.pitch), dim=1)   #[1,2]
         if self.global_counter % 5 == 0:
             self.delta_yaw = self.target_yaw - self.yaw
             self.delta_next_yaw = self.next_target_yaw - self.yaw
         obs_buf = torch.cat((#skill_vector, 
                             self.base_ang_vel  * self.obs_scales.ang_vel,   #[1,3]
                             imu_obs,    #[1,2]
-                            0*self.delta_yaw[:, None], 
-                            self.delta_yaw[:, None],
-                            self.delta_next_yaw[:, None],
-                            0*self.commands[:, 0:2], 
+                            0*self.delta_yaw[:, None], #[1,1]
+                            self.delta_yaw[:, None], #[1,1]
+                            self.delta_next_yaw[:, None], #[1,1]
+                            0*self.commands[:, 0:2],  #[1,2]
                             self.commands[:, 0:1],  #[1,1]
-                            (self.env_class != 17).float()[:, None], 
-                            (self.env_class == 17).float()[:, None],
-                            self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),
-                            self.reindex(self.dof_vel * self.obs_scales.dof_vel),
-                            self.reindex(self.action_history_buf[:, -1]),
-                            self.reindex_feet(self.contact_filt.float()-0.5),
+                            (self.env_class != 17).float()[:, None],  #[1,1]
+                            (self.env_class == 17).float()[:, None],  #[1,1]
+                            self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
+                            self.reindex(self.dof_vel * self.obs_scales.dof_vel),  #[1,12],   self.obs_scales.dof_vel) is:  0.05
+                            self.reindex(self.action_history_buf[:, -1]),   #[1,12]
+                            self.reindex_feet(self.contact_filt.float()-0.5),   #[1,4]
                             ),dim=-1)
         
         print("self.base_ang_vel is: ", self.base_ang_vel)  # self.base_ang_vel is:  tensor([[ 0.0464, -0.2849, -0.2755]], device='cuda:0')
@@ -416,7 +416,7 @@ class LeggedRobot(BaseTask):
         print("0*self.delta_yaw[:, None] is: ", 0*self.delta_yaw[:, None]) # 0*self.delta_yaw[:, None] is:  tensor([[0.]], device='cuda:0')
         print("self.delta_yaw[:, None] is: ", self.delta_yaw[:, None]) # self.delta_yaw[:, None] is:  tensor([[0.0150]], device='cuda:0')
         print("self.delta_next_yaw[:, None] is: ", self.delta_next_yaw[:, None]) # self.delta_next_yaw[:, None] is:  tensor([[-0.1275]], device='cuda:0')
-        print("0*self.commands[:, 0:2] is: ", self.commands[:, 0:2].size()) # 0*self.commands[:, 0:2] is:  tensor([[0., 0.]], device='cuda:0'), torch.Size([1, 2]
+        print("0*self.commands[:, 0:2] is: ", self.commands[:, 0:2].size()) # 0*self.commands[:, 0:2] is:  tensor([[0., 0.]], device='cuda:0'), torch.Size([1, 2])
         print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
         print("self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
         print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')

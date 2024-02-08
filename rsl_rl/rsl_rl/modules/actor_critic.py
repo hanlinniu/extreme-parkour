@@ -99,11 +99,11 @@ class Actor(nn.Module):
         super().__init__()
         # prop -> scan -> priv_explicit -> priv_latent -> hist
         # actor input: prop -> scan -> priv_explicit -> latent
-        self.num_prop = num_prop
-        self.num_scan = num_scan
-        self.num_hist = num_hist
-        self.num_actions = num_actions
-        self.num_priv_latent = num_priv_latent
+        self.num_prop = num_prop     # 53
+        self.num_scan = num_scan     # 132
+        self.num_hist = num_hist     # 
+        self.num_actions = num_actions  # 12
+        self.num_priv_latent = num_priv_latent    # 29
         self.num_priv_explicit = num_priv_explicit
         self.if_scan_encode = scan_encoder_dims is not None and num_scan > 0
 
