@@ -66,7 +66,7 @@ def play(args):
     # override some parameters for testing
     if args.nodelay:
         env_cfg.domain_rand.action_delay_view = 0
-    env_cfg.env.num_envs = 16 if not args.save else 64    #16 if not args.save else 64
+    env_cfg.env.num_envs = 1 if not args.save else 64    #16 if not args.save else 64
     env_cfg.env.episode_length_s = 60
     env_cfg.commands.resampling_time = 60
     env_cfg.terrain.num_rows = 5
@@ -141,6 +141,7 @@ def play(args):
     for i in range(1*int(env.max_episode_length)):
         print("#####################################################################")
         print("i is ", i)
+        
         # print("nv.max_episode_length is ", int(env.max_episode_length))
         # if args.use_jit:
         #     if env.cfg.depth.use_camera:
@@ -154,7 +155,11 @@ def play(args):
         #         obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
         #         actions = policy(obs_jit)
         # else:
-        # print("infos[depth] is : ", infos["depth"])
+
+        # if infos["depth"] is not None:
+        #     print("infos[depth] is : ", infos["depth"])
+        #     print("infos[depth] size is : ", infos["depth"].size())
+
         if env.cfg.depth.use_camera:
             if infos["depth"] is not None:
                 print("#####################################################################")
@@ -193,6 +198,7 @@ def play(args):
             
         print("#####################################################################")
         obs, privileged_obs_buf, rews, dones, infos = env.step(actions.detach())   # infos is updated by legged_robot.py
+        print("infos[depth] is : ", infos["depth"])
 
         #######################################################################################
         # if args.web:
