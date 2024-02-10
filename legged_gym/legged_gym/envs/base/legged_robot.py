@@ -159,7 +159,13 @@ class LeggedRobot(BaseTask):
             self.extras["depth"] = self.depth_buffer[:, -2]  # have already selected last one
         else:
             self.extras["depth"] = None
+
+        print("self.rew_buf in action size is: ", self.rew_buf)
         return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.reset_buf, self.extras
+        #  self.obs_buf is: torch.Size([1, 753])
+        #  self.privileged_obs_buf  is:  None
+        #  self.rew_buf is:  tensor([0.0377], device='cuda:0')
+    
 
     def get_history_observations(self):
         return self.obs_history_buf
@@ -459,6 +465,7 @@ class LeggedRobot(BaseTask):
         if self.cfg.terrain.measure_heights:
             heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.3 - self.measured_heights, -1, 1.)
             self.obs_buf = torch.cat([obs_buf, heights, priv_explicit, priv_latent, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+            # print("obs_buf size is: , ", obs_buf.size()) # obs_buf size is: ,  torch.Size([1, 53])
             # print("heights size is: ", heights.size()) # heights size is:  torch.Size([1, 132])
             # print("priv_explicit size is: ", priv_explicit.size()) # priv_explicit size is:  torch.Size([1, 9])
             # print("priv_latent size is: ", priv_latent.size()) # priv_latent size is:  torch.Size([1, 29])
@@ -475,7 +482,7 @@ class LeggedRobot(BaseTask):
                 self.obs_history_buf[:, 1:],
                 obs_buf.unsqueeze(1)
             ], dim=1)
-        )
+        )                                                     #  history_len = 10
 
         self.contact_buf = torch.where(
             (self.episode_length_buf <= 1)[:, None, None], 
@@ -484,7 +491,7 @@ class LeggedRobot(BaseTask):
                 self.contact_buf[:, 1:],
                 self.contact_filt.float().unsqueeze(1)
             ], dim=1)
-        )
+        )                                                    #  contact_buf_len = 100
         
         
     def get_noisy_measurement(self, x, scale):

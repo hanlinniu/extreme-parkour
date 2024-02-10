@@ -175,7 +175,7 @@ def play(args):
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
                 ##################################################################################
                 # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
-                # Output:  depth_latent size is :  torch.Size([1, 32])
+                # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:] # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
                 ##################################################################################
