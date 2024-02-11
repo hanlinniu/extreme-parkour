@@ -452,7 +452,7 @@ class LeggedRobot(BaseTask):
 
 
 
-        priv_explicit = torch.cat((self.base_lin_vel * self.obs_scales.lin_vel,
+        priv_explicit = torch.cat((self.base_lin_vel * self.obs_scales.lin_vel, # self.base_lin_vel is :  tensor([[0.5965, 0.2511, 0.1635]]),  self.obs_scales.lin_vel is 2.0
                                    0 * self.base_lin_vel,
                                    0 * self.base_lin_vel), dim=-1)   # priv_explicit size is:  tensor([[1.1641, 0.2642, 0.2127, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]]
         priv_latent = torch.cat((
@@ -466,8 +466,7 @@ class LeggedRobot(BaseTask):
             self.obs_buf = torch.cat([obs_buf,    heights,            priv_explicit,   priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
                                     #[1, 53],     [1, 132] n_scan,    [1, 9],          [1, 29] constant,   [1, 530]  53*10                          # total is [1, 753]
             
-            # print("self.base_lin_vel is : ", self.base_lin_vel) # self.base_lin_vel is :  tensor([[0.5965, 0.2511, 0.1635]])
-            # print("self.obs_scales.lin_vel is : ", self.obs_scales.lin_vel)  # 2.0
+
             # print("self.root_states[:, 2].size() is : ", self.root_states[:, 2])  
             # self.root_states[:, 2].size() is :  torch.Size([1])
             # self.root_states[:, 2] is : tensor([0.2874], device='cuda:0')
