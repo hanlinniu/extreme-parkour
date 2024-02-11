@@ -460,12 +460,14 @@ class LeggedRobot(BaseTask):
             self.friction_coeffs_tensor,
             self.motor_strength[0] - 1, 
             self.motor_strength[1] - 1
-        ), dim=-1)                              # this is constant
+        ), dim=-1)                              # priv_latent is constant
         if self.cfg.terrain.measure_heights:
             heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.3 - self.measured_heights, -1, 1.)
             self.obs_buf = torch.cat([obs_buf,    heights,            priv_explicit,   priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
                                     #[1, 53],     [1, 132] n_scan,    [1, 9],          [1, 29] constant,   [1, 530]  53*10                          # total is [1, 753]
             
+            # print("self.base_lin_vel is : ", self.base_lin_vel) # self.base_lin_vel is :  tensor([[0.5965, 0.2511, 0.1635]]
+            # print("self.obs_scales.lin_vel is : ", self.obs_scales.lin_vel)  # 2.0
             # print("self.root_states[:, 2].size() is : ", self.root_states[:, 2])  
             # self.root_states[:, 2].size() is :  torch.Size([1])
             # self.root_states[:, 2] is : tensor([0.2874], device='cuda:0')
