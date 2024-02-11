@@ -160,7 +160,6 @@ class LeggedRobot(BaseTask):
         else:
             self.extras["depth"] = None
 
-        print("self.rew_buf in action size is: ", self.rew_buf)
         return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.reset_buf, self.extras
         #  self.obs_buf is: torch.Size([1, 753])
         #  self.privileged_obs_buf  is:  None
@@ -180,8 +179,8 @@ class LeggedRobot(BaseTask):
         # Input (crop): depth_image_ size is :  torch.Size([60, 106])
         # Output: depth_image_ size is :  torch.Size([58, 98])
         depth_image = self.crop_depth_image(depth_image)
-        depth_image += self.cfg.depth.dis_noise * 2 * (torch.rand(1)-0.5)[0]
-        depth_image = torch.clip(depth_image, -self.cfg.depth.far_clip, -self.cfg.depth.near_clip)
+        depth_image += self.cfg.depth.dis_noise * 2 * (torch.rand(1)-0.5)[0]  # tensor(-0.)
+        depth_image = torch.clip(depth_image, -self.cfg.depth.far_clip, -self.cfg.depth.near_clip)  # (depth_image, -2, 0)
         depth_image = self.resize_transform(depth_image[None, :]).squeeze()  # Output: depth_image size is :  torch.Size([58, 87])
         depth_image = self.normalize_depth_image(depth_image)
         return depth_image
@@ -455,20 +454,33 @@ class LeggedRobot(BaseTask):
 
         priv_explicit = torch.cat((self.base_lin_vel * self.obs_scales.lin_vel,
                                    0 * self.base_lin_vel,
-                                   0 * self.base_lin_vel), dim=-1)
+                                   0 * self.base_lin_vel), dim=-1)   # priv_explicit size is:  tensor([[1.1641, 0.2642, 0.2127, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]]
         priv_latent = torch.cat((
             self.mass_params_tensor,
             self.friction_coeffs_tensor,
             self.motor_strength[0] - 1, 
             self.motor_strength[1] - 1
-        ), dim=-1)
+        ), dim=-1)                              # this is constant
         if self.cfg.terrain.measure_heights:
             heights = torch.clip(self.root_states[:, 2].unsqueeze(1) - 0.3 - self.measured_heights, -1, 1.)
-            self.obs_buf = torch.cat([obs_buf, heights, priv_explicit, priv_latent, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+            self.obs_buf = torch.cat([obs_buf,    heights,            priv_explicit,   priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+                                    #[1, 53],     [1, 132] n_scan,    [1, 9],          [1, 29] constant,   [1, 530]  53*10                          # total is [1, 753]
+            
+            # print("self.root_states[:, 2].size() is : ", self.root_states[:, 2])  
+            # self.root_states[:, 2].size() is :  torch.Size([1])
+            # self.root_states[:, 2] is : tensor([0.2874], device='cuda:0')
+            # print("self.root_states[:, 2].unsqueeze(1).size() is : ", self.root_states[:, 2].unsqueeze(1)) 
+            # self.root_states[:, 2].unsqueeze(1).size() is :  torch.Size([1, 1])
+            # self.root_states[:, 2].unsqueeze(1) is :  tensor([[0.2885]], device='cuda:0')
+            # print("self.measured_heights size is : ", self.measured_heights.size()) # self.measured_heights size is :  torch.Size([1, 132])
+            # print("self.obs_history_buf is : ", self.obs_history_buf.size()) # self.obs_history_buf is :  torch.Size([1, 10, 53])
+            # self.obs_history_buf.view(1,-1) is usef for reshape the tensor to be (1,530)
+
+
             # print("obs_buf size is: , ", obs_buf.size()) # obs_buf size is: ,  torch.Size([1, 53])
             # print("heights size is: ", heights.size()) # heights size is:  torch.Size([1, 132])
-            # print("priv_explicit size is: ", priv_explicit.size()) # priv_explicit size is:  torch.Size([1, 9])
-            # print("priv_latent size is: ", priv_latent.size()) # priv_latent size is:  torch.Size([1, 29])
+            # print("priv_explicit size is: ", priv_explicit) # priv_explicit size is:  torch.Size([1, 9]). tensor([[1.1384, 0.2377, 0.2614, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]],device='cuda:0')
+            # print("priv_latent size is: ", priv_latent) # priv_latent size is:  torch.Size([1, 29])
             # print("self.obs_history_buf.view(self.num_envs, -1) is : ", self.obs_history_buf.view(self.num_envs, -1).size()) # torch.Size([1, 530])
             # print("self.obs_buf size is: ", self.obs_buf.size()) # self.obs_buf size is:  torch.Size([1, 753])
         else:

@@ -109,7 +109,9 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 
 
 
-
+# remaining questions:
+# 1, understand line 466 of legged_robot.py
+# self.obs_buf = torch.cat([obs_buf,    heights,              priv_explicit, priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
 
 
 

@@ -46,7 +46,7 @@ class LeggedRobotCfg(BaseConfig):
         n_proprio = 3 + 2 + 3 + 4 + 36 + 5    # 53
         history_len = 10
 
-        num_observations = n_proprio + n_scan + history_len*n_proprio + n_priv_latent + n_priv #53 + 132 + 530+29+9 = 753
+        num_observations = n_proprio + n_scan + history_len*n_proprio + n_priv_latent + n_priv # 53 + 132 + 53*10 + 29 + 9 = 753
         num_privileged_obs = None # if not None a priviledge_obs_buf will be returned by step() (critic obs for assymetric training). None is returned otherwise 
         num_actions = 12
         env_spacing = 3.  # not used with heightfields/trimeshes 

@@ -198,7 +198,7 @@ def play(args):
             
         print("#####################################################################")
         obs, privileged_obs_buf, rews, dones, infos = env.step(actions.detach())   # infos is updated by legged_robot.py
-        print("infos[depth] is : ", infos["depth"])
+        # print("infos[depth] is : ", infos["depth"])
 
         #######################################################################################
         # if args.web:
