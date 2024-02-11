@@ -115,7 +115,7 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # 2, what is heights,  priv_explicit,   priv_latent?
     # priv_explicit size is:  tensor([[1.1641, 0.2642, 0.2127, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]]
     # priv_latent is constant
-    # 
+    # what is base_lin_vel?
 # 3, what is obs_buf consisting of?
 
 
