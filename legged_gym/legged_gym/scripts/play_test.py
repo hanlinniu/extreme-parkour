@@ -181,6 +181,8 @@ def play(args):
                 ##################################################################################
             else:
                 print("it is using depth camera, infos has no depth info")
+
+                
             obs[:, 6:8] = 1.5*yaw
             
         else:

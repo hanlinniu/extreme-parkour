@@ -117,6 +117,10 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     # priv_latent is constant
     # what is base_lin_vel?
 # 3, what is obs_buf consisting of?
+    
+
+
+# all the info about observations are in legged_robot.py
 
 
 
