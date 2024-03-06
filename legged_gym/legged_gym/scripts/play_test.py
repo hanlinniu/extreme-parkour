@@ -159,6 +159,7 @@ def play(args):
         # if infos["depth"] is not None:
         #     print("infos[depth] is : ", infos["depth"])
         #     print("infos[depth] size is : ", infos["depth"].size())
+        
 
         if env.cfg.depth.use_camera:
             if infos["depth"] is not None:
