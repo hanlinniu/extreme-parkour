@@ -475,7 +475,7 @@ class LeggedRobot(BaseTask):
             # self.root_states[:, 2].unsqueeze(1) is :  tensor([[0.2885]], device='cuda:0')
             # print("self.measured_heights size is : ", self.measured_heights.size()) # self.measured_heights size is :  torch.Size([1, 132])
             # print("self.obs_history_buf is : ", self.obs_history_buf.size()) # self.obs_history_buf is :  torch.Size([1, 10, 53])
-            # self.obs_history_buf.view(1,-1) is usef for reshape the tensor to be (1,530)
+            # self.obs_history_buf.view(1,-1) is used for reshape the tensor to be (1,530)
 
 
             # print("obs_buf size is: , ", obs_buf.size()) # obs_buf size is: ,  torch.Size([1, 53])
@@ -496,6 +496,10 @@ class LeggedRobot(BaseTask):
                 obs_buf.unsqueeze(1)
             ], dim=1)
         )                                                     #  history_len = 10
+
+        # print("self.obs_history_buf.size() is : ", self.obs_history_buf.size()) #  torch.Size([1, 10, 53])
+        print("obs_buf is : ", obs_buf)
+        print("self.obs_history_buf is : ", self.obs_history_buf)
 
         self.contact_buf = torch.where(
             (self.episode_length_buf <= 1)[:, None, None], 
