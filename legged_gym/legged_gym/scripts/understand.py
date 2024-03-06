@@ -111,7 +111,10 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 
 # remaining questions:
 # 1, understand line 466 of legged_robot.py
-# self.obs_buf = torch.cat([obs_buf,    heights,              priv_explicit, priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+# self.obs_buf = torch.cat([obs_buf,    heights,            priv_explicit,   priv_latent,        self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
+                #          [1, 53],     [1, 132] n_scan,    [1, 9],          [1, 29] constant,   [1, 530]  53*10                          # total is [1, 753]
+            
+
 # 2, what is heights,  priv_explicit,   priv_latent?
     # priv_explicit size is:  tensor([[1.1641, 0.2642, 0.2127, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000]]
     # priv_latent is constant
