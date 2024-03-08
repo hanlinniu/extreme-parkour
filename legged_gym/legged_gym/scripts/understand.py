@@ -121,6 +121,12 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     # what is base_lin_vel?
 # 3, what is obs_buf consisting of?
     
+    
+# 4, check how to process the vision part?
+    
+
+# 5, go to manchester, and test
+    
 
 
 # all the info about observations are in legged_robot.py

@@ -414,7 +414,7 @@ class LeggedRobot(BaseTask):
         if self.global_counter % 5 == 0:
             self.delta_yaw = self.target_yaw - self.yaw
             self.delta_next_yaw = self.next_target_yaw - self.yaw
-        obs_buf = torch.cat((#skill_vector, 
+        obs_buf = torch.cat((#skill_vector,                          # obs_buf size is:  torch.Size([1, 53])
                             self.base_ang_vel  * self.obs_scales.ang_vel,   #[1,3]
                             imu_obs,    #[1,2]
                             0*self.delta_yaw[:, None], #[1,1]
