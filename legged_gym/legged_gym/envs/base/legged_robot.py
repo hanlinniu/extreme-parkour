@@ -178,12 +178,11 @@ class LeggedRobot(BaseTask):
         # These operations are replicated on the hardware
         # Input (crop): depth_image_ size is :  torch.Size([60, 106])
         # Output: depth_image_ size is :  torch.Size([58, 87])
-        depth_image = self.crop_depth_image(depth_image)
-        depth_image += self.cfg.depth.dis_noise * 2 * (torch.rand(1)-0.5)[0]  # tensor(-0.)
-        depth_image = torch.clip(depth_image, -self.cfg.depth.far_clip, -self.cfg.depth.near_clip)  # (depth_image, -2, 0)
-        depth_image = self.resize_transform(depth_image[None, :]).squeeze()  # Output: depth_image size is :  torch.Size([58, 87])
+        depth_image = self.crop_depth_image(depth_image) # Input: torch.Size([60, 106]); Output: depth_image 0 size is:  torch.Size([58, 98])
+        depth_image += self.cfg.depth.dis_noise * 2 * (torch.rand(1)-0.5)[0]  # Output: torch.Size([58, 98])
+        depth_image = torch.clip(depth_image, -self.cfg.depth.far_clip, -self.cfg.depth.near_clip)  # Output: torch.Size([58, 98])
+        depth_image = self.resize_transform(depth_image[None, :]).squeeze()  # Input: torch.Size([58, 98]); Output: depth_image size is :  torch.Size([58, 87])
         depth_image = self.normalize_depth_image(depth_image)
-        print("depth_image size is: ", depth_image.size())
         return depth_image
 
     def crop_depth_image(self, depth_image):
@@ -499,8 +498,8 @@ class LeggedRobot(BaseTask):
         )                                                     #  history_len = 10
 
         # print("self.obs_history_buf.size() is : ", self.obs_history_buf.size()) #  torch.Size([1, 10, 53])
-        print("obs_buf is : ", obs_buf)
-        print("self.obs_history_buf is : ", self.obs_history_buf)
+        # print("obs_buf is : ", obs_buf)
+        # print("self.obs_history_buf is : ", self.obs_history_buf)
 
         self.contact_buf = torch.where(
             (self.episode_length_buf <= 1)[:, None, None], 
