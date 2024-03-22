@@ -125,11 +125,14 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # 4, check how to process the vision part?
     
 
-# 5, go to manchester, and test
+# 5, go to manchester or oxford, and test
     
 
 
 # all the info about observations are in legged_robot.py
+    
+
+# how to apply get_heights function into the real robot?
 
 
 
