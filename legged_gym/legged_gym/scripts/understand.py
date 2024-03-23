@@ -121,6 +121,10 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     # what is base_lin_vel?
 # 3, what is obs_buf consisting of?
     
+    # what is self.base_ang_vel?
+    # what is priv_explicit?
+    # what is heights?
+    
     
 # 4, check how to process the vision part?
     
