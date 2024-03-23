@@ -124,6 +124,7 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     # what is self.base_ang_vel?
     # what is priv_explicit?
     # what is heights?
+    # how to apply get_heights function into the real robot?
     
     
 # 4, check how to process the vision part?
@@ -136,7 +137,7 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # all the info about observations are in legged_robot.py
     
 
-# how to apply get_heights function into the real robot?
+
 
 
 
