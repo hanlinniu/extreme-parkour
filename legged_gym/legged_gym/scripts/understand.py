@@ -131,6 +131,9 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     
 
 # 5, go to manchester or oxford, and test
+
+
+# in line 89 of legged_robot_config.py, the depth class defined the simiulated camera position [0.27, 0, 0.03]
     
 
 

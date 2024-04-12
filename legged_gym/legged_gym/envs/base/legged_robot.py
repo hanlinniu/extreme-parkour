@@ -132,9 +132,11 @@ class LeggedRobot(BaseTask):
 
         self.global_counter += 1
         self.total_env_steps_counter += 1
-
+        
         clip_actions = self.cfg.normalization.clip_actions / self.cfg.control.action_scale   # clip_actions is :  4.8
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
+        print("The reindex actions is: ", actions)
+        print("The final executed actions is: ", self.actions)
 
         self.render()
 
