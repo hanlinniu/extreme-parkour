@@ -304,9 +304,9 @@ class LeggedRobot(BaseTask):
             self._draw_goals()
             self._draw_feet()
             if self.cfg.depth.use_camera:
-                window_name = "Depth Image"
+                window_name = "Depth Image!!!"
                 cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-                cv2.imshow("Depth Image", self.depth_buffer[self.lookat_id, -1].cpu().numpy() + 0.5)
+                cv2.imshow("Depth Image!!!", self.depth_buffer[self.lookat_id, -1].cpu().numpy() + 0.5)
                 cv2.waitKey(1)
 
     def reindex_feet(self, vec):
@@ -959,6 +959,11 @@ class LeggedRobot(BaseTask):
             
             camera_position = np.copy(config.position)
             camera_angle = np.random.uniform(config.angle[0], config.angle[1])
+
+            # print("cam_angle is : ,", camera_angle)
+            # print("config.angle[0] is : ,", config.angle[0])
+            # print("config.angle[1] is : ,", config.angle[1])
+            # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             
             local_transform.p = gymapi.Vec3(*camera_position)
             local_transform.r = gymapi.Quat.from_euler_zyx(0, np.radians(camera_angle), 0)

@@ -138,6 +138,10 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 
 
 # all the info about observations are in legged_robot.py
+
+# for setting the whole gym viewer position, check Line 548 of legged_robot.py:  def set_camera(self, position, lookat)
+
+# for attaching camera to robot, check Line 945 of legged_robot.py:  def attach_camera(self, i, env_handle, actor_handle)
     
 
 
