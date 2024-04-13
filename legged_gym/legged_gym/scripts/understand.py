@@ -144,7 +144,18 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # for attaching camera to robot, check Line 945 of legged_robot.py:  def attach_camera(self, i, env_handle, actor_handle)
     
 
+# in Line 114 of legged_robot.py: def step(self, actions):  
+# remember that we need to do "actions = self.reindex(actions)" first
+print("The final executed actions is: ", self.actions* self.cfg.control.action_scale)
+print("Before execution, self.dof_pos is: ", self.dof_pos)
+print("After execution, self.dof_pos is: ", self.dof_pos)
+print("self.default_dof_pos_all is: ", self.default_dof_pos_all)
+The final executed actions is:     tensor([[-0.0602, -0.2709,  0.1821, -0.0149,  0.0074,  0.0859, -0.0599, -0.0714, 0.1231, -0.0415, -0.4971, -0.1407]], device='cuda:0')
+Before execution, self.dof_pos is: tensor([[ 0.0465,  0.3192, -1.4999, -0.1156,  0.8653, -1.4323,  0.0489,  0.8598, -1.4990, -0.1440,  0.6310, -1.7762]], device='cuda:0')
+After execution, self.dof_pos is:  tensor([[ 0.0386,  0.3837, -1.4237, -0.1225,  0.8919, -1.4177,  0.0432,  0.8930, -1.4958, -0.1390,  0.5404, -1.7173]], device='cuda:0')
+self.default_dof_pos_all is:       tensor([[ 0.1000,  0.8000, -1.5000, -0.1000,  0.8000, -1.5000,  0.1000,  1.0000, -1.5000, -0.1000,  1.0000, -1.5000]], device='cuda:0')
 
-
-
+# Line 686 of legged_robot.py: def _compute_torques(self, actions):
+actions_scaled = actions * self.cfg.control.action_scale
+torques = self.p_gains*(actions_scaled + self.default_dof_pos_all - self.dof_pos) - self.d_gains*self.dof_vel
 

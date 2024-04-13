@@ -135,8 +135,9 @@ class LeggedRobot(BaseTask):
         
         clip_actions = self.cfg.normalization.clip_actions / self.cfg.control.action_scale   # clip_actions is :  4.8
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
-        print("The reindex actions is: ", actions)
-        print("The final executed actions is: ", self.actions)
+
+        print("The final executed actions is: ", self.actions* self.cfg.control.action_scale)
+        print("Before execution, self.dof_pos is: ", self.dof_pos)
 
         self.render()
 
@@ -147,6 +148,11 @@ class LeggedRobot(BaseTask):
             self.gym.fetch_results(self.sim, True)
             self.gym.refresh_dof_state_tensor(self.sim)
         self.post_physics_step()        # this step is used for updating the observations
+
+
+        print("After execution, self.dof_pos is: ", self.dof_pos)
+        print("self.default_dof_pos_all is: ", self.default_dof_pos_all)
+        
 
         clip_obs = self.cfg.normalization.clip_observations   # clip_obs is :  100.0
         self.obs_buf = torch.clip(self.obs_buf, -clip_obs, clip_obs)  # obs_buf size is :  torch.Size([1, 753])
@@ -304,9 +310,9 @@ class LeggedRobot(BaseTask):
             self._draw_goals()
             self._draw_feet()
             if self.cfg.depth.use_camera:
-                window_name = "Depth Image!!!"
+                window_name = "Depth Image"
                 cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
-                cv2.imshow("Depth Image!!!", self.depth_buffer[self.lookat_id, -1].cpu().numpy() + 0.5)
+                cv2.imshow("Depth Image", self.depth_buffer[self.lookat_id, -1].cpu().numpy() + 0.5)
                 cv2.waitKey(1)
 
     def reindex_feet(self, vec):
@@ -490,7 +496,7 @@ class LeggedRobot(BaseTask):
             self.obs_buf = torch.cat([obs_buf, priv_explicit, priv_latent, self.obs_history_buf.view(self.num_envs, -1)], dim=-1)
         obs_buf[:, 6:8] = 0  # mask yaw in proprioceptive history
 
-        print("priv_latent size is: ", priv_latent) # priv_latent size is:  torch.Size([1, 29])
+        # print("priv_latent size is: ", priv_latent) # priv_latent size is:  torch.Size([1, 29])
 
         self.obs_history_buf = torch.where(
             (self.episode_length_buf <= 1)[:, None, None], 
