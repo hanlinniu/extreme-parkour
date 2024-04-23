@@ -40,6 +40,7 @@ from .cassie.cassie_config import CassieRoughCfg, CassieRoughCfgPPO
 from .a1.a1_config import A1RoughCfg, A1RoughCfgPPO
 from .a1.a1_parkour_config import A1ParkourCfg, A1ParkourCfgPPO
 from .go1.go1_config import Go1RoughCfg, Go1RoughCfgPPO
+from .go2.go2_config import Go2RoughCfg, Go2RoughCfgPPO
 
 import os
 
@@ -51,3 +52,4 @@ from legged_gym.utils.task_registry import task_registry
 # task_registry.register( "cassie", Cassie, CassieRoughCfg(), CassieRoughCfgPPO() )
 task_registry.register( "a1", LeggedRobot, A1ParkourCfg(), A1ParkourCfgPPO() )
 task_registry.register( "go1", LeggedRobot, Go1RoughCfg(), Go1RoughCfgPPO() )
+task_registry.register( "go2", LeggedRobot, Go2RoughCfg(), Go2RoughCfgPPO() )
