@@ -136,8 +136,8 @@ class LeggedRobot(BaseTask):
         clip_actions = self.cfg.normalization.clip_actions / self.cfg.control.action_scale   # clip_actions is :  4.8
         self.actions = torch.clip(actions, -clip_actions, clip_actions).to(self.device)
 
-        print("The final executed actions is: ", self.actions* self.cfg.control.action_scale)
-        print("Before execution, self.dof_pos is: ", self.dof_pos)
+        # print("The final executed actions is: ", self.actions* self.cfg.control.action_scale)
+        # print("Before execution, self.dof_pos is: ", self.dof_pos)
 
         self.render()
 
@@ -150,8 +150,8 @@ class LeggedRobot(BaseTask):
         self.post_physics_step()        # this step is used for updating the observations
 
 
-        print("After execution, self.dof_pos is: ", self.dof_pos)
-        print("self.default_dof_pos_all is: ", self.default_dof_pos_all)
+        # print("After execution, self.dof_pos is: ", self.dof_pos)
+        # print("self.default_dof_pos_all is: ", self.default_dof_pos_all)
         
 
         clip_obs = self.cfg.normalization.clip_observations   # clip_obs is :  100.0
