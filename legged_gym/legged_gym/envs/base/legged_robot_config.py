@@ -320,9 +320,6 @@ class LeggedRobotCfg(BaseConfig):
         max_contact_force = 40. # forces above this value are penalized
 
 
-
-
-
     # viewer camera:
     class viewer:
         ref_env = 0

@@ -27,6 +27,7 @@ def get_load_path(root, load_run=-1, checkpoint=-1, model_name_include="model"):
         checkpoint = model.split("_")[-1].split(".")[0]
     else:
         model = "model_{}.pt".format(checkpoint) 
+        
 
     load_path = os.path.join(root, model)
     return load_path, checkpoint
