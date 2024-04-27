@@ -218,21 +218,21 @@ class LeggedRobot(BaseTask):
             # Output: depth_image_ size is :  torch.Size([58, 87])
             depth_image = self.process_depth_image(depth_image, i)  # including crop, clip, squeeze, and normalize
             # if i==7:
-            print("The 8th current depth_image is : ", depth_image)
+            # print("The 8th current depth_image is : ", depth_image)
             
             init_flag = self.episode_length_buf <= 1
             if init_flag[i]:
                 self.depth_buffer[i] = torch.stack([depth_image] * self.cfg.depth.buffer_len, dim=0)
             else:
-                print(" it is using second one")
+                # print(" it is using second one")
                 # print("self.depth_buffer[i, 1:] is : ", self.depth_buffer[i, 1:])
                 # print("self.depth_buffer[i, 1:].size() is : ", self.depth_buffer[i, 1:].size()) # self.depth_buffer[i, 1:].size() is :  torch.Size([1, 58, 87])
                 # print("depth_image.to(self.device).unsqueeze(0) is : ", depth_image.to(self.device).unsqueeze(0))
                 self.depth_buffer[i] = torch.cat([self.depth_buffer[i, 1:], depth_image.to(self.device).unsqueeze(0)], dim=0)
 
 
-            print("self.depth_buffer is : ", self.depth_buffer[i])  # self.depth_buffer size is :  torch.Size([2, 58, 87])
-            print("self.depth_buffer size is : ", self.depth_buffer[i].size())
+            # print("self.depth_buffer is : ", self.depth_buffer[i])  # self.depth_buffer size is :  torch.Size([2, 58, 87])
+            # print("self.depth_buffer size is : ", self.depth_buffer[i].size())
 
 
         self.gym.end_access_image_tensors(self.sim)
