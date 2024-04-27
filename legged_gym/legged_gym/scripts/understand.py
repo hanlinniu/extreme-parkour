@@ -146,6 +146,9 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # change camera angle at Line 967 of legged_robot.py: camera_angle = np.random.uniform(config.angle[0], config.angle[1]), and angle is defined in Line 98 of legged_robot_config.py
     
 
+# !!!!!!!!!!!!!!!!!!!!!
+# change camera angle at Line 100 of play_test_go2.py
+
 # in Line 114 of legged_robot.py: def step(self, actions):  
 # remember that we need to do "actions = self.reindex(actions)" first
 print("The final executed actions is: ", self.actions* self.cfg.control.action_scale)
