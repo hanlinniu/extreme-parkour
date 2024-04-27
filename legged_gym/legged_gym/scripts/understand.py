@@ -142,6 +142,8 @@ class DepthOnlyFCBackbone58x87(nn.Module):
 # for setting the whole gym viewer position, check Line 548 of legged_robot.py:  def set_camera(self, position, lookat)
 
 # for attaching camera to robot, check Line 945 of legged_robot.py:  def attach_camera(self, i, env_handle, actor_handle)
+
+# change camera angle at Line 967 of legged_robot.py: camera_angle = np.random.uniform(config.angle[0], config.angle[1]), and angle is defined in Line 98 of legged_robot_config.py
     
 
 # in Line 114 of legged_robot.py: def step(self, actions):  
