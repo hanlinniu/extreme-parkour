@@ -147,7 +147,8 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     
 
 # !!!!!!!!!!!!!!!!!!!!!
-# change camera angle at Line 100 of play_test_go2.py
+# for playing purpose, change camera angle at Line 100 of play_test_go2.py
+# for train purpose, change angle defined in Line 98 of legged_robot_config.py
 
 # in Line 114 of legged_robot.py: def step(self, actions):  
 # remember that we need to do "actions = self.reindex(actions)" first
