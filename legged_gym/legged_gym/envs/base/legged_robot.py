@@ -966,10 +966,10 @@ class LeggedRobot(BaseTask):
             camera_position = np.copy(config.position)
             camera_angle = np.random.uniform(config.angle[0], config.angle[1])
 
-            # print("cam_angle is : ,", camera_angle)
-            # print("config.angle[0] is : ,", config.angle[0])
-            # print("config.angle[1] is : ,", config.angle[1])
-            # print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("cam_angle is : ,", camera_angle)
+            print("config.angle[0] is : ,", config.angle[0])
+            print("config.angle[1] is : ,", config.angle[1])
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             
             local_transform.p = gymapi.Vec3(*camera_position)
             local_transform.r = gymapi.Quat.from_euler_zyx(0, np.radians(camera_angle), 0)
