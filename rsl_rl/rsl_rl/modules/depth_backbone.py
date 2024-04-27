@@ -51,7 +51,7 @@ class RecurrentDepthBackbone(nn.Module):
         # Input: depth_latent size is :  torch.Size([1, 1, 512])
         # Output: depth_latent size is :  torch.Size([1, 34])
         depth_latent = self.output_mlp(depth_latent.squeeze(1))
-        print("depth_backbone.py is running")
+        # print("depth_backbone.py is running")
    
         return depth_latent
 
