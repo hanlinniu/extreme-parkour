@@ -95,7 +95,7 @@ class LeggedRobotCfg(BaseConfig):
         # position = [0.27, 0, 0.03]  # front camera for a1 robot
         position = [0.32, 0, 0.08] # front camera for go2 robot
 
-        angle = [89, 90]  # positive pitch down
+        angle = [0, 1]  # positive pitch down
 
         update_interval = 5  # 5 works without retraining, 8 worse
 

@@ -97,7 +97,7 @@ def play(args):
     env_cfg.terrain.curriculum = False
     env_cfg.terrain.max_difficulty = True
     
-    env_cfg.depth.angle = [0, 1]
+    env_cfg.depth.angle = [20, 21]
     env_cfg.noise.add_noise = True
     env_cfg.domain_rand.randomize_friction = True
     env_cfg.domain_rand.push_robots = False
