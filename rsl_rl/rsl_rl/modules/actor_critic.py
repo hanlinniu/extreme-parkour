@@ -89,8 +89,8 @@ class Actor(nn.Module):
     def __init__(self, num_prop, 
                  num_scan, 
                  num_actions, 
-                 scan_encoder_dims,
-                 actor_hidden_dims, 
+                 scan_encoder_dims,             # [256, 256, 256]
+                 actor_hidden_dims,             # [256, 256, 256] 
                  priv_encoder_dims, 
                  num_priv_latent, 
                  num_priv_explicit, 
@@ -101,10 +101,10 @@ class Actor(nn.Module):
         # actor input: prop -> scan -> priv_explicit -> latent
         self.num_prop = num_prop     # 53
         self.num_scan = num_scan     # 132
-        self.num_hist = num_hist     # 
+        self.num_hist = num_hist     # 10
         self.num_actions = num_actions  # 12
         self.num_priv_latent = num_priv_latent    # 29
-        self.num_priv_explicit = num_priv_explicit
+        self.num_priv_explicit = num_priv_explicit  # 9
         self.if_scan_encode = scan_encoder_dims is not None and num_scan > 0
 
         if len(priv_encoder_dims) > 0:
@@ -116,11 +116,16 @@ class Actor(nn.Module):
                         priv_encoder_layers.append(activation)
                     self.priv_encoder = nn.Sequential(*priv_encoder_layers)
                     priv_encoder_output_dim = priv_encoder_dims[-1]
+                    print("############################################################")
+                    print("priv_encoder_dims is: " priv_encoder_dims)
         else:
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent
+            print("############################################################")
+            print("############################################################")
+            print("priv_encoder_dims is: " priv_encoder_dims)
 
-        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)
+        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # num_hist is history_len # 10  ; priv_encoder_output_dim is num_priv_latent # 29
 
         if self.if_scan_encode:
             scan_encoder = []
@@ -211,8 +216,8 @@ class ActorCriticRMA(nn.Module):
     def __init__(self,  num_prop,
                         num_scan,
                         num_critic_obs,
-                        num_priv_latent, 
-                        num_priv_explicit,
+                        num_priv_latent,               # 29
+                        num_priv_explicit,             # 9
                         num_hist,
                         num_actions,
                         scan_encoder_dims=[256, 256, 256],

@@ -65,12 +65,12 @@ class OnPolicyRunner:
         self.env = env
 
         print("Using MLP and Priviliged Env encoder ActorCritic structure")
-        actor_critic: ActorCriticRMA = ActorCriticRMA(self.env.cfg.env.n_proprio,
-                                                      self.env.cfg.env.n_scan,
+        actor_critic: ActorCriticRMA = ActorCriticRMA(self.env.cfg.env.n_proprio,              # 53
+                                                      self.env.cfg.env.n_scan,                 # 132
                                                       self.env.num_obs,
-                                                      self.env.cfg.env.n_priv_latent,
-                                                      self.env.cfg.env.n_priv,
-                                                      self.env.cfg.env.history_len,
+                                                      self.env.cfg.env.n_priv_latent,          # 29
+                                                      self.env.cfg.env.n_priv,                 # 9
+                                                      self.env.cfg.env.history_len,            # 10
                                                       self.env.num_actions,
                                                       **self.policy_cfg).to(self.device)
         estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)
