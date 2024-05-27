@@ -94,7 +94,7 @@ class Actor(nn.Module):
                  priv_encoder_dims,             # [64, 20]
                  num_priv_latent,               # 29
                  num_priv_explicit,             # 9
-                 num_hist, activation, 
+                 num_hist, activation,          # 10 ELU(alpha=1.0)
                  tanh_encoder_output=False) -> None:
         super().__init__()
         # prop -> scan -> priv_explicit -> priv_latent -> hist
