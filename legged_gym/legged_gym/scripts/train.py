@@ -56,7 +56,7 @@ def train(args):
     
     if args.no_wandb:
         mode = "disabled"
-    wandb.init(project=args.proj_name, name=args.exptid, entity="hanlinniu", group=args.exptid[:3], mode=mode, dir="../../logs")
+    wandb.init(project=args.proj_name, name=args.exptid, entity="niuhanlin-rl", group=args.exptid[:3], mode=mode, dir="../../logs")
     wandb.save(LEGGED_GYM_ENVS_DIR + "/base/legged_robot_config.py", policy="now")
     wandb.save(LEGGED_GYM_ENVS_DIR + "/base/legged_robot.py", policy="now")
 
