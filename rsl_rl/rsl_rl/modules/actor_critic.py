@@ -186,6 +186,8 @@ class Actor(nn.Module):
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
         else:
+            print("############################################################")
+            print(" it is using eval")
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
