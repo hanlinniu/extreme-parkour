@@ -130,7 +130,7 @@ class Actor(nn.Module):
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # num_hist is history_len # 10  ; priv_encoder_output_dim is num_priv_latent # 29
                                                               # 53       # 10      # 29
-        if self.if_scan_encode:
+        if self.if_scan_encode:              # True
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
             scan_encoder.append(activation)
