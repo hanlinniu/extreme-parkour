@@ -115,21 +115,21 @@ class Actor(nn.Module):
                         priv_encoder_layers.append(nn.Linear(priv_encoder_dims[l], priv_encoder_dims[l + 1]))
                         priv_encoder_layers.append(activation)
                     self.priv_encoder = nn.Sequential(*priv_encoder_layers)
-                    priv_encoder_output_dim = priv_encoder_dims[-1]
-                    print("############################################################")
-                    print("priv_encoder_dims is: ", priv_encoder_dims)
-                    print("actor_hidden_dims is: ", actor_hidden_dims)
-                    print("num_priv_latent is: ", num_priv_latent)
-                    print("num_priv_explicit is: ", num_priv_explicit)
-                    print("num_hist is: ", num_hist)
-                    print("activation is: ", activation)
+                    priv_encoder_output_dim = priv_encoder_dims[-1]                 # 20
+                    # print("############################################################")
+                    # print("priv_encoder_dims is: ", priv_encoder_dims)
+                    # print("actor_hidden_dims is: ", actor_hidden_dims)
+                    # print("num_priv_latent is: ", num_priv_latent)
+                    # print("num_priv_explicit is: ", num_priv_explicit)
+                    # print("num_hist is: ", num_hist)
+                    # print("activation is: ", activation)
         else:
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent
 
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # num_hist is history_len # 10  ; priv_encoder_output_dim is num_priv_latent # 29
-
+                                                              # 53       # 10      # 29
         if self.if_scan_encode:
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
@@ -166,6 +166,8 @@ class Actor(nn.Module):
 
     def forward(self, obs, hist_encoding: bool, eval=False, scandots_latent=None):
         if not eval:
+            print("############################################################")
+            print(" it is not using eval")
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
@@ -184,6 +186,8 @@ class Actor(nn.Module):
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
         else:
+            print("############################################################")
+            print(" it is using eval")
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
