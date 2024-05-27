@@ -142,21 +142,21 @@ class Actor(nn.Module):
                     scan_encoder.append(nn.Linear(scan_encoder_dims[l], scan_encoder_dims[l + 1]))
                     scan_encoder.append(activation)
             self.scan_encoder = nn.Sequential(*scan_encoder)
-            self.scan_encoder_output_dim = scan_encoder_dims[-1]
+            self.scan_encoder_output_dim = scan_encoder_dims[-1]               # scan_encoder_dims is [128, 64, 32].  self.scan_encoder_output_dim is 32
         else:
             self.scan_encoder = nn.Identity()
             self.scan_encoder_output_dim = num_scan
         
         actor_layers = []
-        actor_layers.append(nn.Linear(num_prop+
-                                      self.scan_encoder_output_dim+
-                                      num_priv_explicit+
-                                      priv_encoder_output_dim, 
-                                      actor_hidden_dims[0]))
+        actor_layers.append(nn.Linear(num_prop+                                # 53
+                                      self.scan_encoder_output_dim+            # 32
+                                      num_priv_explicit+                       # 9
+                                      priv_encoder_output_dim,                 # 29
+                                      actor_hidden_dims[0]))                   # 512
         actor_layers.append(activation)
-        for l in range(len(actor_hidden_dims)):
+        for l in range(len(actor_hidden_dims)):                                # actor_hidden_dims is [512, 256, 128]
             if l == len(actor_hidden_dims) - 1:
-                actor_layers.append(nn.Linear(actor_hidden_dims[l], num_actions))
+                actor_layers.append(nn.Linear(actor_hidden_dims[l], num_actions))        # the last layer gives the output dimension of action, which is num_actions: 12
             else:
                 actor_layers.append(nn.Linear(actor_hidden_dims[l], actor_hidden_dims[l + 1]))
                 actor_layers.append(activation)
@@ -164,10 +164,10 @@ class Actor(nn.Module):
             actor_layers.append(nn.Tanh())
         self.actor_backbone = nn.Sequential(*actor_layers)
 
-    def forward(self, obs, hist_encoding: bool, eval=True, scandots_latent=None):
+    def forward(self, obs, hist_encoding: bool, eval=False, scandots_latent=None):                    # eval can be False or True, both will work for play_test_go2.py
         if not eval:
-            print("############################################################")
-            print(" it is not using eval")
+            # print("############################################################")
+            # print(" it is not using eval")
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
@@ -186,8 +186,8 @@ class Actor(nn.Module):
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
         else:
-            print("############################################################")
-            print(" it is using eval")
+            # print("############################################################")
+            # print(" it is using eval")
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
