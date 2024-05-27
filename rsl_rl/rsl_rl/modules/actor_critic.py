@@ -92,8 +92,8 @@ class Actor(nn.Module):
                  scan_encoder_dims,             # [128, 64, 32]        from legged_robot_config.py
                  actor_hidden_dims,             # [512, 256, 128]
                  priv_encoder_dims,             # [64, 20]
-                 num_priv_latent, 
-                 num_priv_explicit, 
+                 num_priv_latent,               # 29
+                 num_priv_explicit,             # 9
                  num_hist, activation, 
                  tanh_encoder_output=False) -> None:
         super().__init__()
@@ -121,6 +121,8 @@ class Actor(nn.Module):
                     print("actor_hidden_dims is: ", actor_hidden_dims)
                     print("num_priv_latent is: ", num_priv_latent)
                     print("num_priv_explicit is: ", num_priv_explicit)
+                    print("num_hist is: ", num_hist)
+                    print("activation is: ", activation)
         else:
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent
