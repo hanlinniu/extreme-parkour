@@ -91,7 +91,7 @@ class Actor(nn.Module):
                  num_actions, 
                  scan_encoder_dims,             # [256, 256, 256]
                  actor_hidden_dims,             # [256, 256, 256] 
-                 priv_encoder_dims, 
+                 priv_encoder_dims,             # [64, 20]
                  num_priv_latent, 
                  num_priv_explicit, 
                  num_hist, activation, 
@@ -118,6 +118,7 @@ class Actor(nn.Module):
                     priv_encoder_output_dim = priv_encoder_dims[-1]
                     print("############################################################")
                     print("priv_encoder_dims is: ", priv_encoder_dims)
+                    print("actor_hidden_dims is: ", actor_hidden_dims)
         else:
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent
