@@ -89,8 +89,8 @@ class Actor(nn.Module):
     def __init__(self, num_prop, 
                  num_scan, 
                  num_actions, 
-                 scan_encoder_dims,             # [256, 256, 256]
-                 actor_hidden_dims,             # [256, 256, 256] 
+                 scan_encoder_dims,             # [128, 64, 32]        from legged_robot_config.py
+                 actor_hidden_dims,             # [512, 256, 128]
                  priv_encoder_dims,             # [64, 20]
                  num_priv_latent, 
                  num_priv_explicit, 
@@ -119,12 +119,11 @@ class Actor(nn.Module):
                     print("############################################################")
                     print("priv_encoder_dims is: ", priv_encoder_dims)
                     print("actor_hidden_dims is: ", actor_hidden_dims)
+                    print("num_priv_latent is: ", num_priv_latent)
+                    print("num_priv_explicit is: ", num_priv_explicit)
         else:
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent
-            print("############################################################")
-            print("############################################################")
-            print("priv_encoder_dims is: ", priv_encoder_dims)
 
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # num_hist is history_len # 10  ; priv_encoder_output_dim is num_priv_latent # 29
