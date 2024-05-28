@@ -5,7 +5,7 @@ import torchvision
 
 class RecurrentDepthBackbone(nn.Module):
     def __init__(self, base_backbone, env_cfg) -> None:                 # this is used in depth_encoder = RecurrentDepthBackbone(depth_backbone, env.cfg).to(self.device) of on_policy_runner.py
-        super().__init__()                                              # the depth_backbone is a DepthOnlyFCBackbone58x87 function. 
+        super().__init__()                                              # the depth_backbone is a DepthOnlyFCBackbone58x87 neural network. 
         activation = nn.ELU()
         last_activation = nn.Tanh()
         self.base_backbone = base_backbone
@@ -58,7 +58,7 @@ class RecurrentDepthBackbone(nn.Module):
     def detach_hidden_states(self):
         self.hidden_states = self.hidden_states.detach().clone()
 
-class StackDepthEncoder(nn.Module):
+class StackDepthEncoder(nn.Module):                                     #  this functions seems useless
     def __init__(self, base_backbone, env_cfg) -> None:
         super().__init__()
         activation = nn.ELU()

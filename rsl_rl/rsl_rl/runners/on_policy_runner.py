@@ -75,13 +75,11 @@ class OnPolicyRunner:
                                                       **self.policy_cfg).to(self.device)
         estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)
         # Depth encoder
-        self.if_depth = self.depth_encoder_cfg["if_depth"]
-        print("############################################################")
-        print("if_depth is: ", self.if_depth)
+        self.if_depth = self.depth_encoder_cfg["if_depth"]   # if use camera, it is true, otherwise, it is false
         if self.if_depth:
             depth_backbone = DepthOnlyFCBackbone58x87(env.cfg.env.n_proprio, 
-                                                    self.policy_cfg["scan_encoder_dims"][-1], 
-                                                    self.depth_encoder_cfg["hidden_dims"],
+                                                    self.policy_cfg["scan_encoder_dims"][-1],            # scan_encoder_dims[-1] is 32 from [128, 64, 32], this is scandots_output_dim
+                                                    self.depth_encoder_cfg["hidden_dims"],               # hidden_dims is 512
                                                     )
             depth_encoder = RecurrentDepthBackbone(depth_backbone, env.cfg).to(self.device)
             depth_actor = deepcopy(actor_critic.actor) # it is defined in actor_critic.py line 232 and line 159, self.actor = Actor(num_prop, num_scan, num_actions, scan_encoder_dims, actor_hidden_dims, priv_encoder_dims, num_priv_latent, num_priv_explicit, num_hist, activation, tanh_encoder_output=kwargs['tanh_encoder_output'])
