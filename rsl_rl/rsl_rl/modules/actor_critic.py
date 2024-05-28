@@ -186,6 +186,7 @@ class Actor(nn.Module):
             print("############################################################")
             print('obs_prop_scan size is: ', obs_prop_scan.size())
             print('obs_priv_explicit size is: ', obs_priv_explicit.size())
+            print('latent size is: ', latent.size())
             print('backbone_input.size() is ', backbone_input.size())
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
