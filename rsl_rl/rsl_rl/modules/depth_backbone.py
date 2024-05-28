@@ -27,7 +27,7 @@ class RecurrentDepthBackbone(nn.Module):
                                 last_activation
                             )
         self.hidden_states = None
-        print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS in depth_backbone.py")
+        print("YESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS in depth_backbone.py")      # This is the input of RecurrentDepthBackbone, which is depth_encoder
         print("base_backbone is : ", base_backbone)
 
     def forward(self, depth_image, proprioception):   # this function is used in "depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)" in play_test.py

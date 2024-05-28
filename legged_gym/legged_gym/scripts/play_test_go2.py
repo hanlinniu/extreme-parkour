@@ -126,7 +126,7 @@ def play(args):
         policy_jit = torch.jit.load(path, map_location=env.device)
         print("it is loading base policy ##############################")
     else:
-        policy = ppo_runner.get_inference_policy(device=env.device)
+        policy = ppo_runner.get_inference_policy(device=env.device)             # this is the by default one
         print("it is loading base policy111111111 ##############################")
 
     estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
