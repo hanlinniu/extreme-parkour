@@ -171,7 +171,9 @@ class Actor(nn.Module):
             if self.if_scan_encode:
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
-                    scan_latent = self.scan_encoder(obs_scan)   
+                    scan_latent = self.scan_encoder(obs_scan)
+                    print("############################################################")
+                    print("scan dots is none")   
                 else:
                     scan_latent = scandots_latent
                 obs_prop_scan = torch.cat([obs[:, :self.num_prop], scan_latent], dim=1)
