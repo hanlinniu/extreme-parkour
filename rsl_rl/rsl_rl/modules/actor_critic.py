@@ -116,10 +116,10 @@ class Actor(nn.Module):
                         priv_encoder_layers.append(activation)
                     self.priv_encoder = nn.Sequential(*priv_encoder_layers)
                     priv_encoder_output_dim = priv_encoder_dims[-1]                 # 20
-                    # print("############################################################")
+                    print("############################################################")
                     # print("priv_encoder_dims is: ", priv_encoder_dims)
                     # print("actor_hidden_dims is: ", actor_hidden_dims)
-                    # print("num_priv_latent is: ", num_priv_latent)
+                    print("num_priv_latent is: ", num_priv_latent)
                     # print("num_priv_explicit is: ", num_priv_explicit)
                     # print("num_hist is: ", num_hist)
                     # print("activation is: ", activation)
@@ -128,8 +128,8 @@ class Actor(nn.Module):
             priv_encoder_output_dim = num_priv_latent
 
 
-        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 29
-                                                               # 53      # 10 = history_len    # 29 = num_priv_latent
+        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20
+                                                               # 53      # 10 = history_len    # 20 = num_priv_latent
         if self.if_scan_encode:              # True
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
