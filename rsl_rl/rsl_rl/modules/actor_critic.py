@@ -179,18 +179,13 @@ class Actor(nn.Module):
             else:
                 obs_prop_scan = obs[:, :self.num_prop + self.num_scan]
             obs_priv_explicit = obs[:, self.num_prop + self.num_scan:self.num_prop + self.num_scan + self.num_priv_explicit]     # obs_priv_explicit can be read from the robot directly
-            if hist_encoding:
-                latent = self.infer_hist_latent(obs)       # output is 29, infer privilege latent using history data
-                print("############################################################")
-                print(" it is using hist_encoding")
+            if hist_encoding:                   # True
+                latent = self.infer_hist_latent(obs)       # output is 20, infer privilege latent using history data
+                check_latent = self.infer_priv_latent(obs)
+                print('check_latent size is: ', check_latent.size())
             else:
                 latent = self.infer_priv_latent(obs)       # output is 29, using privilege latent directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
-            print("############################################################")
-            print('obs_prop_scan size is: ', obs_prop_scan.size())
-            print('obs_priv_explicit size is: ', obs_priv_explicit.size())
-            print('latent size is: ', latent.size())
-            print('backbone_input.size() is ', backbone_input.size())
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
         else:
