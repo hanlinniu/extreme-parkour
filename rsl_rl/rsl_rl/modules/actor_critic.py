@@ -116,21 +116,21 @@ class Actor(nn.Module):
                         priv_encoder_layers.append(activation)
                     self.priv_encoder = nn.Sequential(*priv_encoder_layers)
                     priv_encoder_output_dim = priv_encoder_dims[-1]                 # 20
-                    print("############################################################")
-                    print("priv_encoder_output_dim is: ", priv_encoder_output_dim)
+                    # print("############################################################")
+                    # print("priv_encoder_output_dim is: ", priv_encoder_output_dim)
                     # print("priv_encoder_dims is: ", priv_encoder_dims)
                     # print("actor_hidden_dims is: ", actor_hidden_dims)
-                    # print("num_priv_latent is: ", num_priv_latent)
+                    # print("num_priv_latent is: ", num_priv_latent)   # 29
                     # print("num_priv_explicit is: ", num_priv_explicit)
                     # print("num_hist is: ", num_hist)
                     # print("activation is: ", activation)
         else:
             self.priv_encoder = nn.Identity()
-            priv_encoder_output_dim = num_priv_latent                # 29
+            priv_encoder_output_dim = num_priv_latent                # 29    Here it is a bit tricky
 
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20
-                                                               # 53      # 10 = history_len    # 20 = num_priv_latent
+                                                               # 53      # 10 = history_len    # 20
         if self.if_scan_encode:              # True
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
@@ -181,9 +181,11 @@ class Actor(nn.Module):
             obs_priv_explicit = obs[:, self.num_prop + self.num_scan:self.num_prop + self.num_scan + self.num_priv_explicit]     # obs_priv_explicit can be read from the robot directly
             if hist_encoding:
                 latent = self.infer_hist_latent(obs)       # output is 29, infer privilege latent using history data
+                print("############################################################")
+                print(" it is using hist_encoding")
             else:
                 latent = self.infer_priv_latent(obs)       # output is 29, using privilege latent directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
-            backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 29
+            backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
             print("############################################################")
             print('obs_prop_scan size is: ', obs_prop_scan.size())
             print('obs_priv_explicit size is: ', obs_priv_explicit.size())
