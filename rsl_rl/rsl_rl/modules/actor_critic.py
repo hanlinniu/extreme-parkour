@@ -120,7 +120,7 @@ class Actor(nn.Module):
                     # print("priv_encoder_output_dim is: ", priv_encoder_output_dim)
                     # print("priv_encoder_dims is: ", priv_encoder_dims)
                     # print("actor_hidden_dims is: ", actor_hidden_dims)
-                    # print("num_priv_latent is: ", num_priv_latent)   # 29
+                    # print("num_priv_latent is: ", num_priv_latent)                # 29
                     # print("num_priv_explicit is: ", num_priv_explicit)
                     # print("num_hist is: ", num_hist)
                     # print("activation is: ", activation)
@@ -181,10 +181,8 @@ class Actor(nn.Module):
             obs_priv_explicit = obs[:, self.num_prop + self.num_scan:self.num_prop + self.num_scan + self.num_priv_explicit]     # obs_priv_explicit can be read from the robot directly
             if hist_encoding:                   # True
                 latent = self.infer_hist_latent(obs)       # output is 20, infer privilege latent using history data
-                check_latent = self.infer_priv_latent(obs)
-                print('check_latent size is: ', check_latent.size())
             else:
-                latent = self.infer_priv_latent(obs)       # output is 29, using privilege latent directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
+                latent = self.infer_priv_latent(obs)       # output is 20, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
