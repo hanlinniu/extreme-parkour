@@ -185,6 +185,8 @@ class Actor(nn.Module):
                 latent = self.infer_priv_latent(obs)       # output is 20, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
             backbone_output = self.actor_backbone(backbone_input)
+            print("############################################################")
+            print("backbone_output is: ", backbone_output.size())
             return backbone_output
         else:
             # print("############################################################")
@@ -205,8 +207,6 @@ class Actor(nn.Module):
                 latent = self.infer_priv_latent(obs)
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)
             backbone_output = self.actor_backbone(backbone_input)
-            print("############################################################")
-            print("backbone_output is: ", backbone_output.size())
             return backbone_output
     
     def infer_priv_latent(self, obs):
