@@ -3,10 +3,6 @@
 <img src="./images/teaser.jpeg" width="80%"/>
 </p>
 
-**Authors**: [Xuxin Cheng*](https://chengxuxin.github.io/), [Kexin Shi*](https://tenhearts.github.io/), [Ananye Agarwal](https://anag.me/), [Deepak Pathak](https://www.cs.cmu.edu/~dpathak/)  
-**Website**: https://extreme-parkour.github.io  
-**Paper**: https://arxiv.org/abs/2309.14341
-
 ### Installation ###
 ```bash
 conda create -n parkour python=3.8
@@ -97,14 +93,3 @@ Hardware code and Go1 support coming later.
 ### Acknowledgement
 https://github.com/leggedrobotics/legged_gym  
 https://github.com/Toni-SM/skrl
-
-### Citation
-If you found any part of this code useful, please consider citing:
-```
-@article{cheng2023parkour,
-title={Extreme Parkour with Legged Robots},
-author={Cheng, Xuxin and Shi, Kexin and Agarwal, Ananye and Pathak, Deepak},
-journal={arXiv preprint arXiv:2309.14341},
-year={2023}
-}
-```
