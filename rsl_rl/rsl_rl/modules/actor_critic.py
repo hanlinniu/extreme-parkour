@@ -105,9 +105,9 @@ class Actor(nn.Module):
         self.num_actions = num_actions  # 12
         self.num_priv_latent = num_priv_latent    # 29
         self.num_priv_explicit = num_priv_explicit  # 9
-        self.if_scan_encode = scan_encoder_dims is not None and num_scan > 0
+        self.if_scan_encode = scan_encoder_dims is not None and num_scan > 0                      # true
 
-        if len(priv_encoder_dims) > 0:
+        if len(priv_encoder_dims) > 0:          # [64, 20]
                     priv_encoder_layers = []
                     priv_encoder_layers.append(nn.Linear(num_priv_latent, priv_encoder_dims[0]))
                     priv_encoder_layers.append(activation)
@@ -128,13 +128,13 @@ class Actor(nn.Module):
             priv_encoder_output_dim = num_priv_latent
 
 
-        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # num_hist is history_len # 10  ; priv_encoder_output_dim is num_priv_latent # 29
-                                                              # 53       # 10      # 29
+        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 29
+                                                               # 53      # 10 = history_len    # 29 = num_priv_latent
         if self.if_scan_encode:              # True
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
             scan_encoder.append(activation)
-            for l in range(len(scan_encoder_dims) - 1):
+            for l in range(len(scan_encoder_dims) - 1):                       # scan_encoder_dims is [128, 64, 32].  self.scan_encoder_output_dim is 32
                 if l == len(scan_encoder_dims) - 2:
                     scan_encoder.append(nn.Linear(scan_encoder_dims[l], scan_encoder_dims[l+1]))
                     scan_encoder.append(nn.Tanh())
@@ -142,7 +142,7 @@ class Actor(nn.Module):
                     scan_encoder.append(nn.Linear(scan_encoder_dims[l], scan_encoder_dims[l + 1]))
                     scan_encoder.append(activation)
             self.scan_encoder = nn.Sequential(*scan_encoder)
-            self.scan_encoder_output_dim = scan_encoder_dims[-1]               # scan_encoder_dims is [128, 64, 32].  self.scan_encoder_output_dim is 32
+            self.scan_encoder_output_dim = scan_encoder_dims[-1]               
         else:
             self.scan_encoder = nn.Identity()
             self.scan_encoder_output_dim = num_scan
@@ -164,8 +164,8 @@ class Actor(nn.Module):
             actor_layers.append(nn.Tanh())
         self.actor_backbone = nn.Sequential(*actor_layers)
 
-    def forward(self, obs, hist_encoding: bool, eval=False, scandots_latent=None):                    # eval can be False or True, both will work for play_test_go2.py
-        if not eval:
+    def forward(self, obs, hist_encoding: bool, eval=False, scandots_latent=None):                    
+        if not eval:                                                                      # eval can be False or True, both will work for play_test_go2.py
             # print("############################################################")
             # print(" it is not using eval")
             if self.if_scan_encode:
@@ -177,11 +177,11 @@ class Actor(nn.Module):
                 obs_prop_scan = torch.cat([obs[:, :self.num_prop], scan_latent], dim=1)
             else:
                 obs_prop_scan = obs[:, :self.num_prop + self.num_scan]
-            obs_priv_explicit = obs[:, self.num_prop + self.num_scan:self.num_prop + self.num_scan + self.num_priv_explicit]
+            obs_priv_explicit = obs[:, self.num_prop + self.num_scan:self.num_prop + self.num_scan + self.num_priv_explicit]     # obs_priv_explicit can be read from the robot directly
             if hist_encoding:
-                latent = self.infer_hist_latent(obs)
+                latent = self.infer_hist_latent(obs)       # output is 29, infer privilege latent using history data
             else:
-                latent = self.infer_priv_latent(obs)
+                latent = self.infer_priv_latent(obs)       # output is 29, using privilege latent directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
@@ -212,7 +212,7 @@ class Actor(nn.Module):
     
     def infer_hist_latent(self, obs):
         hist = obs[:, -self.num_hist*self.num_prop:]
-        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))
+        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  size of hist.view(-1, self.num_hist, self.num_prop) is 10 x 53
     
     def infer_scandots_latent(self, obs):
         scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
