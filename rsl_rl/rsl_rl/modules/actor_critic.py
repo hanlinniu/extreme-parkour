@@ -154,6 +154,9 @@ class Actor(nn.Module):
                                       num_priv_explicit+                       # 9
                                       priv_encoder_output_dim,                 # 29
                                       actor_hidden_dims[0]))                   # 512
+        print("############################################################")
+        print("actor_hidden_dims[0] is: ", actor_hidden_dims[0])    
+                
         actor_layers.append(activation)
         for l in range(len(actor_hidden_dims)):                                # actor_hidden_dims is [512, 256, 128]
             if l == len(actor_hidden_dims) - 1:
@@ -169,7 +172,7 @@ class Actor(nn.Module):
         if not eval:                                                                      # eval can be False or True, both will work for play_test_go2.py
             # print("############################################################")
             # print(" it is not using eval")
-            if self.if_scan_encode:
+            if self.if_scan_encode:                              # True
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
                     scan_latent = self.scan_encoder(obs_scan)
@@ -184,14 +187,12 @@ class Actor(nn.Module):
             else:
                 latent = self.infer_priv_latent(obs)       # output is 20, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
-            backbone_output = self.actor_backbone(backbone_input)
-            print("############################################################")
-            print("backbone_output is: ", backbone_output.size())
+            backbone_output = self.actor_backbone(backbone_input)                                # length is 12
             return backbone_output
         else:
             # print("############################################################")
             # print(" it is using eval")
-            if self.if_scan_encode:
+            if self.if_scan_encode:          
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
                     scan_latent = self.scan_encoder(obs_scan)   
