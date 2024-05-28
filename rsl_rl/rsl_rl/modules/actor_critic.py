@@ -172,12 +172,8 @@ class Actor(nn.Module):
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
                     scan_latent = self.scan_encoder(obs_scan)
-                    print("############################################################")
-                    print("scan dots is none")   
                 else:
-                    scan_latent = scandots_latent
-                    print("############################################################")
-                    print("scan dots is not none")   
+                    scan_latent = scandots_latent               # scan dots is not none     # 32
                 obs_prop_scan = torch.cat([obs[:, :self.num_prop], scan_latent], dim=1)
             else:
                 obs_prop_scan = obs[:, :self.num_prop + self.num_scan]
@@ -187,6 +183,8 @@ class Actor(nn.Module):
             else:
                 latent = self.infer_priv_latent(obs)       # output is 29, using privilege latent directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)
+            print("############################################################")
+            print('backbone_input.size() is ', backbone_input.size())
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
         else:
