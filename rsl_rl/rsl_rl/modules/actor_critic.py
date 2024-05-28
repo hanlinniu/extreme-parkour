@@ -153,10 +153,7 @@ class Actor(nn.Module):
                                       self.scan_encoder_output_dim+            # 32
                                       num_priv_explicit+                       # 9
                                       priv_encoder_output_dim,                 # 29
-                                      actor_hidden_dims[0]))                   # 512
-        print("############################################################")
-        print("actor_hidden_dims[0] is: ", actor_hidden_dims[0])    
-                
+                                      actor_hidden_dims[0]))                   # 512 
         actor_layers.append(activation)
         for l in range(len(actor_hidden_dims)):                                # actor_hidden_dims is [512, 256, 128]
             if l == len(actor_hidden_dims) - 1:
@@ -247,6 +244,8 @@ class ActorCriticRMA(nn.Module):
         
         self.actor = Actor(num_prop, num_scan, num_actions, scan_encoder_dims, actor_hidden_dims, priv_encoder_dims, num_priv_latent, num_priv_explicit, num_hist, activation, tanh_encoder_output=kwargs['tanh_encoder_output'])
         
+        print("############################################################")
+        print("critic_hidden_dims is : ", critic_hidden_dims)        
 
         # Value function
         critic_layers = []
