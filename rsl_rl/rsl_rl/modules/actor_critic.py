@@ -185,6 +185,7 @@ class Actor(nn.Module):
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 29
             print("############################################################")
             print('obs_prop_scan size is: ', obs_prop_scan.size())
+            print('obs_priv_explicit size is: ', obs_priv_explicit.size())
             print('backbone_input.size() is ', backbone_input.size())
             backbone_output = self.actor_backbone(backbone_input)
             return backbone_output
