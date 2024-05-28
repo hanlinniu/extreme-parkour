@@ -1,7 +1,4 @@
 # Extreme Parkour with Legged Robots #
-<p align="center">
-<img src="./images/teaser.jpeg" width="80%"/>
-</p>
 
 ### Installation ###
 ```bash
