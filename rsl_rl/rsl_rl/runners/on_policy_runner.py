@@ -76,6 +76,8 @@ class OnPolicyRunner:
         estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)
         # Depth encoder
         self.if_depth = self.depth_encoder_cfg["if_depth"]
+        print("############################################################")
+        print("if_depth is: ", self.if_depth)
         if self.if_depth:
             depth_backbone = DepthOnlyFCBackbone58x87(env.cfg.env.n_proprio, 
                                                     self.policy_cfg["scan_encoder_dims"][-1], 

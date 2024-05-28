@@ -228,8 +228,8 @@ class ActorCriticRMA(nn.Module):
                         num_priv_explicit,             # 9
                         num_hist,
                         num_actions,
-                        scan_encoder_dims=[256, 256, 256],
-                        actor_hidden_dims=[256, 256, 256],  
+                        scan_encoder_dims=[256, 256, 256],                      # [128, 64, 32]
+                        actor_hidden_dims=[256, 256, 256],                      # [512, 256, 128]
                         critic_hidden_dims=[256, 256, 256],                     # [512, 256, 128]
                         activation='elu',
                         init_noise_std=1.0,
@@ -244,10 +244,10 @@ class ActorCriticRMA(nn.Module):
         
         self.actor = Actor(num_prop, num_scan, num_actions, scan_encoder_dims, actor_hidden_dims, priv_encoder_dims, num_priv_latent, num_priv_explicit, num_hist, activation, tanh_encoder_output=kwargs['tanh_encoder_output'])
         
-        print("############################################################")
-        print("scan_encoder_dims is : ", scan_encoder_dims)
-        print("actor_hidden_dims is : ", actor_hidden_dims)   
-        print("critic_hidden_dims is : ", critic_hidden_dims)           
+        # print("############################################################")
+        # print("scan_encoder_dims is : ", scan_encoder_dims)   # [128, 64, 32]
+        # print("actor_hidden_dims is : ", actor_hidden_dims)   # [512, 256, 128]
+        # print("critic_hidden_dims is : ", critic_hidden_dims) # [512, 256, 128]       
 
         # Value function
         critic_layers = []
