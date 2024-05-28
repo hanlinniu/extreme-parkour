@@ -117,15 +117,16 @@ class Actor(nn.Module):
                     self.priv_encoder = nn.Sequential(*priv_encoder_layers)
                     priv_encoder_output_dim = priv_encoder_dims[-1]                 # 20
                     print("############################################################")
+                    print("priv_encoder_output_dim is: ", priv_encoder_output_dim)
                     # print("priv_encoder_dims is: ", priv_encoder_dims)
                     # print("actor_hidden_dims is: ", actor_hidden_dims)
-                    print("num_priv_latent is: ", num_priv_latent)
+                    # print("num_priv_latent is: ", num_priv_latent)
                     # print("num_priv_explicit is: ", num_priv_explicit)
                     # print("num_hist is: ", num_hist)
                     # print("activation is: ", activation)
         else:
             self.priv_encoder = nn.Identity()
-            priv_encoder_output_dim = num_priv_latent
+            priv_encoder_output_dim = num_priv_latent                # 29
 
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20
