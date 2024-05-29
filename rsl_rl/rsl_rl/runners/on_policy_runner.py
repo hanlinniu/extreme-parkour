@@ -75,7 +75,7 @@ class OnPolicyRunner:
                                                       **self.policy_cfg).to(self.device)
         estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)
         # Depth encoder
-        self.if_depth = self.depth_encoder_cfg["if_depth"]   # if use camera, it is true, otherwise, it is false
+        self.if_depth = self.depth_encoder_cfg["if_depth"]   # if use camera, it is true; otherwise, it is false
         if self.if_depth:
             depth_backbone = DepthOnlyFCBackbone58x87(env.cfg.env.n_proprio, 
                                                     self.policy_cfg["scan_encoder_dims"][-1],            # scan_encoder_dims[-1] is 32 from [128, 64, 32], this is scandots_output_dim
@@ -133,12 +133,8 @@ class OnPolicyRunner:
         #     self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)
         if init_at_random_ep_len:
             self.env.episode_length_buf = torch.randint_like(self.env.episode_length_buf, high=int(self.env.max_episode_length))
-        obs = self.env.get_observations()
+        obs = self.env.get_observations()                                    # during training, obs is not None
         privileged_obs = self.env.get_privileged_observations()              # during training, privileged_obs is None
-
-        print("###############################################################")
-        print("privileged_obs is: ", privileged_obs)
-        print("obs is: ", obs)
         critic_obs = privileged_obs if privileged_obs is not None else obs
         obs, critic_obs = obs.to(self.device), critic_obs.to(self.device)
         infos = {}
