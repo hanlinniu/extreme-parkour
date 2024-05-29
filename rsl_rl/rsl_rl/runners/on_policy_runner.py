@@ -92,10 +92,6 @@ class OnPolicyRunner:
         # self.depth_encoder_criterion = nn.MSELoss()
         # Create algorithm
         alg_class = eval(self.cfg["algorithm_class_name"]) # "algorithm_class_name" is PPO
-
-        print("###########################################################")
-        print("alg_class is: ", alg_class)
-
         self.alg: PPO = alg_class(actor_critic, 
                                   estimator, self.estimator_cfg, 
                                   depth_encoder, self.depth_encoder_cfg, depth_actor,
@@ -172,6 +168,8 @@ class OnPolicyRunner:
                     total_rew = self.alg.process_env_step(rewards, dones, infos)
                     
                     if self.log_dir is not None:
+                        print("########################################################")
+                        print("log_dir is not none!")
                         # Book keeping
                         if 'episode' in infos:
                             ep_infos.append(infos['episode'])
