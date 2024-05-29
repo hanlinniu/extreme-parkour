@@ -192,13 +192,11 @@ def play(args):
             print("it is not using depth camera")
             depth_latent = None
         
-        if hasattr(ppo_runner.alg, "depth_actor"):
-            print("it is using hasattr with depth")
+        if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
             # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
             # Output: actions size is torch.Size([1, 12])
             actions = ppo_runner.alg.depth_actor(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor, actor_critic.py
-        else:
-            print("it is using hasattr without depth")
+        else:                                            # if there is no camera
             actions = policy(obs.detach(), hist_encoding=True, scandots_latent=depth_latent)
             
         print("#####################################################################")

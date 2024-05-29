@@ -172,13 +172,9 @@ class Actor(nn.Module):
             if self.if_scan_encode:                              # True
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
-                    print("############################################################")
-                    print("scandots_latent is none, it is : ", scandots_latent)
                     scan_latent = self.scan_encoder(obs_scan)   # this means there is no vision, only simulated scandots
                 else:
-                    print("############################################################")
-                    print("scandots_latent is: ", scandots_latent)
-                    scan_latent = scandots_latent               # scandots is not none     # 32
+                    scan_latent = scandots_latent               # scandots_latent is not none     # 32
                 obs_prop_scan = torch.cat([obs[:, :self.num_prop], scan_latent], dim=1)
             else:
                 obs_prop_scan = obs[:, :self.num_prop + self.num_scan]
