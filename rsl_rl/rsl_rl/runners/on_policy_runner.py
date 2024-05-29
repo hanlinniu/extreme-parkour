@@ -108,7 +108,7 @@ class OnPolicyRunner:
             [self.env.num_actions],
         )
 
-        self.learn = self.learn_RL if not self.if_depth else self.learn_vision
+        self.learn = self.learn_RL if not self.if_depth else self.learn_vision      # if self.if_depth is false, self.learn = self.learn_RL.  otherwise, self.learn = self.learn_vision
             
         # Log
         self.log_dir = log_dir
