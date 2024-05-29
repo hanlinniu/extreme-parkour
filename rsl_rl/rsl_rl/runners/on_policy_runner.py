@@ -134,10 +134,11 @@ class OnPolicyRunner:
         if init_at_random_ep_len:
             self.env.episode_length_buf = torch.randint_like(self.env.episode_length_buf, high=int(self.env.max_episode_length))
         obs = self.env.get_observations()
-        privileged_obs = self.env.get_privileged_observations()
+        privileged_obs = self.env.get_privileged_observations()              # during training, privileged_obs is None
 
         print("###############################################################")
         print("privileged_obs is: ", privileged_obs)
+        print("obs is: ", obs)
         critic_obs = privileged_obs if privileged_obs is not None else obs
         obs, critic_obs = obs.to(self.device), critic_obs.to(self.device)
         infos = {}
