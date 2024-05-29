@@ -91,7 +91,11 @@ class OnPolicyRunner:
         # self.depth_encoder_paras = self.depth_encoder_cfg
         # self.depth_encoder_criterion = nn.MSELoss()
         # Create algorithm
-        alg_class = eval(self.cfg["algorithm_class_name"]) # PPO
+        alg_class = eval(self.cfg["algorithm_class_name"]) # "algorithm_class_name" is PPO
+
+        print("###########################################################")
+        print("self.alg is: ", self.alg)
+        
         self.alg: PPO = alg_class(actor_critic, 
                                   estimator, self.estimator_cfg, 
                                   depth_encoder, self.depth_encoder_cfg, depth_actor,

@@ -168,11 +168,7 @@ class LeggedRobot(BaseTask):
         else:
             self.extras["depth"] = None
 
-        
-        print("################################################################################")
-        print("self.privileged_obs_buf is: ", self.privileged_obs_buf)
-
-        return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.reset_buf, self.extras
+        return self.obs_buf, self.privileged_obs_buf, self.rew_buf, self.reset_buf, self.extras          # self.privileged_obs_buf is always none
         #  self.obs_buf is: torch.Size([1, 753])
         #  self.privileged_obs_buf  is:  None
         #  self.rew_buf is:  tensor([0.0377], device='cuda:0')
