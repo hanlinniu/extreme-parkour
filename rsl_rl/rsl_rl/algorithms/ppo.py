@@ -115,9 +115,9 @@ class PPO:
 
         # Estimator
         self.estimator = estimator
-        self.priv_states_dim = estimator_paras["priv_states_dim"]
-        self.num_prop = estimator_paras["num_prop"]
-        self.num_scan = estimator_paras["num_scan"]
+        self.priv_states_dim = estimator_paras["priv_states_dim"]     # 9
+        self.num_prop = estimator_paras["num_prop"]                   # 53
+        self.num_scan = estimator_paras["num_scan"]                   # 132
         self.estimator_optimizer = optim.Adam(self.estimator.parameters(), lr=estimator_paras["learning_rate"])
         self.train_with_estimated_states = estimator_paras["train_with_estimated_states"]
 
@@ -147,6 +147,12 @@ class PPO:
             obs_est = obs.clone()
             priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])
             obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated
+
+            print("##############################################")
+            print("self.priv_states_dim is :", self.priv_states_dim)
+            print("obs_est is :", obs_est.size())
+
+
             self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()
         else:
             self.transition.actions = self.actor_critic.act(obs, hist_encoding).detach()
@@ -212,13 +218,14 @@ class PPO:
                 priv_reg_stage = min(max((self.counter - self.priv_reg_coef_schedual[2]), 0) / self.priv_reg_coef_schedual[3], 1)   # self.counter +=1 for each update # priv_reg_coef_schedual = [0, 0.1, 2000, 3000]
                 priv_reg_coef = priv_reg_stage * (self.priv_reg_coef_schedual[1] - self.priv_reg_coef_schedual[0]) + self.priv_reg_coef_schedual[0]
 
-                # priv_reg_stage =0 when self.counter < 2000
-                # priv_reg_state < 1 when 2000<self.counter < 5000
-                # priv_reg_state = 1 when self.counter > 5000
+                # priv_reg_stage = 0 when self.counter < 2000
+                # priv_reg_stage < 1 when 2000 < self.counter < 5000
+                # priv_reg_stage = 1 when self.counter > 5000
+
                 # priv_reg_coef  = priv_reg_stage * 0.1
 
                 # Estimator
-                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states
+                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states    dimension is 9
                 estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()
                 self.estimator_optimizer.zero_grad()
                 estimator_loss.backward()
@@ -226,9 +233,7 @@ class PPO:
                 self.estimator_optimizer.step()
                 
                 # KL
-                if self.desired_kl != None and self.schedule == 'adaptive':
-                    print("##################################################")
-                    print("KL is executed")
+                if self.desired_kl != None and self.schedule == 'adaptive':                #True
                     with torch.inference_mode():
                         kl = torch.sum(
                             torch.log(sigma_batch / old_sigma_batch + 1.e-5) + (torch.square(old_sigma_batch) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch)) - 0.5, axis=-1)
