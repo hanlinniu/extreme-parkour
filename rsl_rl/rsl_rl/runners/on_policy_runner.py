@@ -168,7 +168,8 @@ class OnPolicyRunner:
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
                     total_rew = self.alg.process_env_step(rewards, dones, infos)                 # self.alg is PPO                 # just the reward
-                    
+                    print("#######################################################")
+
                     if self.log_dir is not None:                                                 # True
                         # Book keeping
                         if 'episode' in infos:
@@ -189,6 +190,7 @@ class OnPolicyRunner:
                         cur_reward_explr_sum[new_ids] = 0
                         cur_reward_entropy_sum[new_ids] = 0
                         cur_episode_length[new_ids] = 0
+                    print("is it here?")
 
                 stop = time.time()
                 collection_time = stop - start
