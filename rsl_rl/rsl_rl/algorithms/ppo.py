@@ -79,7 +79,7 @@ class PPO:
                  desired_kl=0.01,
                  device='cpu',
                  dagger_update_freq=20,
-                 priv_reg_coef_schedual = [0, 0, 0],
+                 priv_reg_coef_schedual = [0, 0, 0],              # [0, 0.1, 2000, 3000]
                  **kwargs
                  ):
 
@@ -188,7 +188,7 @@ class PPO:
         mean_discriminator_loss = 0
         mean_discriminator_acc = 0
         mean_priv_reg_loss = 0
-        if self.actor_critic.is_recurrent:
+        if self.actor_critic.is_recurrent:              # False
             generator = self.storage.reccurent_mini_batch_generator(self.num_mini_batches, self.num_learning_epochs)
         else:
             generator = self.storage.mini_batch_generator(self.num_mini_batches, self.num_learning_epochs)
@@ -204,12 +204,15 @@ class PPO:
                 entropy_batch = self.actor_critic.entropy
                 
                 # Adaptation module update
-                priv_latent_batch = self.actor_critic.actor.infer_priv_latent(obs_batch)
+                priv_latent_batch = self.actor_critic.actor.infer_priv_latent(obs_batch)       # using privilege latent and priv_encoder directly, output is 20
                 with torch.inference_mode():
-                    hist_latent_batch = self.actor_critic.actor.infer_hist_latent(obs_batch)
+                    hist_latent_batch = self.actor_critic.actor.infer_hist_latent(obs_batch)   # infer privilege latent using history data, output is 20
                 priv_reg_loss = (priv_latent_batch - hist_latent_batch.detach()).norm(p=2, dim=1).mean()
-                priv_reg_stage = min(max((self.counter - self.priv_reg_coef_schedual[2]), 0) / self.priv_reg_coef_schedual[3], 1)
+                priv_reg_stage = min(max((self.counter - self.priv_reg_coef_schedual[2]), 0) / self.priv_reg_coef_schedual[3], 1)   # priv_reg_coef_schedual = [0, 0.1, 2000, 3000]
                 priv_reg_coef = priv_reg_stage * (self.priv_reg_coef_schedual[1] - self.priv_reg_coef_schedual[0]) + self.priv_reg_coef_schedual[0]
+
+                print("###################################################")
+                print("self.priv_reg_coef_schedual is: ", self.priv_reg_coef_schedual)
 
                 # Estimator
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states
