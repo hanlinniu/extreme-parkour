@@ -148,7 +148,7 @@ class PPO:
             obs_est = obs.clone()
             priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9
             obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated  # self.priv_states_dim is 9.  obs_est dimension is 753
-            self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()
+            self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()   # It is using def act() function in Line 302 of actor_critic.py
         else:
             self.transition.actions = self.actor_critic.act(obs, hist_encoding).detach()
 
@@ -299,9 +299,7 @@ class PPO:
         for obs_batch, critic_obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch, \
             old_mu_batch, old_sigma_batch, hid_states_batch, masks_batch in generator:
                 with torch.inference_mode():
-                    print("#####################################")
-                    self.actor_critic.act(obs_batch, hist_encoding=True, masks=masks_batch, hidden_states=hid_states_batch[0])
-                    print("it is using this actor")
+                    self.actor_critic.act(obs_batch, hist_encoding=True, masks=masks_batch, hidden_states=hid_states_batch[0]) # It is using def act() function in Line 302 of actor_critic.py
 
                 # Adaptation module update
                 with torch.inference_mode():
