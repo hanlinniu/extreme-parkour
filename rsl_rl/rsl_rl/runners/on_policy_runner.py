@@ -196,11 +196,12 @@ class OnPolicyRunner:
 
                 # Learning step
                 start = stop
-                print("#######################################################")
                 self.alg.compute_returns(critic_obs)
-                print("is it here?")
+                
             
+            print("#######################################################")
             mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()
+            print("is it here?")
             if hist_encoding:
                 print("Updating dagger...")
                 mean_hist_latent_loss = self.alg.update_dagger()
