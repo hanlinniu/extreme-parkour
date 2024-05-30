@@ -162,7 +162,7 @@ class OnPolicyRunner:
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
                     print("#######################################################")
-                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)
+                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py
                     print("it is this actor")
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
@@ -199,9 +199,9 @@ class OnPolicyRunner:
                 self.alg.compute_returns(critic_obs)
                 
             
-            print("#######################################################")
+            
             mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()
-            print("is it here?")
+            
             if hist_encoding:
                 print("Updating dagger...")
                 mean_hist_latent_loss = self.alg.update_dagger()
