@@ -154,7 +154,7 @@ class OnPolicyRunner:
         tot_iter = self.current_learning_iteration + num_learning_iterations
         self.start_learning_iteration = copy(self.current_learning_iteration)
 
-        for it in range(self.current_learning_iteration, tot_iter):                                # self.alg is PPO
+        for it in range(self.current_learning_iteration, tot_iter):                               # self.alg is PPO
             start = time.time()
             hist_encoding = it % self.dagger_update_freq == 0
 
@@ -162,14 +162,15 @@ class OnPolicyRunner:
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
                     actions = self.alg.act(obs, critic_obs, infos, hist_encoding)
-                    obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset
-                    print("#################################################")
-                    print("privileged_obs is: ", privileged_obs)
+                    obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
-                    total_rew = self.alg.process_env_step(rewards, dones, infos)
+                    total_rew = self.alg.process_env_step(rewards, dones, infos)                 # self.alg is PPO
+
+                    print("####################################################")
+                    print(" total_rew is: ", total_rew)
                     
-                    if self.log_dir is not None:                    # True
+                    if self.log_dir is not None:                                                 # True
                         # Book keeping
                         if 'episode' in infos:
                             ep_infos.append(infos['episode'])
