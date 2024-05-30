@@ -212,7 +212,7 @@ class PPO:
                 priv_reg_coef = priv_reg_stage * (self.priv_reg_coef_schedual[1] - self.priv_reg_coef_schedual[0]) + self.priv_reg_coef_schedual[0]
 
                 print("###################################################")
-                print("self.priv_reg_coef_schedual is: ", self.priv_reg_coef_schedual)
+                print("self.counter is: ", self.counter)
 
                 # Estimator
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states
