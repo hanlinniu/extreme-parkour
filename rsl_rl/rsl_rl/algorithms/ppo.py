@@ -149,6 +149,7 @@ class PPO:
             obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated
 
             print("##############################################")
+            print("priv_states_estimated is :", priv_states_estimated.size())
             print("self.priv_states_dim is :", self.priv_states_dim)
             print("obs_est is :", obs_est.size())
 
