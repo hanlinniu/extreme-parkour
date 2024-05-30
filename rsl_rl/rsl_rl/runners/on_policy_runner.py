@@ -154,7 +154,7 @@ class OnPolicyRunner:
         tot_iter = self.current_learning_iteration + num_learning_iterations
         self.start_learning_iteration = copy(self.current_learning_iteration)
 
-        for it in range(self.current_learning_iteration, tot_iter):
+        for it in range(self.current_learning_iteration, tot_iter):                                # self.alg is PPO
             start = time.time()
             hist_encoding = it % self.dagger_update_freq == 0
 
@@ -167,9 +167,7 @@ class OnPolicyRunner:
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
                     total_rew = self.alg.process_env_step(rewards, dones, infos)
                     
-                    if self.log_dir is not None:
-                        print("########################################################")
-                        print("log_dir is not none!")
+                    if self.log_dir is not None:                    # True
                         # Book keeping
                         if 'episode' in infos:
                             ep_infos.append(infos['episode'])
