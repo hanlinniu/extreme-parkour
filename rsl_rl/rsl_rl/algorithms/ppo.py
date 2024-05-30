@@ -145,15 +145,8 @@ class PPO:
         # Compute the actions and values, use proprio to compute estimated priv_states then actions, but store true priv_states
         if self.train_with_estimated_states:
             obs_est = obs.clone()
-            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])
-            obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated
-
-            print("##############################################")
-            print("priv_states_estimated is :", priv_states_estimated.size())
-            print("self.priv_states_dim is :", self.priv_states_dim)
-            print("obs_est is :", obs_est.size())
-
-
+            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9
+            obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated  # self.priv_states_dim is 9.  obs_est dimension is 753
             self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()
         else:
             self.transition.actions = self.actor_critic.act(obs, hist_encoding).detach()
