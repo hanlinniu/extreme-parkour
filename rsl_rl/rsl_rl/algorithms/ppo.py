@@ -208,10 +208,6 @@ class PPO:
                 with torch.inference_mode():
                     hist_latent_batch = self.actor_critic.actor.infer_hist_latent(obs_batch)   # infer privilege latent using history data, output is 20
                 
-                print("################################################")
-                print("priv_latent_batch is: ", priv_latent_batch.size())
-                print("hist_latent_batch is: ", hist_latent_batch.size())
-                
                 priv_reg_loss = (priv_latent_batch - hist_latent_batch.detach()).norm(p=2, dim=1).mean()
                 priv_reg_stage = min(max((self.counter - self.priv_reg_coef_schedual[2]), 0) / self.priv_reg_coef_schedual[3], 1)   # self.counter +=1 for each update # priv_reg_coef_schedual = [0, 0.1, 2000, 3000]
                 priv_reg_coef = priv_reg_stage * (self.priv_reg_coef_schedual[1] - self.priv_reg_coef_schedual[0]) + self.priv_reg_coef_schedual[0]
@@ -220,7 +216,6 @@ class PPO:
                 # priv_reg_state < 1 when 2000<self.counter < 5000
                 # priv_reg_state = 1 when self.counter > 5000
                 # priv_reg_coef  = priv_reg_stage * 0.1
-
 
                 # Estimator
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states
@@ -232,6 +227,8 @@ class PPO:
                 
                 # KL
                 if self.desired_kl != None and self.schedule == 'adaptive':
+                    print("##################################################")
+                    print("KL is executed")
                     with torch.inference_mode():
                         kl = torch.sum(
                             torch.log(sigma_batch / old_sigma_batch + 1.e-5) + (torch.square(old_sigma_batch) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch)) - 0.5, axis=-1)
