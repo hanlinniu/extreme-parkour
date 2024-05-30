@@ -165,11 +165,7 @@ class OnPolicyRunner:
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
-                    total_rew = self.alg.process_env_step(rewards, dones, infos)                 # self.alg is PPO
-
-                    print("####################################################")
-                    print(" total_rew is: ", total_rew)
-                    print(" total_rew size is: ", total_rew.size())
+                    total_rew = self.alg.process_env_step(rewards, dones, infos)                 # self.alg is PPO                 # just the reward
                     
                     if self.log_dir is not None:                                                 # True
                         # Book keeping
