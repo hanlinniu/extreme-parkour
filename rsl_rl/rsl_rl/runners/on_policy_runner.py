@@ -169,6 +169,7 @@ class OnPolicyRunner:
 
                     print("####################################################")
                     print(" total_rew is: ", total_rew)
+                    print(" total_rew size is: ", total_rew.size())
                     
                     if self.log_dir is not None:                                                 # True
                         # Book keeping
