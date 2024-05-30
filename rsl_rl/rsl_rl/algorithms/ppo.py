@@ -299,8 +299,9 @@ class PPO:
         for obs_batch, critic_obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch, \
             old_mu_batch, old_sigma_batch, hid_states_batch, masks_batch in generator:
                 with torch.inference_mode():
+                    print("###################################################")
                     self.actor_critic.act(obs_batch, hist_encoding=True, masks=masks_batch, hidden_states=hid_states_batch[0]) # It is using def act() function in Line 302 of actor_critic.py
-
+                    print("it is updating dagger")
                 # Adaptation module update
                 with torch.inference_mode():
                     priv_latent_batch = self.actor_critic.actor.infer_priv_latent(obs_batch)
