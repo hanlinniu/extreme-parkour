@@ -301,6 +301,7 @@ class ActorCriticRMA(nn.Module):
 
     def act(self, observations, hist_encoding=False, **kwargs):
         self.update_distribution(observations, hist_encoding)
+        print("it is using this actor222222222222")
         return self.distribution.sample()
     
     def get_actions_log_prob(self, actions):
