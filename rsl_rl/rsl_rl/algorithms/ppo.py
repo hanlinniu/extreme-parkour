@@ -221,6 +221,7 @@ class PPO:
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states    dimension is 9
                 estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()
                 print("########################################")
+                print("priv_states_predicted is: ", priv_states_predicted)
                 print("estimator_loss is: ", estimator_loss)
                 self.estimator_optimizer.zero_grad()
                 estimator_loss.backward()
