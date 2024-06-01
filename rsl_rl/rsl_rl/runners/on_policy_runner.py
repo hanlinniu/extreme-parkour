@@ -200,7 +200,7 @@ class OnPolicyRunner:
             mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()     # there is actor_critic.act inside
             
             if hist_encoding:
-                print("Updating dagger...")                                    # update hist_encoder to make it move hist_latent close to priv_latent 
+                print("Updating dagger...")                                    # update hist_encoder to make it move hist_latent close to priv_latent(constant) 
                 mean_hist_latent_loss = self.alg.update_dagger()               # there is actor_critic.act inside.  every 20 steps, dagger is updated once   
             
             stop = time.time()
@@ -265,9 +265,9 @@ class OnPolicyRunner:
                     yaw_buffer_teacher.append(obs[:, 6:8])
                 
                 with torch.no_grad():
-                    actions_teacher = self.alg.actor_critic.act_inference(obs, hist_encoding=True, scandots_latent=None)
-                    print("###################################################")
-                    print("actions_teacher is: ", actions_teacher.size())
+                    print("##############################################")
+                    print("actions_teacher is here")
+                    actions_teacher = self.alg.actor_critic.act_inference(obs, hist_encoding=True, scandots_latent=None)     # output dimension is 12
                     actions_teacher_buffer.append(actions_teacher)
 
                 obs_student = obs.clone()

@@ -172,6 +172,7 @@ class Actor(nn.Module):
             if self.if_scan_encode:              # True
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
                 if scandots_latent is None:
+                    print("teacher is using scandots")
                     scan_latent = self.scan_encoder(obs_scan)   # if there is no vision, only simulated scandots
                 else:
                     scan_latent = scandots_latent               # if there is 3D camera, scandots_latent is not none     # 32
