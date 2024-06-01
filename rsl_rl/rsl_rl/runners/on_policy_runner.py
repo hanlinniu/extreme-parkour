@@ -276,12 +276,11 @@ class OnPolicyRunner:
                 actions_student_buffer.append(actions_student)
 
                 # detach actions before feeding the env
-                if it < num_pretrain_iter:
+                if it < num_pretrain_iter:               # might always be false
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions_teacher.detach())  # obs has changed to next_obs !! if done obs has been reset
-                    print(" it is here 11111111111111111")
                 else:
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions_student.detach())  # obs has changed to next_obs !! if done obs has been reset
-                    print(" it is here 22222222222222222")
+                    print("privileged_obs is: ", privileged_obs)
                 critic_obs = privileged_obs if privileged_obs is not None else obs
                 obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
 
