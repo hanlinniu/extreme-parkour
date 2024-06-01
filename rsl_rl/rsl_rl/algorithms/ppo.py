@@ -140,13 +140,13 @@ class PPO:
         self.actor_critic.train()
 
     def act(self, obs, critic_obs, info, hist_encoding=False):
-        print("it is using this actor11111111111")
-        if self.actor_critic.is_recurrent:
+        if self.actor_critic.is_recurrent:               # False
             self.transition.hidden_states = self.actor_critic.get_hidden_states()
         # Compute the actions and values, use proprio to compute estimated priv_states then actions, but store true priv_states
         if self.train_with_estimated_states:
             obs_est = obs.clone()
-            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9
+            print("obs_est size is: ", obs_est.size())
+            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9, this is to estimate privi_explicit term
             obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated  # self.priv_states_dim is 9.  obs_est dimension is 753
             self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()   # It is using def act() function in Line 302 of actor_critic.py
         else:

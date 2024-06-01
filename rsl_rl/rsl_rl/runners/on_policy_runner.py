@@ -73,7 +73,7 @@ class OnPolicyRunner:
                                                       self.env.cfg.env.history_len,            # 10
                                                       self.env.num_actions,
                                                       **self.policy_cfg).to(self.device)
-        estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)
+        estimator = Estimator(input_dim=env.cfg.env.n_proprio, output_dim=env.cfg.env.n_priv, hidden_dims=self.estimator_cfg["hidden_dims"]).to(self.device)  # this is to estimate priv_explicit
         # Depth encoder
         self.if_depth = self.depth_encoder_cfg["if_depth"]   # if use camera, it is true; otherwise, it is false
         if self.if_depth:
@@ -161,10 +161,7 @@ class OnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
-                    print("#######################################################")
-                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, and also actor_critic.act() inside
-                    print("it is this actor")
-                    print("actions size is: ", actions.size())
+                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, ppo.act() -> actor_critic.act() 
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
