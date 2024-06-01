@@ -144,9 +144,8 @@ class PPO:
             self.transition.hidden_states = self.actor_critic.get_hidden_states()
         # Compute the actions and values, use proprio to compute estimated priv_states then actions, but store true priv_states
         if self.train_with_estimated_states:
-            obs_est = obs.clone()
-            print("obs_est size is: ", obs_est.size())
-            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9, this is to estimate privi_explicit term
+            obs_est = obs.clone()                                                       #  size 753
+            priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])          # output dimension is 9, this is to estimate privi_explicit term. it is defined in on_policy_runner.py: Estimator
             obs_est[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim] = priv_states_estimated  # self.priv_states_dim is 9.  obs_est dimension is 753
             self.transition.actions = self.actor_critic.act(obs_est, hist_encoding).detach()   # It is using def act() function in Line 302 of actor_critic.py
         else:
@@ -196,9 +195,7 @@ class PPO:
         for obs_batch, critic_obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch, \
             old_mu_batch, old_sigma_batch, hid_states_batch, masks_batch in generator:
                 
-                print("#######################################################")
                 self.actor_critic.act(obs_batch, masks=masks_batch, hidden_states=hid_states_batch[0]) # match distribution dimension. It is using def act() function in Line 302 of actor_critic.py
-                print("is it here?")
                 actions_log_prob_batch = self.actor_critic.get_actions_log_prob(actions_batch)
                 value_batch = self.actor_critic.evaluate(critic_obs_batch, masks=masks_batch, hidden_states=hid_states_batch[1])
                 mu_batch = self.actor_critic.action_mean
@@ -220,9 +217,11 @@ class PPO:
 
                 # priv_reg_coef  = priv_reg_stage * 0.1
 
-                # Estimator
+                # Estimator                          # this is for estimating the privi_explicit in obs
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states    dimension is 9
                 estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()
+                print("########################################")
+                print("estimator_loss is: ", estimator_loss)
                 self.estimator_optimizer.zero_grad()
                 estimator_loss.backward()
                 nn.utils.clip_grad_norm_(self.estimator.parameters(), self.max_grad_norm)
@@ -300,9 +299,7 @@ class PPO:
         for obs_batch, critic_obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch, \
             old_mu_batch, old_sigma_batch, hid_states_batch, masks_batch in generator:
                 with torch.inference_mode():
-                    print("###################################################")
                     self.actor_critic.act(obs_batch, hist_encoding=True, masks=masks_batch, hidden_states=hid_states_batch[0]) # It is using def act() function in Line 302 of actor_critic.py
-                    print("it is updating dagger")
                 # Adaptation module update
                 with torch.inference_mode():
                     priv_latent_batch = self.actor_critic.actor.infer_priv_latent(obs_batch)
