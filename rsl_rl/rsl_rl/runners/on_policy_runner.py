@@ -164,7 +164,7 @@ class OnPolicyRunner:
                     print("#######################################################")
                     actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, and also actor_critic.act() inside
                     print("it is this actor")
-                    print("actor size is: ", actor.size())
+                    print("actions size is: ", actions.size())
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
