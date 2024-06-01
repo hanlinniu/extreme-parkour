@@ -218,11 +218,8 @@ class PPO:
                 # priv_reg_coef  = priv_reg_stage * 0.1
 
                 # Estimator                          # this is for estimating the privi_explicit in obs
-                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states    dimension is 9
-                estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()
-                print("########################################")
-                print("priv_states_predicted is: ", priv_states_predicted)
-                print("estimator_loss is: ", estimator_loss)
+                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states;    dimension is 9;    grad_fn=<AddmmBackward0>
+                estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()   # grad_fn = <MeanBackward0>
                 self.estimator_optimizer.zero_grad()
                 estimator_loss.backward()
                 nn.utils.clip_grad_norm_(self.estimator.parameters(), self.max_grad_norm)
@@ -318,7 +315,7 @@ class PPO:
         self.update_counter()
         return mean_hist_latent_loss
 
-    def update_depth_encoder(self, depth_latent_batch, scandots_latent_batch):
+    def update_depth_encoder(self, depth_latent_batch, scandots_latent_batch):           # not used
         # Depth encoder ditillation
         if self.if_depth:
             # TODO: needs to save hidden states
@@ -330,7 +327,7 @@ class PPO:
             self.depth_encoder_optimizer.step()
             return depth_encoder_loss.item()
     
-    def update_depth_actor(self, actions_student_batch, actions_teacher_batch, yaw_student_batch, yaw_teacher_batch):
+    def update_depth_actor(self, actions_student_batch, actions_teacher_batch, yaw_student_batch, yaw_teacher_batch):   # only this one is used
         if self.if_depth:
             depth_actor_loss = (actions_teacher_batch.detach() - actions_student_batch).norm(p=2, dim=1).mean()
             yaw_loss = (yaw_teacher_batch.detach() - yaw_student_batch).norm(p=2, dim=1).mean()
@@ -343,7 +340,7 @@ class PPO:
             self.depth_actor_optimizer.step()
             return depth_actor_loss.item(), yaw_loss.item()
     
-    def update_depth_both(self, depth_latent_batch, scandots_latent_batch, actions_student_batch, actions_teacher_batch):
+    def update_depth_both(self, depth_latent_batch, scandots_latent_batch, actions_student_batch, actions_teacher_batch):          # not used
         if self.if_depth:
             depth_encoder_loss = (scandots_latent_batch.detach() - depth_latent_batch).norm(p=2, dim=1).mean()
             depth_actor_loss = (actions_teacher_batch.detach() - actions_student_batch).norm(p=2, dim=1).mean()
