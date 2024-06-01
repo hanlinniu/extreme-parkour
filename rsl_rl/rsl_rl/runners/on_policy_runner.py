@@ -265,9 +265,7 @@ class OnPolicyRunner:
                     yaw_buffer_teacher.append(obs[:, 6:8])
                 
                 with torch.no_grad():
-                    print("##############################################")
-                    print("actions_teacher is here")
-                    actions_teacher = self.alg.actor_critic.act_inference(obs, hist_encoding=True, scandots_latent=None)     # output dimension is 12
+                    actions_teacher = self.alg.actor_critic.act_inference(obs, hist_encoding=True, scandots_latent=None)     # output dimension is 12. It uses simulated scandots to generate the actions
                     actions_teacher_buffer.append(actions_teacher)
 
                 obs_student = obs.clone()
@@ -280,8 +278,10 @@ class OnPolicyRunner:
                 # detach actions before feeding the env
                 if it < num_pretrain_iter:
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions_teacher.detach())  # obs has changed to next_obs !! if done obs has been reset
+                    print(" it is here 11111111111111111")
                 else:
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions_student.detach())  # obs has changed to next_obs !! if done obs has been reset
+                    print(" it is here 22222222222222222")
                 critic_obs = privileged_obs if privileged_obs is not None else obs
                 obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
 

@@ -171,9 +171,8 @@ class Actor(nn.Module):
             # print(" it is not using eval")
             if self.if_scan_encode:              # True
                 obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
-                if scandots_latent is None:
-                    print("teacher is using scandots")
-                    scan_latent = self.scan_encoder(obs_scan)   # if there is no vision, only simulated scandots
+                if scandots_latent is None:                    
+                    scan_latent = self.scan_encoder(obs_scan)   # if there is no vision, only simulated scandots.  actions_teacher is using this one with simulated scandots
                 else:
                     scan_latent = scandots_latent               # if there is 3D camera, scandots_latent is not none     # 32
                 obs_prop_scan = torch.cat([obs[:, :self.num_prop], scan_latent], dim=1)
