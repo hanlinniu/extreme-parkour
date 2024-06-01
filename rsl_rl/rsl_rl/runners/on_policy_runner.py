@@ -135,7 +135,7 @@ class OnPolicyRunner:
             self.env.episode_length_buf = torch.randint_like(self.env.episode_length_buf, high=int(self.env.max_episode_length))
         obs = self.env.get_observations()                                    # during training, obs is not None
         privileged_obs = self.env.get_privileged_observations()              # during training, privileged_obs is None
-        critic_obs = privileged_obs if privileged_obs is not None else obs
+        critic_obs = privileged_obs if privileged_obs is not None else obs   # critic_obs = obs
         obs, critic_obs = obs.to(self.device), critic_obs.to(self.device)
         infos = {}
         infos["depth"] = self.env.depth_buffer.clone().to(self.device) if self.if_depth else None
@@ -156,14 +156,15 @@ class OnPolicyRunner:
 
         for it in range(self.current_learning_iteration, tot_iter):                               # self.alg is PPO
             start = time.time()
-            hist_encoding = it % self.dagger_update_freq == 0
+            hist_encoding = it % self.dagger_update_freq == 0                                     # every 20 steps, dagger is updated once
 
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
                     print("#######################################################")
-                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py
+                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, and also actor_critic.act() inside
                     print("it is this actor")
+                    print("actor size is: ", actor.size())
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
@@ -199,12 +200,11 @@ class OnPolicyRunner:
                 self.alg.compute_returns(critic_obs)
                 
             
-            
-            mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()
+            mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()     # there is actor_critic.act inside
             
             if hist_encoding:
                 print("Updating dagger...")
-                mean_hist_latent_loss = self.alg.update_dagger()
+                mean_hist_latent_loss = self.alg.update_dagger()               # there is actor_critic.act inside.  every 20 steps, dagger is updated once   
             
             stop = time.time()
             learn_time = stop - start
