@@ -219,6 +219,7 @@ class PPO:
 
                 # Estimator                          # this is for estimating the privi_explicit in obs
                 priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states;    dimension is 9;    grad_fn=<AddmmBackward0>
+                print("############################################### ppo is updating")
                 print("obs_batch[:, :self.num_prop] is: ", obs_batch[:, :self.num_prop])
                 estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()   # grad_fn = <MeanBackward0>
                 self.estimator_optimizer.zero_grad()
