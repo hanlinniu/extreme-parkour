@@ -271,7 +271,6 @@ class OnPolicyRunner:
                 obs_student = obs.clone()
                 # obs_student[:, 6:8] = yaw.detach()
                 obs_student[infos["delta_yaw_ok"], 6:8] = yaw.detach()[infos["delta_yaw_ok"]]             # infos["delta_yaw_ok"] is [True, True, ... False, True]
-                print("obs_student[infos[delta_yaw_ok], 6:8]", obs_student[infos["delta_yaw_ok"], 6:8])
                 delta_yaw_ok_buffer.append(torch.nonzero(infos["delta_yaw_ok"]).size(0) / infos["delta_yaw_ok"].numel())
                 actions_student = self.alg.depth_actor(obs_student, hist_encoding=True, scandots_latent=depth_latent)
                 actions_student_buffer.append(actions_student)
