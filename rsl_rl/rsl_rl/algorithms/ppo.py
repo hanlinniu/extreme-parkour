@@ -239,8 +239,6 @@ class PPO:
                         
                         for param_group in self.optimizer.param_groups:
                             param_group['lr'] = self.learning_rate
-                        print("param_groups is :", self.optimizer.param_groups)
-                        print("param_groups size is :", self.optimizer.param_groups.size())
 
 
                 # Surrogate loss
@@ -255,16 +253,15 @@ class PPO:
                 if self.use_clipped_value_loss:                         # True             I need to analyze what is value_batch, returns_batch, target_values_batch, which one is current value, old value, and target value
                     value_clipped = target_values_batch + (value_batch - target_values_batch).clamp(-self.clip_param,
                                                                                                     self.clip_param)
-                    value_losses = (value_batch - returns_batch).pow(2)
-                    value_losses_clipped = (value_clipped - returns_batch).pow(2)
-                    value_loss = torch.max(value_losses, value_losses_clipped).mean()
+                    value_losses = (value_batch - returns_batch).pow(2)             # value_batch is the current value function, target_values_batch is the old value function
+                    value_losses_clipped = (value_clipped - returns_batch).pow(2)   # returns_batch is defined in Line 124 of rollout_storage.py, it is target values function
+                    value_loss = torch.max(value_losses, value_losses_clipped).mean()     # self.returns[step] = advantage + self.values[step]
                 else:
                     value_loss = (returns_batch - value_batch).pow(2).mean()
 
                 loss = surrogate_loss + \
                        self.value_loss_coef * value_loss - \
-                       self.entropy_coef * entropy_batch.mean() + \
-                       priv_reg_coef * priv_reg_loss
+                       self.entropy_coef * entropy_batch.mean()
                 # loss = self.teacher_alpha * imitation_loss + (1 - self.teacher_alpha) * loss
 
                 # Gradient step
