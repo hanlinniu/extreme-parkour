@@ -261,7 +261,8 @@ class PPO:
 
                 loss = surrogate_loss + \
                        self.value_loss_coef * value_loss - \
-                       self.entropy_coef * entropy_batch.mean()
+                       self.entropy_coef * entropy_batch.mean() + \
+                       priv_reg_coef * priv_reg_loss
                 # loss = self.teacher_alpha * imitation_loss + (1 - self.teacher_alpha) * loss
 
                 # Gradient step
