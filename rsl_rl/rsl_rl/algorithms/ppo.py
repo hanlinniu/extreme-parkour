@@ -218,9 +218,7 @@ class PPO:
                 # priv_reg_coef  = priv_reg_stage * 0.1
 
                 # Estimator                          # this is for estimating the privi_explicit in obs
-                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states;    dimension is 9;    grad_fn=<AddmmBackward0>
-                print("############################################### ppo is updating")
-                print("obs_batch[:, :self.num_prop] is: ", obs_batch[:, :self.num_prop])
+                priv_states_predicted = self.estimator(obs_batch[:, :self.num_prop])  # obs in batch is with true priv_states;    dimension is 9;   priv_states_predicted is grad_fn=<AddmmBackward0>
                 estimator_loss = (priv_states_predicted - obs_batch[:, self.num_prop+self.num_scan:self.num_prop+self.num_scan+self.priv_states_dim]).pow(2).mean()   # grad_fn = <MeanBackward0>
                 self.estimator_optimizer.zero_grad()
                 estimator_loss.backward()
@@ -250,8 +248,13 @@ class PPO:
                                                                                 1.0 + self.clip_param)
                 surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()
 
+                print("############################################")
+                print("surrogate is: ",surrogate)
+                print("surrogate_clipped is: ",surrogate_clipped)
+                print("surrogate_loss is: ",surrogate_loss)
+
                 # Value function loss
-                if self.use_clipped_value_loss:
+                if self.use_clipped_value_loss:                         # True             I need to analyze what is value_batch, returns_batch, target_values_batch, which one is current value, old value, and target value
                     value_clipped = target_values_batch + (value_batch - target_values_batch).clamp(-self.clip_param,
                                                                                                     self.clip_param)
                     value_losses = (value_batch - returns_batch).pow(2)

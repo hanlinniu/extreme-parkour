@@ -200,8 +200,8 @@ class OnPolicyRunner:
             mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()     # there is actor_critic.act inside
             
             if hist_encoding:
-                print("Updating dagger...")                                    # update hist_encoder to make it move hist_latent close to priv_latent(constant) 
-                mean_hist_latent_loss = self.alg.update_dagger()               # there is actor_critic.act inside.  every 20 steps, dagger is updated once   
+                print("Updating dagger...")                           # updating dagger only happens in the Phase 1, update hist_encoder to make it move hist_latent close to priv_latent(constant)  
+                mean_hist_latent_loss = self.alg.update_dagger()      # there is actor_critic.act inside.  every 20 steps, dagger is updated once   
             
             stop = time.time()
             learn_time = stop - start
