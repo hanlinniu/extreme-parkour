@@ -170,7 +170,7 @@ class Actor(nn.Module):
             # print("############################################################")
             # print(" it is not using eval")
             if self.if_scan_encode:              # True
-                obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
+                obs_scan = obs[:, self.num_prop:self.num_prop + self.num_scan]   # obs_scan dimension is 132
                 if scandots_latent is None:                    
                     scan_latent = self.scan_encoder(obs_scan)   # if there is no vision, only simulated scandots.  actions_teacher is using this one with simulated scandots
                 else:
@@ -260,9 +260,6 @@ class ActorCriticRMA(nn.Module):
                 critic_layers.append(nn.Linear(critic_hidden_dims[l], critic_hidden_dims[l + 1]))
                 critic_layers.append(activation)
         self.critic = nn.Sequential(*critic_layers)
-
-        print("actor network is: ", self.actor)
-        print("critic network is: ", self.critic)
 
         # Action noise
         self.std = nn.Parameter(init_noise_std * torch.ones(num_actions))

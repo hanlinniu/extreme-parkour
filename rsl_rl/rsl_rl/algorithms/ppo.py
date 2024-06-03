@@ -239,6 +239,8 @@ class PPO:
                         
                         for param_group in self.optimizer.param_groups:
                             param_group['lr'] = self.learning_rate
+                        print("param_groups is :", self.optimizer.param_groups)
+                        print("param_groups size is :", self.optimizer.param_groups.size())
 
 
                 # Surrogate loss
