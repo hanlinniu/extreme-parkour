@@ -225,7 +225,7 @@ class PPO:
                 nn.utils.clip_grad_norm_(self.estimator.parameters(), self.max_grad_norm)
                 self.estimator_optimizer.step()
                 
-                # KL
+                # KL Divergence
                 if self.desired_kl != None and self.schedule == 'adaptive':                #True
                     with torch.inference_mode():
                         kl = torch.sum(
@@ -248,14 +248,6 @@ class PPO:
                                                                                 1.0 + self.clip_param)
                 surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()
 
-
-                test_surrogate_loss = torch.min(surrogate, surrogate_clipped).mean()
-
-                print("############################################")
-                print("surrogate is: ",surrogate)
-                print("surrogate_clipped is: ",surrogate_clipped)
-                print("surrogate_loss is: ",surrogate_loss)
-                print("test_surrogate_loss is: ",test_surrogate_loss)
 
                 # Value function loss
                 if self.use_clipped_value_loss:                         # True             I need to analyze what is value_batch, returns_batch, target_values_batch, which one is current value, old value, and target value
