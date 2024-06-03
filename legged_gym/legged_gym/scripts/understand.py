@@ -128,9 +128,7 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     
     
 # 4, check how to process the vision part?
-    
-
-# 5, go to manchester or oxford, and test
+  
 
 
 # in line 89 of legged_robot_config.py, the depth class defined the simiulated camera position [0.27, 0, 0.03]
@@ -223,3 +221,7 @@ critic network is:  Sequential(
   (5): ELU(alpha=1.0)
   (6): Linear(in_features=128, out_features=1, bias=True)
 )
+
+
+def compute_returns() is defined to calculate advantage function and returns function in rollout_storage.py, which will be later used in ppo.py's surrgate loss, value function loss, KL divergence, etc. 
+
