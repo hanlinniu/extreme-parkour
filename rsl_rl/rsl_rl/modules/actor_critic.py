@@ -183,7 +183,7 @@ class Actor(nn.Module):
                 latent = self.infer_hist_latent(obs)       # output is 20, infer privilege latent using history data
             else:
                 latent = self.infer_priv_latent(obs)       # output is 20, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
-            backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32 + 9 + 20
+            backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32    + 9 + 20
             backbone_output = self.actor_backbone(backbone_input)                                # length is 12
             return backbone_output
         else:
@@ -249,7 +249,7 @@ class ActorCriticRMA(nn.Module):
         # print("actor_hidden_dims is : ", actor_hidden_dims)   # [512, 256, 128]
         # print("critic_hidden_dims is : ", critic_hidden_dims) # [512, 256, 128]       
 
-        # Value function
+        # Value function                                           # [512, 256, 128]
         critic_layers = []
         critic_layers.append(nn.Linear(num_critic_obs, critic_hidden_dims[0]))
         critic_layers.append(activation)
@@ -260,6 +260,9 @@ class ActorCriticRMA(nn.Module):
                 critic_layers.append(nn.Linear(critic_hidden_dims[l], critic_hidden_dims[l + 1]))
                 critic_layers.append(activation)
         self.critic = nn.Sequential(*critic_layers)
+
+        print("actor network is: ", self.actor)
+        print("critic network is: ", self.critic)
 
         # Action noise
         self.std = nn.Parameter(init_noise_std * torch.ones(num_actions))

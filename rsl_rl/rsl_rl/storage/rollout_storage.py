@@ -121,10 +121,9 @@ class RolloutStorage:
     def clear(self):
         self.step = 0
 
-    def compute_returns(self, last_values, gamma, lam):
+    def compute_returns(self, last_values, gamma, lam):                            # it using Generalized Advantage Estimation (GAE) to estimate the advantage function
         advantage = 0
         for step in reversed(range(self.num_transitions_per_env)):
-            print("step is: ", step)
             if step == self.num_transitions_per_env - 1:
                 next_values = last_values
             else:
