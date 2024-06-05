@@ -107,7 +107,7 @@ class Actor(nn.Module):
         self.num_priv_explicit = num_priv_explicit  # 9
         self.if_scan_encode = scan_encoder_dims is not None and num_scan > 0                      # true
 
-        if len(priv_encoder_dims) > 0:          # [64, 20]
+        if len(priv_encoder_dims) > 0:          # [64, 20]             # priv_encoder: nn.linear           num_priv_latent is 29
                     priv_encoder_layers = []
                     priv_encoder_layers.append(nn.Linear(num_priv_latent, priv_encoder_dims[0]))
                     priv_encoder_layers.append(activation)
@@ -129,7 +129,7 @@ class Actor(nn.Module):
             priv_encoder_output_dim = num_priv_latent                # 29    Here it is a bit tricky
 
 
-        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20
+        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20   # history_encoder:  nn.Conv1d
                                                                # 53      # 10 = history_len    # 20
         if self.if_scan_encode:              # True
             scan_encoder = []

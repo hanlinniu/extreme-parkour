@@ -161,11 +161,11 @@ class OnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
-                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, ppo.act() -> actor_critic.act() 
+                    actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, ppo.act() -> actor_critic.act(). calculated the self.transition.values
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
                     obs, critic_obs, rewards, dones = obs.to(self.device), critic_obs.to(self.device), rewards.to(self.device), dones.to(self.device)
-                    total_rew = self.alg.process_env_step(rewards, dones, infos)                 # self.alg is PPO                 # just the reward
+                    total_rew = self.alg.process_env_step(rewards, dones, infos)        # self.alg is PPO    # added the transitions in storage, return the reward
 
                     if self.log_dir is not None:                                                 # True
                         # Book keeping
@@ -194,7 +194,7 @@ class OnPolicyRunner:
 
                 # Learning step
                 start = stop
-                self.alg.compute_returns(critic_obs)
+                self.alg.compute_returns(critic_obs)              # using the last critic_obs, and the history batch to recursively calculate the self.returns in the batch
                 
             
             mean_value_loss, mean_surrogate_loss, mean_estimator_loss, mean_disc_loss, mean_disc_acc, mean_priv_reg_loss, priv_reg_coef = self.alg.update()     # there is actor_critic.act inside

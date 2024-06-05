@@ -175,6 +175,7 @@ def play(args):
                 ##################################################################################
                 # Input: infos[depth] (depth_image) size is  torch.Size([1, 58, 87]), obs_student (proprioception) size is  torch.Size([1, 53]) 
                 # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
+                print("infos_depth is: ", infos["depth"].size())
                 depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
                 ##################################################################################
                 # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
