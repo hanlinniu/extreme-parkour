@@ -303,13 +303,9 @@ class ActorCriticRMA(nn.Module):
         self.update_distribution(observations, hist_encoding)
         return self.distribution.sample()
     
-    def get_actions_log_prob(self, actions):
-        print("actions size is: ", actions.size())
-        print("self.distribution.log_prob(actions) is: ", self.distribution.log_prob(actions))
-        print("self.distribution.log_prob(actions) size is: ", self.distribution.log_prob(actions).size())
-        print("self.distribution.log_prob(actions).sum(dim=-1) is: ", self.distribution.log_prob(actions).sum(dim=-1))
-        print("self.distribution.log_prob(actions).sum(dim=-1) size is: ", self.distribution.log_prob(actions).sum(dim=-1).size())
-        return self.distribution.log_prob(actions).sum(dim=-1)
+    def get_actions_log_prob(self, actions):               # actions size is [6144, 12]
+        print("self.distribution.log_prob(actions) is: ", self.distribution.log_prob(actions).size())
+        return self.distribution.log_prob(actions).sum(dim=-1)             # it will sum all the 12 actions log_prob           output size is [6144]
 
     def act_inference(self, observations, hist_encoding=False, eval=False, scandots_latent=None, **kwargs):
         if not eval:
