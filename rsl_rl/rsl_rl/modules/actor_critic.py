@@ -297,6 +297,7 @@ class ActorCriticRMA(nn.Module):
 
     def update_distribution(self, observations, hist_encoding):
         mean = self.actor(observations, hist_encoding)
+        print("self.std is: ", self.std)
         self.distribution = Normal(mean, mean*0. + self.std)
 
     def act(self, observations, hist_encoding=False, **kwargs):
