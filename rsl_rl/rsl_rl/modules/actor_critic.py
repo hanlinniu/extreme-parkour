@@ -297,14 +297,15 @@ class ActorCriticRMA(nn.Module):
 
     def update_distribution(self, observations, hist_encoding):
         mean = self.actor(observations, hist_encoding)
-        print("self.std is: ", self.std)
-        self.distribution = Normal(mean, mean*0. + self.std)
+        self.distribution = Normal(mean, mean*0. + self.std)    # self.std is a tensor with 12 variables, and it is dynamic
 
     def act(self, observations, hist_encoding=False, **kwargs):
         self.update_distribution(observations, hist_encoding)
         return self.distribution.sample()
     
     def get_actions_log_prob(self, actions):
+        print("self.distribution.log_prob(actions) is: ", self.distribution.log_prob(actions))
+        print("self.distribution.log_prob(actions).sum(dim=-1) is: ", self.distribution.log_prob(actions).sum(dim=-1))
         return self.distribution.log_prob(actions).sum(dim=-1)
 
     def act_inference(self, observations, hist_encoding=False, eval=False, scandots_latent=None, **kwargs):
