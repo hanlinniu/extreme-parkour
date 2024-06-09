@@ -181,7 +181,7 @@ class RolloutStorage:
                 obs_batch = observations[batch_idx]
                 critic_observations_batch = critic_observations[batch_idx]
                 actions_batch = actions[batch_idx]
-                target_values_batch = values[batch_idx]
+                target_values_batch = values[batch_idx]                 # this target actually is the value function loss of old_values_batch in ppo.py 
                 returns_batch = returns[batch_idx]
                 old_actions_log_prob_batch = old_actions_log_prob[batch_idx]
                 advantages_batch = advantages[batch_idx]
