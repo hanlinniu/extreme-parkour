@@ -80,7 +80,7 @@ class StateHistoryEncoder(nn.Module):
         T = self.tsteps               # 10
         # print("obs device", obs.device)
         # print("encoder device", next(self.encoder.parameters()).device)
-        projection = self.encoder(obs.reshape([nd * T, -1])) # obs size is [36864, 10, 53];    obs.reshape([nd * T, -1]) size is [368640, 53];   project size is [368640, 30]
+        projection = self.encoder(obs.reshape([nd * T, -1])) # obs size is [36864, 10, 53];    obs.reshape([nd * T, -1]) size is [368640, 53];   projection size is [368640, 30]
         output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))  # projection.reshape([nd, T, -1]) size is [3684, 10, 30];  projection.reshape([nd, T, -1]).permute(0,2,1) size is [3684, 30, 10];   output size is [3684, 30]
         output = self.linear_output(output)   
         return output
@@ -213,6 +213,8 @@ class Actor(nn.Module):
     
     def infer_hist_latent(self, obs):
         hist = obs[:, -self.num_hist*self.num_prop:]
+        print("hist size is: ", hist.size())
+        print("hist.view(-1, self.num_hist, self.num_prop) size is: ", hist.view(-1, self.num_hist, self.num_prop).size())
         return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  size of hist.view(-1, self.num_hist, self.num_prop) is 10 x 53
     
     def infer_scandots_latent(self, obs):
