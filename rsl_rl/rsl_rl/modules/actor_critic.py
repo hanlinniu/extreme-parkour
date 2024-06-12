@@ -81,6 +81,9 @@ class StateHistoryEncoder(nn.Module):
         # print("obs device", obs.device)
         # print("encoder device", next(self.encoder.parameters()).device)
         projection = self.encoder(obs.reshape([nd * T, -1])) # do projection for n_proprio -> 32
+        print("obs size is: ", obs.size())
+        print("obs.reshape([nd * T, -1]) size is: ", obs.reshape([nd * T, -1]).size())
+        print("projection size is: ", projection.size())
         output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))
         output = self.linear_output(output)
         return output
