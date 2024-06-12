@@ -76,17 +76,13 @@ class StateHistoryEncoder(nn.Module):
 
     def forward(self, obs):
         # nd * T * n_proprio
-        nd = obs.shape[0]
+        nd = obs.shape[0]             # nd=36864
         T = self.tsteps               # 10
         # print("obs device", obs.device)
         # print("encoder device", next(self.encoder.parameters()).device)
-        projection = self.encoder(obs.reshape([nd * T, -1])) # do projection for n_proprio -> 32
-        print("nd is: ", nd)
-        print("T is: ", T)
-        print("obs size is: ", obs.size())
-        print("obs.reshape([nd * T, -1]) size is: ", obs.reshape([nd * T, -1]).size())
-        print("projection size is: ", projection.size())
-        output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))
+        projection = self.encoder(obs.reshape([nd * T, -1])) # obs size is [36864, 10, 53];    obs.reshape([nd * T, -1]) size is [368640, 53];   project size is [368640, 30]
+        output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))  # projection.reshape([nd, T, -1]) size is [3684, 10, 30];  projection.reshape([nd, T, -1]).permute(0,2,1) size is [3684, 30, 10]
+        print("output size is: ", output.size())
         output = self.linear_output(output)
         return output
 
