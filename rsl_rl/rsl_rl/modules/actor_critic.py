@@ -77,10 +77,12 @@ class StateHistoryEncoder(nn.Module):
     def forward(self, obs):
         # nd * T * n_proprio
         nd = obs.shape[0]
-        T = self.tsteps
+        T = self.tsteps               # 10
         # print("obs device", obs.device)
         # print("encoder device", next(self.encoder.parameters()).device)
         projection = self.encoder(obs.reshape([nd * T, -1])) # do projection for n_proprio -> 32
+        print("nd is: ", nd)
+        print("T is: ", T)
         print("obs size is: ", obs.size())
         print("obs.reshape([nd * T, -1]) size is: ", obs.reshape([nd * T, -1]).size())
         print("projection size is: ", projection.size())
