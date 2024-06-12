@@ -59,9 +59,9 @@ class StateHistoryEncoder(nn.Module):
                     nn.Conv1d(in_channels = channel_size, out_channels = channel_size, kernel_size = 5, stride = 1), self.activation_fn, nn.Flatten())
         elif tsteps == 10:
             self.conv_layers = nn.Sequential(
-                nn.Conv1d(in_channels = 3 * channel_size, out_channels = 2 * channel_size, kernel_size = 4, stride = 2), self.activation_fn,
-                nn.Conv1d(in_channels = 2 * channel_size, out_channels = channel_size, kernel_size = 2, stride = 1), self.activation_fn,
-                nn.Flatten())
+                nn.Conv1d(in_channels = 3 * channel_size, out_channels = 2 * channel_size, kernel_size = 4, stride = 2), self.activation_fn,     # [3684, 20, 4]
+                nn.Conv1d(in_channels = 2 * channel_size, out_channels = channel_size, kernel_size = 2, stride = 1), self.activation_fn,         # [3684, 10, 3]
+                nn.Flatten())                                                                                                                    # [3684, 30]
         elif tsteps == 20:
             self.conv_layers = nn.Sequential(
                 nn.Conv1d(in_channels = 3 * channel_size, out_channels = 2 * channel_size, kernel_size = 6, stride = 2), self.activation_fn,
@@ -81,9 +81,8 @@ class StateHistoryEncoder(nn.Module):
         # print("obs device", obs.device)
         # print("encoder device", next(self.encoder.parameters()).device)
         projection = self.encoder(obs.reshape([nd * T, -1])) # obs size is [36864, 10, 53];    obs.reshape([nd * T, -1]) size is [368640, 53];   project size is [368640, 30]
-        output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))  # projection.reshape([nd, T, -1]) size is [3684, 10, 30];  projection.reshape([nd, T, -1]).permute(0,2,1) size is [3684, 30, 10]
-        print("output size is: ", output.size())
-        output = self.linear_output(output)
+        output = self.conv_layers(projection.reshape([nd, T, -1]).permute((0, 2, 1)))  # projection.reshape([nd, T, -1]) size is [3684, 10, 30];  projection.reshape([nd, T, -1]).permute(0,2,1) size is [3684, 30, 10];   output size is [3684, 30]
+        output = self.linear_output(output)   
         return output
 
 class Actor(nn.Module):
