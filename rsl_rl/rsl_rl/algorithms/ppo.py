@@ -250,7 +250,7 @@ class PPO:
 
 
                 # Value function loss
-                if self.use_clipped_value_loss:                         # True             I need to analyze what is value_batch, returns_batch, target_values_batch, which one is current value, target value, and old value
+                if self.use_clipped_value_loss:                         # True         
                     value_clipped = target_values_batch + (value_batch - target_values_batch).clamp(-self.clip_param,
                                                                                                     self.clip_param)
                     value_losses = (value_batch - returns_batch).pow(2)             # value_batch is the current value function, target_values_batch is the old value function
