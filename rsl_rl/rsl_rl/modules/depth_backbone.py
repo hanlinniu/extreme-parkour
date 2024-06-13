@@ -115,7 +115,8 @@ class DepthOnlyFCBackbone58x87(nn.Module):
     def forward(self, images: torch.Tensor):
         images_compressed = self.image_compression(images.unsqueeze(1))
         latent = self.output_activation(images_compressed)
-        print("images_compressed size is: ", images_compressed.size())
+        print("images size is: ", images.size())
+        print("images.unsqueeze(1) size is: ", images.unsqueeze(1).size())
         print("latent size is: ", latent.size())
 
         return latent
