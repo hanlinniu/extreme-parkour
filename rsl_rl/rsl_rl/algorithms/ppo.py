@@ -246,7 +246,7 @@ class PPO:
                 surrogate = -torch.squeeze(advantages_batch) * ratio
                 surrogate_clipped = -torch.squeeze(advantages_batch) * torch.clamp(ratio, 1.0 - self.clip_param,
                                                                                 1.0 + self.clip_param)
-                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()
+                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()   # The clipping mechanism prevents the policy from changing too drastically
 
 
                 # Value function loss
