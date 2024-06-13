@@ -248,7 +248,7 @@ class OnPolicyRunner:
             yaw_buffer_student = []
             yaw_buffer_teacher = []
             delta_yaw_ok_buffer = []
-            for i in range(self.depth_encoder_cfg["num_steps_per_env"]):
+            for i in range(self.depth_encoder_cfg["num_steps_per_env"]):             # num_steps_per_env is 24
                 if infos["depth"] != None:
                     with torch.no_grad():
                         scandots_latent = self.alg.actor_critic.actor.infer_scandots_latent(obs)

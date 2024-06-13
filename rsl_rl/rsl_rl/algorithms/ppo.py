@@ -241,7 +241,7 @@ class PPO:
                             param_group['lr'] = self.learning_rate
 
 
-                # Surrogate loss
+                # Surrogate loss           the objective function includes a clipped term that limits the change in policy to indirectly control the KL divergence
                 ratio = torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))   # actions_log_prob_batch size is 36864
                 surrogate = -torch.squeeze(advantages_batch) * ratio
                 surrogate_clipped = -torch.squeeze(advantages_batch) * torch.clamp(ratio, 1.0 - self.clip_param,
