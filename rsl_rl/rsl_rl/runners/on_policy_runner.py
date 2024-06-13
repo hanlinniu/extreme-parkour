@@ -161,6 +161,7 @@ class OnPolicyRunner:
             # Rollout
             with torch.inference_mode():
                 for i in range(self.num_steps_per_env):
+                    print("self.num_steps_per_env is: ", self.num_steps_per_env)
                     actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, ppo.act() -> actor_critic.act(). calculated the self.transition.values
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs

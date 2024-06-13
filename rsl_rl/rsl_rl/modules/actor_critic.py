@@ -213,9 +213,7 @@ class Actor(nn.Module):
     
     def infer_hist_latent(self, obs):
         hist = obs[:, -self.num_hist*self.num_prop:]
-        print("hist size is: ", hist.size())
-        print("hist.view(-1, self.num_hist, self.num_prop) size is: ", hist.view(-1, self.num_hist, self.num_prop).size())
-        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  size of hist.view(-1, self.num_hist, self.num_prop) is 10 x 53
+        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  hist.size size is [3684, 530];   hist.view(-1, self.num_hist, self.num_prop) size is [3684, 10, 53]
     
     def infer_scandots_latent(self, obs):
         scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
