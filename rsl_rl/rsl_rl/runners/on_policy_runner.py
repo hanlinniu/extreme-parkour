@@ -96,13 +96,13 @@ class OnPolicyRunner:
                                   estimator, self.estimator_cfg, 
                                   depth_encoder, self.depth_encoder_cfg, depth_actor,
                                   device=self.device, **self.alg_cfg)
-        self.num_steps_per_env = self.cfg["num_steps_per_env"]
+        self.num_steps_per_env = self.cfg["num_steps_per_env"]       # 24
         self.save_interval = self.cfg["save_interval"]
         self.dagger_update_freq = self.alg_cfg["dagger_update_freq"]
 
         self.alg.init_storage(
             self.env.num_envs, 
-            self.num_steps_per_env, 
+            self.num_steps_per_env,                 # 24
             [self.env.num_obs], 
             [self.env.num_privileged_obs], 
             [self.env.num_actions],
@@ -160,8 +160,7 @@ class OnPolicyRunner:
 
             # Rollout
             with torch.inference_mode():
-                for i in range(self.num_steps_per_env):
-                    print("self.num_steps_per_env is: ", self.num_steps_per_env)
+                for i in range(self.num_steps_per_env):              # self.num_steps_per_env is 24
                     actions = self.alg.act(obs, critic_obs, infos, hist_encoding)       # it is using Line 142 of ppo.py, ppo.act() -> actor_critic.act(). calculated the self.transition.values
                     obs, privileged_obs, rewards, dones, infos = self.env.step(actions)  # obs has changed to next_obs !! if done obs has been reset.  privileged_obs is None
                     critic_obs = privileged_obs if privileged_obs is not None else obs
