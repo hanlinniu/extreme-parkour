@@ -147,12 +147,12 @@ class Actor(nn.Module):
         else:
             self.scan_encoder = nn.Identity()
             self.scan_encoder_output_dim = num_scan
-        
+
         actor_layers = []
         actor_layers.append(nn.Linear(num_prop+                                # 53
                                       self.scan_encoder_output_dim+            # 32
                                       num_priv_explicit+                       # 9
-                                      priv_encoder_output_dim,                 # 29
+                                      priv_encoder_output_dim,                 # 20
                                       actor_hidden_dims[0]))                   # 512 
         actor_layers.append(activation)
         for l in range(len(actor_hidden_dims)):                                # actor_hidden_dims is [512, 256, 128]
