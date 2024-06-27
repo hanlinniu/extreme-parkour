@@ -38,6 +38,63 @@ from torch.nn.modules import rnn
 from torch.nn.modules.activation import ReLU
 
 
+# a BERT-style transformer block
+class Transformer_Block(nn.Module):
+    def __init__(self, latent_dim, num_head, dropout_rate) -> None:
+        super().__init__()
+        self.num_head = num_head
+        self.latent_dim = latent_dim
+        self.ln_1 = nn.LayerNorm(latent_dim)
+        self.attn = nn.MultiheadAttention(latent_dim, num_head, dropout=dropout_rate, batch_first=True)
+        self.ln_2 = nn.LayerNorm(latent_dim)
+        self.mlp = nn.Sequential(
+            nn.Linear(latent_dim, 4 * latent_dim),
+            nn.GELU(),
+            nn.Linear(4 * latent_dim, latent_dim),
+            nn.Dropout(dropout_rate),
+        )
+    
+    def forward(self, x):
+        x = self.ln_1(x)
+        x = x + self.attn(x, x, x, need_weights=False)[0]
+        x = self.ln_2(x)
+        x = x + self.mlp(x)
+        
+        return x
+
+class Transformer(nn.Module):
+    def __init__(self, input_dim, output_dim, context_len, latent_dim=128, num_head=4, num_layer=4, dropout_rate=0.1) -> None:
+        super().__init__()
+        self.input_dim = input_dim
+        self.output_dim = output_dim
+        self.context_len = context_len
+        self.latent_dim = latent_dim
+        self.num_head = num_head
+        self.num_layer = num_layer
+        self.input_layer = nn.Sequential(
+            nn.Linear(input_dim, latent_dim),
+            nn.Dropout(dropout_rate),
+        )
+        self.weight_pos_embed = nn.Embedding(context_len, latent_dim)
+        self.attention_blocks = nn.Sequential(
+            *[Transformer_Block(latent_dim, num_head, dropout_rate) for _ in range(num_layer)],
+        )
+        self.output_layer = nn.Sequential(
+            nn.LayerNorm(latent_dim),
+            nn.Linear(latent_dim, output_dim),
+        )
+    
+    def forward(self, x):
+        x = self.input_layer(x)
+        x = x + self.weight_pos_embed(torch.arange(x.shape[1], device=x.device))
+        x = self.attention_blocks(x)
+
+        # take the last token
+        x = x[:, -1, :]
+        x = self.output_layer(x)
+
+        return x
+
 class StateHistoryEncoder(nn.Module):
     def __init__(self, activation_fn, input_size, tsteps, output_size, tanh_encoder_output=False):
         # self.device = device
@@ -120,7 +177,7 @@ class Actor(nn.Module):
                     # print("priv_encoder_output_dim is: ", priv_encoder_output_dim)
                     # print("priv_encoder_dims is: ", priv_encoder_dims)
                     # print("actor_hidden_dims is: ", actor_hidden_dims)
-                    # print("num_priv_latent is: ", num_priv_latent)                # 29
+                    # print("num_priv_latent is: ", num_priv_latent)                # 29  seems useless
                     # print("num_priv_explicit is: ", num_priv_explicit)
                     # print("num_hist is: ", num_hist)
                     # print("activation is: ", activation)
@@ -129,8 +186,12 @@ class Actor(nn.Module):
             priv_encoder_output_dim = num_priv_latent                # 29    Here it is a bit tricky
 
 
-        self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20   # history_encoder:  nn.Conv1d
+        # self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20   # history_encoder:  nn.Conv1d
                                                                # 53      # 10 = history_len    # 20
+
+        self.history_encoder = Transformer(num_prop*10, priv_encoder_output_dim, num_hist)    # input size is  530    # output size is 20   # num_hist is 10
+        print(f"history_encoder MLP: {self.history_encoder}")
+
         if self.if_scan_encode:              # True
             scan_encoder = []
             scan_encoder.append(nn.Linear(num_scan, scan_encoder_dims[0]))
@@ -213,7 +274,8 @@ class Actor(nn.Module):
     
     def infer_hist_latent(self, obs):
         hist = obs[:, -self.num_hist*self.num_prop:]
-        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  hist.size size is [3684, 530];   hist.view(-1, self.num_hist, self.num_prop) size is [3684, 10, 53]
+        # return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  hist.size size is [3684, 530];   hist.view(-1, self.num_hist, self.num_prop) size is [3684, 10, 53]
+        return self.history_encoder(hist)
     
     def infer_scandots_latent(self, obs):
         scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
