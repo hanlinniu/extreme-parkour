@@ -190,7 +190,7 @@ class Actor(nn.Module):
                                                                # 53      # 10 = history_len    # 20
 
         self.history_encoder = Transformer(num_prop*10, priv_encoder_output_dim, num_hist)    # input size is  530    # output size is 20   # num_hist is 10
-        print(f"history_encoder MLP: {self.history_encoder}")
+        print(f"history_encoder Transformer: {self.history_encoder}")
 
         if self.if_scan_encode:              # True
             scan_encoder = []
