@@ -85,8 +85,18 @@ class Transformer(nn.Module):
         )
     
     def forward(self, x):
+        # print("before input layer, x size is: ", x.size())   # torch.Size([6144, 10, 53])
         x = self.input_layer(x)
-        x = x + self.weight_pos_embed(torch.arange(x.shape[1], device=x.device))
+        # print("after input layer, x size is: ", x.size())  #  torch.Size([6144, 10, 128])
+
+        # Generate positional embeddings
+        seq_length = x.shape[1]
+        pos_indices = torch.arange(seq_length, device=x.device).unsqueeze(0).expand(x.size(0), seq_length)
+        # print("pos_indices size is: ", pos_indices.size())  # pos_indices size is:  torch.Size([6144, 10])
+        pos_embeds = self.weight_pos_embed(pos_indices)
+        
+        # Add positional embeddings
+        x = x + pos_embeds
         x = self.attention_blocks(x)
 
         # take the last token
@@ -189,7 +199,7 @@ class Actor(nn.Module):
         # self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20   # history_encoder:  nn.Conv1d
                                                                # 53      # 10 = history_len    # 20
 
-        self.history_encoder = Transformer(num_prop*10, priv_encoder_output_dim, num_hist)    # input size is  530    # output size is 20   # num_hist is 10
+        self.history_encoder = Transformer(num_prop, priv_encoder_output_dim, num_hist)    # input size is  53    # output size is 20   # num_hist is 10
         print(f"history_encoder Transformer: {self.history_encoder}")
 
         if self.if_scan_encode:              # True
@@ -273,9 +283,9 @@ class Actor(nn.Module):
         return self.priv_encoder(priv)
     
     def infer_hist_latent(self, obs):
-        hist = obs[:, -self.num_hist*self.num_prop:]
-        # return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  hist.size size is [3684, 530];   hist.view(-1, self.num_hist, self.num_prop) size is [3684, 10, 53]
-        return self.history_encoder(hist)
+        hist = obs[:, -self.num_hist*self.num_prop:]  # hist size is:  torch.Size([6144, 530])
+        return self.history_encoder(hist.view(-1, self.num_hist, self.num_prop))    #  hist.size size is [3684, 530];   hist.view(-1, self.num_hist, self.num_prop) size is [3684, 10, 53]
+        # return self.history_encoder(hist)
     
     def infer_scandots_latent(self, obs):
         scan = obs[:, self.num_prop:self.num_prop + self.num_scan]
