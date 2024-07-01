@@ -85,9 +85,9 @@ class Transformer(nn.Module):
         )
     
     def forward(self, x):
-        # print("before input layer, x size is: ", x.size())   # torch.Size([6144, 10, 53])
+        # print("before input layer, x size is: ", x.size())   # torch.Size([36864, 10, 53])
         x = self.input_layer(x)
-        # print("after input layer, x size is: ", x.size())  #  torch.Size([6144, 10, 128])
+        # print("after input layer, x size is: ", x.size())  # torch.Size([6144, 10, 128])
 
         # Generate positional embeddings
         seq_length = x.shape[1]
@@ -102,6 +102,7 @@ class Transformer(nn.Module):
         # take the last token
         x = x[:, -1, :]
         x = self.output_layer(x)
+        # print("x output size is: ", x.size())   # x output size is:  torch.Size([36864, 20])
 
         return x
 
