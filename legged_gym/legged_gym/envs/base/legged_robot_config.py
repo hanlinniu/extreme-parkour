@@ -38,7 +38,7 @@ class LeggedRobotCfg(BaseConfig):
         load_student_config = False
         mask_priv_obs = False
     class env:
-        num_envs = 3000      # the origional one is 6144
+        num_envs = 6144      # the origional one is 6144
 
         n_scan = 132
         n_priv = 3+3 +3
