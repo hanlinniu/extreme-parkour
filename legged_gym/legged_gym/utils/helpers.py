@@ -337,9 +337,9 @@ def parse_arguments(description="Isaac Gym Example", headless=False, no_graphics
 
     args = parser.parse_args()
 
-    if args.device is not None:
-        args.sim_device = args.device
-        args.rl_device = args.device
+    # if args.device is not None:
+    #     args.sim_device = args.device
+    #     args.rl_device = args.device
     args.sim_device_type, args.compute_device_id = parse_device_str(args.sim_device)
     pipeline = args.pipeline.lower()
 

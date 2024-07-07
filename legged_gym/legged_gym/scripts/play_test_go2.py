@@ -158,8 +158,8 @@ def play(args):
         #         actions = policy(obs_jit)
         # else:
 
-        # if infos["depth"] is not None:
-        #     print("infos[depth] is : ", infos["depth"])
+        if infos["depth"] is not None:
+            print("infos[depth] is : ", infos["depth"])
         #     print("infos[depth] size is : ", infos["depth"].size())
         
 
@@ -181,6 +181,7 @@ def play(args):
                 # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
                 depth_latent = depth_latent_and_yaw[:, :-2]
                 yaw = depth_latent_and_yaw[:, -2:] # yaw is  tensor([[-0.0032,  0.2752]], device='cuda:0', grad_fn=<SliceBackward0>)
+                print("yaw is : ", yaw)
                 ##################################################################################
             else:
                 print("it is using depth camera, infos has no depth info")
