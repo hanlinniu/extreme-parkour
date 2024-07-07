@@ -423,13 +423,13 @@ class LeggedRobot(BaseTask):
             self.delta_yaw = self.target_yaw - self.yaw
             self.delta_next_yaw = self.next_target_yaw - self.yaw
         obs_buf = torch.cat((#skill_vector,                          # obs_buf size is:  torch.Size([1, 53])
-                            self.base_ang_vel  * self.obs_scales.ang_vel,   #[1,3]
-                            imu_obs,    #[1,2]
+                            self.base_ang_vel  * self.obs_scales.ang_vel,   #[1,3]               # need
+                            imu_obs,    #[1,2]                                                   # need
                             0*self.delta_yaw[:, None], #[1,1]
-                            self.delta_yaw[:, None], #[1,1]
+                            self.delta_yaw[:, None], #[1,1]                                      
                             self.delta_next_yaw[:, None], #[1,1]
-                            0*self.commands[:, 0:2],  #[1,2]
-                            self.commands[:, 0:1],  #[1,1]
+                            0*self.commands[:, 0:2],  #[1,2]       
+                            self.commands[:, 0:1],  #[1,1]                                       # need      I think one is linear vel, another one is yaw vel
                             (self.env_class != 17).float()[:, None],  #[1,1]
                             (self.env_class == 17).float()[:, None],  #[1,1]
                             self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
