@@ -69,7 +69,7 @@ class Terrain:
         self.height_field_raw = np.zeros((self.tot_rows , self.tot_cols), dtype=np.int16)
         if cfg.curriculum:                # True
             print("it is running self.curiculum()!!!!!!!!!!!!!!")
-            self.curiculum()
+            self.curiculum()              # during training stage, this one is running
         elif cfg.selected:                # False
             self.selected_terrain()
         else:    
