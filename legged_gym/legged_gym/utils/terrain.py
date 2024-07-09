@@ -131,11 +131,11 @@ class Terrain:
                 # (j=1, i=3, difficulty= 0.75, choice = 0.201)
                 if random:
                     if max_difficulty:
-                        terrain = self.make_terrain(choice, np.random.uniform(0.7, 1))
+                        terrain = self.make_terrain(choice, np.random.uniform(0.7, 1)) # During playing, this one is working
                     else:
                         terrain = self.make_terrain(choice, np.random.uniform(0, 1))
                 else:
-                    terrain = self.make_terrain(choice, difficulty)
+                    terrain = self.make_terrain(choice, difficulty)   # During training, this one is working
 
                 self.add_terrain_to_map(terrain, i, j)
 
