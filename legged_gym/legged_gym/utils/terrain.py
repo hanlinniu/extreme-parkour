@@ -67,14 +67,17 @@ class Terrain:
         self.tot_rows = int(cfg.num_rows * self.length_per_env_pixels) + 2 * self.border
 
         self.height_field_raw = np.zeros((self.tot_rows , self.tot_cols), dtype=np.int16)
-        if cfg.curriculum:
+        if cfg.curriculum:                # True
+            print("it is running self.curiculum()!!!!!!!!!!!!!!")
             self.curiculum()
-        elif cfg.selected:
+        elif cfg.selected:                # False
             self.selected_terrain()
         else:    
             if hasattr(cfg, "max_difficulty"):
+                print("it is running max_difficulty!!!!!!!!!!!!!!")
                 self.curiculum(random=True, max_difficulty=cfg.max_difficulty)
             else:
+                print("it is not running max_difficulty!!!!!!!!!!!!!!")
                 self.curiculum(random=True)
             # self.randomized_terrain()   
         
@@ -115,8 +118,8 @@ class Terrain:
             self.add_terrain_to_map(terrain, i, j)
         
     def curiculum(self, random=False, max_difficulty=False):
-        for j in range(self.cfg.num_cols):
-            for i in range(self.cfg.num_rows):
+        for j in range(self.cfg.num_cols):                         # num_cols is 40
+            for i in range(self.cfg.num_rows):                     # num_rows is 10
                 difficulty = i / (self.cfg.num_rows-1)
                 choice = j / self.cfg.num_cols + 0.001
                 if random:
