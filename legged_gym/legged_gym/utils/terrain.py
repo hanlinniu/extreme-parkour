@@ -68,16 +68,13 @@ class Terrain:
 
         self.height_field_raw = np.zeros((self.tot_rows , self.tot_cols), dtype=np.int16)
         if cfg.curriculum:                # True
-            print("it is running self.curiculum()!!!!!!!!!!!!!!")
-            self.curiculum()              # during training stage, this one is running
+            self.curiculum()              # During training stage, this one is running
         elif cfg.selected:                # False
             self.selected_terrain()
         else:    
             if hasattr(cfg, "max_difficulty"):
-                print("it is running max_difficulty!!!!!!!!!!!!!!")
-                self.curiculum(random=True, max_difficulty=cfg.max_difficulty)
+                self.curiculum(random=True, max_difficulty=cfg.max_difficulty)      # During playing stage, this one is running
             else:
-                print("it is not running max_difficulty!!!!!!!!!!!!!!")
                 self.curiculum(random=True)
             # self.randomized_terrain()   
         
