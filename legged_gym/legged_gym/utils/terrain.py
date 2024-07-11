@@ -140,7 +140,7 @@ class Terrain:
 
                 self.add_terrain_to_map(terrain, i, j)
 
-    def selected_terrain(self):
+    def selected_terrain(self):                      # not used
         terrain_type = self.cfg.terrain_kwargs.pop('type')
         for k in range(self.cfg.num_sub_terrains):
             # Env coordinates in the world
