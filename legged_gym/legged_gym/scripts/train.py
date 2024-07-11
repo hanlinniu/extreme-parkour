@@ -28,6 +28,10 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 
+import os
+# os.environ['MESA_VK_DEVICE_SELECT'] = '10de:2684'
+os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+
 import numpy as np
 import os
 from datetime import datetime
