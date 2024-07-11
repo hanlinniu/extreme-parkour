@@ -271,7 +271,7 @@ class Terrain:
                 height *= -1
             terrain_utils.pyramid_stairs_terrain(terrain, step_width=1., step_height=height, platform_size=3.)
             self.add_roughness(terrain)
-        elif choice < self.proportions[14]:
+        elif choice < self.proportions[14]:               # From here, the manually designed terrain is used. 
             x_range = [-0.1, 0.1+0.3*difficulty]  # offset to stone_len
             y_range = [0.2, 0.3+0.1*difficulty]
             stone_len = [0.9 - 0.3*difficulty, 1 - 0.2*difficulty]#2 * round((0.6) / 2.0, 1)
