@@ -182,6 +182,7 @@ class Terrain:
             # self.add_roughness(terrain)
         elif choice < self.proportions[2]:
             idx = 2
+            print("idx is: ", idx)
             if choice<self.proportions[1]:
                 idx = 3
                 slope *= -1
@@ -189,6 +190,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[4]:
             idx = 4
+            print("idx is: ", idx)
             if choice<self.proportions[3]:
                 idx = 5
                 step_height *= -1
@@ -196,6 +198,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[5]:
             idx = 6
+            print("idx is: ", idx)
             num_rectangles = 20
             rectangle_min_size = 0.5
             rectangle_max_size = 2.
@@ -203,6 +206,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[6]:
             idx = 7
+            print("idx is: ", idx)
             stones_size = 1.5 - 1.2*difficulty
             # terrain_utils.stepping_stones_terrain(terrain, stone_size=stones_size, stone_distance=0.1, stone_distance_rand=0, max_height=0.04*difficulty, platform_size=2.)
             half_sloped_terrain(terrain, wall_width=4, start2center=0.5, max_height=0.00)
@@ -210,18 +214,22 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[7]:
             idx = 8
+            print("idx is: ", idx)
             # gap_size = random.uniform(self.cfg.gap_size[0], self.cfg.gap_size[1])
             gap_parkour_terrain(terrain, difficulty, platform_size=4)
             self.add_roughness(terrain)
         elif choice < self.proportions[8]:
             idx = 9
+            print("idx is: ", idx)
             self.add_roughness(terrain)
             # pass
         elif choice < self.proportions[9]:
             idx = 10
+            print("idx is: ", idx)
             pit_terrain(terrain, depth=pit_depth, platform_size=4.)
         elif choice < self.proportions[10]:
             idx = 11
+            print("idx is: ", idx)
             if self.cfg.all_vertical:
                 half_slope_difficulty = 1.0
             else:
@@ -249,11 +257,13 @@ class Terrain:
             terrain.height_field_raw[top_mask] = max_height
         elif choice < self.proportions[11]:
             idx = 12
+            print("idx is: ", idx)
             # half platform terrain
             half_platform_terrain(terrain, max_height=0.1 + 0.4 * difficulty )
             self.add_roughness(terrain, difficulty=1)
         elif choice < self.proportions[13]:
             idx = 13
+            print("idx is: ", idx)
             height = 0.1 + 0.3 * difficulty
             if choice < self.proportions[12]:
                 idx = 14
@@ -281,6 +291,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[15]:
             idx = 16
+            print("idx is: ", idx)
             parkour_hurdle_terrain(terrain,
                                    num_stones=self.num_goals - 2,
                                    stone_len=0.1+0.3*difficulty,
@@ -294,6 +305,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[16]:
             idx = 17
+            print("idx is: ", idx)
             parkour_hurdle_terrain(terrain,
                                    num_stones=self.num_goals - 2,
                                    stone_len=0.1+0.3*difficulty,
@@ -306,6 +318,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[17]:
             idx = 18
+            print("idx is: ", idx)
             parkour_step_terrain(terrain,
                                    num_stones=self.num_goals - 2,
                                    step_height=0.1 + 0.35*difficulty,
@@ -317,6 +330,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[18]:
             idx = 19
+            print("idx is: ", idx)
             parkour_gap_terrain(terrain,
                                 num_gaps=self.num_goals - 2,
                                 gap_size=0.1 + 0.7 * difficulty,
@@ -330,6 +344,7 @@ class Terrain:
             self.add_roughness(terrain)
         elif choice < self.proportions[19]:
             idx = 20
+            print("idx is: ", idx)
             demo_terrain(terrain)
             self.add_roughness(terrain)
         # np.set_printoptions(precision=2)
