@@ -267,6 +267,7 @@ class Terrain:
             height = 0.1 + 0.3 * difficulty
             if choice < self.proportions[12]:
                 idx = 14
+                print("idx is: ", idx)
                 height *= -1
             terrain_utils.pyramid_stairs_terrain(terrain, step_width=1., step_height=height, platform_size=3.)
             self.add_roughness(terrain)
@@ -287,6 +288,7 @@ class Terrain:
                             pad_height=0,
                             pit_depth=[0.2, 1])
             idx = 15
+            print("idx is: ", idx)
             # terrain.height_field_raw[:] = 0
             self.add_roughness(terrain)
         elif choice < self.proportions[15]:
