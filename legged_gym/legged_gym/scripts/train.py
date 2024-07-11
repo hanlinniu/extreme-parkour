@@ -27,7 +27,6 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
-
 import os
 # os.environ['MESA_VK_DEVICE_SELECT'] = '10de:2684'
 os.environ["CUDA_VISIBLE_DEVICES"] = '3'
