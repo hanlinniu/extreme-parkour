@@ -756,9 +756,11 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): ids of environments being reset
         """
         # Implement Terrain curriculum
+        print("test 1 !!!!!!!!!!")
         if not self.init_done:
+            print("test 2 !!!!!!!!!!")
             # don't change on initial reset
-            return
+            return                       # in the training beginning, this one is not executed
         
         dis_to_origin = torch.norm(self.root_states[env_ids, :2] - self.env_origins[env_ids, :2], dim=1)
         threshold = self.commands[env_ids, 0] * self.cfg.env.episode_length_s
@@ -778,6 +780,7 @@ class LeggedRobot(BaseTask):
         self.env_goals[:] = torch.cat((temp, last_col.repeat(1, self.cfg.env.num_future_goal_obs, 1)), dim=1)[:]
         self.cur_goals = self._gather_cur_goals()
         self.next_goals = self._gather_cur_goals(future=1)
+        print("test 3 !!!!!!!!!!")
 
     #----------------------------------------
     def _init_buffers(self):
