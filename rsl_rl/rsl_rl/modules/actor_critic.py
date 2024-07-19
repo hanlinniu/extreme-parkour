@@ -128,6 +128,7 @@ class Actor(nn.Module):
             self.priv_encoder = nn.Identity()
             priv_encoder_output_dim = num_priv_latent                # 29    Here it is a bit tricky
 
+        print("it is depth branch")
 
         self.history_encoder = StateHistoryEncoder(activation, num_prop, num_hist, priv_encoder_output_dim)    # output is 20   # history_encoder:  nn.Conv1d
                                                                # 53      # 10 = history_len    # 20
