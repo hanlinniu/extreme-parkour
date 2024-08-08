@@ -289,7 +289,7 @@ class LeggedRobot(BaseTask):
         # compute observations, rewards, resets, ...
         self.check_termination()
         self.compute_reward()
-        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()
+        env_ids = self.reset_buf.nonzero(as_tuple=False).flatten()  # env_ids is:  tensor([  33,   39,  108,  120,  141], device='cuda:0')
         self.reset_idx(env_ids)
 
         self.cur_goals = self._gather_cur_goals()

@@ -29,7 +29,16 @@
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 import os
 # os.environ['MESA_VK_DEVICE_SELECT'] = '10de:2684'
-os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+cuda_visible_devices = os.getenv('CUDA_VISIBLE_DEVICES')
+if cuda_visible_devices:
+    devices = cuda_visible_devices.split(',')
+    num_visible_devices = len(devices)
+else:
+    num_visible_devices = 0
+
+print("num_visible_devices is", num_visible_devices)
+
+os.environ["CUDA_VISIBLE_DEVICES"] = '0'
 
 import numpy as np
 import os
