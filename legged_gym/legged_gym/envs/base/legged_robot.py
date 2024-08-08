@@ -330,9 +330,6 @@ class LeggedRobot(BaseTask):
         reach_goal_cutoff = self.cur_goal_idx >= self.cfg.terrain.num_goals
         height_cutoff = self.root_states[:, 2] < -0.25   # self.root_states size is:  torch.Size([6144, 13])
 
-        print("self.root_states size is: ", self.root_states.size())
-        print("self.root_states is: ", self.root_states)
-
         self.time_out_buf = self.episode_length_buf > self.max_episode_length # no terminal reward for time-outs
         self.time_out_buf |= reach_goal_cutoff
 
@@ -647,7 +644,7 @@ class LeggedRobot(BaseTask):
         
         if self.cfg.terrain.measure_heights:
             if self.global_counter % self.cfg.depth.update_interval == 0:
-                self.measured_heights = self._get_heights()
+                self.measured_heights = self._get_heights()   # self.measured_height size is:  torch.Size([6144, 132])
         if self.cfg.domain_rand.push_robots and  (self.common_step_counter % self.cfg.domain_rand.push_interval == 0):
             self._push_robots()
         
