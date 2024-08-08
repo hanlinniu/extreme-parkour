@@ -1093,14 +1093,19 @@ class LeggedRobot(BaseTask):
             print('self.dof_names is', self.dof_names)
             print('self.dof_names.index(name) is', self.dof_names.index(name))
             self.hip_indices[i] = self.dof_names.index(name)
+        # self.dof_names is ['FL_hip_joint', 'FL_thigh_joint', 'FL_calf_joint', 'FR_hip_joint', 'FR_thigh_joint', 'FR_calf_joint', 'RL_hip_joint', 'RL_thigh_joint', 'RL_calf_joint', 'RR_hip_joint', 'RR_thigh_joint', 'RR_calf_joint']
+        # self.dof_names.index(name) is 3, 0, 9, 6
         thigh_names = ["FR_thigh_joint", "FL_thigh_joint", "RR_thigh_joint", "RL_thigh_joint"]
         self.thigh_indices = torch.zeros(len(thigh_names), dtype=torch.long, device=self.device, requires_grad=False)
         for i, name in enumerate(thigh_names):
             self.thigh_indices[i] = self.dof_names.index(name)
+        # self.dof_names.index(name) is 4, 1, 10, 7
         calf_names = ["FR_calf_joint", "FL_calf_joint", "RR_calf_joint", "RL_calf_joint"]
         self.calf_indices = torch.zeros(len(calf_names), dtype=torch.long, device=self.device, requires_grad=False)
         for i, name in enumerate(calf_names):
             self.calf_indices[i] = self.dof_names.index(name)
+        # self.dof_names.index(name) is 5, 2, 11, 8
+
     
     def _get_env_origins(self):
         """ Sets environment origins. On rough terrain the origins are defined by the terrain platforms.
