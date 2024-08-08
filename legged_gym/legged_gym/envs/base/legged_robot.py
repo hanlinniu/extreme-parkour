@@ -1090,6 +1090,8 @@ class LeggedRobot(BaseTask):
         hip_names = ["FR_hip_joint", "FL_hip_joint", "RR_hip_joint", "RL_hip_joint"]
         self.hip_indices = torch.zeros(len(hip_names), dtype=torch.long, device=self.device, requires_grad=False)
         for i, name in enumerate(hip_names):
+            print('self.dof_names is', self.dof_names)
+            print('self.dof_names.index(name) is', self.dof_names.index(name))
             self.hip_indices[i] = self.dof_names.index(name)
         thigh_names = ["FR_thigh_joint", "FL_thigh_joint", "RR_thigh_joint", "RL_thigh_joint"]
         self.thigh_indices = torch.zeros(len(thigh_names), dtype=torch.long, device=self.device, requires_grad=False)
