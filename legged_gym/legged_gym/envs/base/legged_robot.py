@@ -720,7 +720,7 @@ class LeggedRobot(BaseTask):
         # base position
         if self.custom_origins:
             self.root_states[env_ids] = self.base_init_state
-            self.root_states[env_ids, :3] += self.env_origins[env_ids]
+            self.root_states[env_ids, :3] += self.env_origins[env_ids]         # everytime the env_ids size is different, it might be torch.Size([10]) or torch.Size([14])
             if self.cfg.env.randomize_start_pos:
                 self.root_states[env_ids, :2] += torch_rand_float(-0.3, 0.3, (len(env_ids), 2), device=self.device) # xy position within 1m of the center
             if self.cfg.env.randomize_start_yaw:
