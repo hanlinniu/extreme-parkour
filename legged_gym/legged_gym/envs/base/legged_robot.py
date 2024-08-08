@@ -1033,7 +1033,7 @@ class LeggedRobot(BaseTask):
 
         base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel
         print('base_init_state_list is', base_init_state_list)
-        print('base_init_state_list size is', base_init_state_list.size())
+        print('base_init_state_list size is', len(base_init_state_list.size))
 
 
         self.base_init_state = to_torch(base_init_state_list, device=self.device, requires_grad=False)
