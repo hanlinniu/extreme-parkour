@@ -325,10 +325,13 @@ class LeggedRobot(BaseTask):
         """ Check if environments need to be reset
         """
         self.reset_buf = torch.zeros((self.num_envs, ), dtype=torch.bool, device=self.device)
-        roll_cutoff = torch.abs(self.roll) > 1.5
+        roll_cutoff = torch.abs(self.roll) > 1.5   # both self.roll and roll_cutoff size are:  torch.Size([6144])
         pitch_cutoff = torch.abs(self.pitch) > 1.5
         reach_goal_cutoff = self.cur_goal_idx >= self.cfg.terrain.num_goals
-        height_cutoff = self.root_states[:, 2] < -0.25
+        height_cutoff = self.root_states[:, 2] < -0.25   # self.root_states size is:  torch.Size([6144, 13])
+
+        print("self.root_states size is: ", self.root_states.size())
+        print("self.root_states is: ", self.root_states)
 
         self.time_out_buf = self.episode_length_buf > self.max_episode_length # no terminal reward for time-outs
         self.time_out_buf |= reach_goal_cutoff
