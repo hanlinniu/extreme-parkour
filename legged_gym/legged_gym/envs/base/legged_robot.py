@@ -1032,6 +1032,10 @@ class LeggedRobot(BaseTask):
             termination_contact_names.extend([s for s in body_names if name in s])
 
         base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel
+        print('base_init_state_list is', base_init_state_list)
+        print('base_init_state_list size is', base_init_state_list.size())
+
+
         self.base_init_state = to_torch(base_init_state_list, device=self.device, requires_grad=False)
         start_pose = gymapi.Transform()
         start_pose.p = gymapi.Vec3(*self.base_init_state[:3])
