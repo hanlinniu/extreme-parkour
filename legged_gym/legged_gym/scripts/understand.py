@@ -226,3 +226,16 @@ critic network is:  Sequential(
 
 def compute_returns() is defined to calculate advantage function and returns function in rollout_storage.py, which will be later used in ppo.py's surrgate loss, value function loss, KL divergence, etc. 
 
+
+
+In the real deployment, priv_explicit will be estimated by Line 148 of ppo.py
+# priv_states_estimated = self.estimator(obs_est[:, :self.num_prop])
+
+
+to train the estimator
+check line 220 of ppo.py.
+# self.estimator_optimizer.zero_grad() is in ppo.py
+
+
+how to use estimator?
+check line 142 of ppo.py
