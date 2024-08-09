@@ -163,7 +163,8 @@ self.default_dof_pos_all is:       tensor([[ 0.1000,  0.8000, -1.5000, -0.1000, 
 actions_scaled = actions * self.cfg.control.action_scale
 torques = self.p_gains*(actions_scaled + self.default_dof_pos_all - self.dof_pos) - self.d_gains*self.dof_vel
 
-The 'self.root_states' can be found in Line 1034 of legged_robot.py:   base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel  # base_init_state_list is a list with length 13
+The 'self.root_states' can be found in Line 1034 of legged_robot.py:   
+base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel  # base_init_state_list is a list with length 13
 
 # The drawing function is in legged_robot.py
 
