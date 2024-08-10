@@ -426,10 +426,10 @@ class LeggedRobot(BaseTask):
                             self.base_ang_vel  * self.obs_scales.ang_vel,   #[1,3]
                             imu_obs,    #[1,2]
                             0*self.delta_yaw[:, None], #[1,1]
-                            self.delta_yaw[:, None], #[1,1]
-                            self.delta_next_yaw[:, None], #[1,1]
+                            self.delta_yaw[:, None], #[1,1]             # will be predicted by depth_encoder
+                            self.delta_next_yaw[:, None], #[1,1]        # will be predicted by depth_encoder
                             0*self.commands[:, 0:2],  #[1,2]
-                            self.commands[:, 0:1],  #[1,1]
+                            self.commands[:, 0:1],  #[1,1]              # self.commands[:, 0]
                             (self.env_class != 17).float()[:, None],  #[1,1]
                             (self.env_class == 17).float()[:, None],  #[1,1]
                             self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
@@ -658,6 +658,12 @@ class LeggedRobot(BaseTask):
             env_ids (List[int]): Environments ids for which new commands are needed
         """
         self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
+        print('env_ids is', env_ids)
+        print('self.command_ranges["lin_vel_x"][0] is ', self.command_ranges["lin_vel_x"][0])
+        print('self.command_ranges["lin_vel_x"][1] is ', self.command_ranges["lin_vel_x"][1])
+        print('self.commands[env_ids, 0] is', self.commands[env_ids, 0])
+
+
         if self.cfg.commands.heading_command:
             self.commands[env_ids, 3] = torch_rand_float(self.command_ranges["heading"][0], self.command_ranges["heading"][1], (len(env_ids), 1), device=self.device).squeeze(1)
         else:
