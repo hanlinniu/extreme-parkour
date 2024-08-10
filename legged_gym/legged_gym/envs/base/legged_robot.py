@@ -1125,7 +1125,9 @@ class LeggedRobot(BaseTask):
             
             self.terrain_class = torch.from_numpy(self.terrain.terrain_type).to(self.device).to(torch.float)
             self.env_class[:] = self.terrain_class[self.terrain_levels, self.terrain_types]
-            print('self.env_class is:', self.env_class)
+            print('self.terrain_levels is ', self.terrain_levels)
+            print('self.terrain_types is ', self.terrain_types)
+            print('self.env_class is:', self.env_class)  # [15, 15, 15, 15, 16, 16, 16, 18, 18, 18, 19, 19, 19, 20, 20, 20]
 
             self.terrain_goals = torch.from_numpy(self.terrain.goals).to(self.device).to(torch.float)
             self.env_goals = torch.zeros(self.num_envs, self.cfg.terrain.num_goals + self.cfg.env.num_future_goal_obs, 3, device=self.device, requires_grad=False)
