@@ -188,7 +188,7 @@ def play(args):
 
 
             print("The simulated yaw is ", obs[:, 6:8])
-            print("The predicted yaw is ", yaw)
+            print("The predicted yaw is ", 1.5*yaw)
             obs[:, 6:8] = 1.5*yaw
             
             
