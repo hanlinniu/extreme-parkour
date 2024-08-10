@@ -183,7 +183,7 @@ class Actor(nn.Module):
             if hist_encoding:                   # True
                 latent = self.infer_hist_latent(obs)       # output is 20, infer privilege latent using history data
             else:
-                latent = self.infer_priv_latent(obs)       # output is 20, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
+                latent = self.infer_priv_latent(obs)       # output is 20, input is 29, using privilege latent and priv_encoder directly, including mass_params_tensor, friction_coeffs_tensor, or motor_strength
             backbone_input = torch.cat([obs_prop_scan, obs_priv_explicit, latent], dim=1)        # length is 114 = 53 + 32    + 9(priv_explicit) + 20(latent, from priv_latent to smaller latent)
             backbone_output = self.actor_backbone(backbone_input)                                # length is 12
             return backbone_output
