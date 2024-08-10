@@ -1125,10 +1125,10 @@ class LeggedRobot(BaseTask):
             
             self.terrain_class = torch.from_numpy(self.terrain.terrain_type).to(self.device).to(torch.float)
             self.env_class[:] = self.terrain_class[self.terrain_levels, self.terrain_types]
-            self.env_class[0] = 17
-            print('self.terrain_levels is ', self.terrain_levels) # self.terrain_levels is  tensor([2, 0, 4, 2, 1, 1, 1, 1, 3, 4, 3, 4, 4, 4, 3, 1], device='cuda:0')
-            print('self.terrain_types is ', self.terrain_types) # self.terrain_types is  tensor([0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4], device='cuda:0')
-            print('self.env_class is:', self.env_class)  # [15, 15, 15, 15, 16, 16, 16, 18, 18, 18, 19, 19, 19, 20, 20, 20]
+            # print('self.terrain_levels is ', self.terrain_levels) # self.terrain_levels is  tensor([2, 0, 4, 2, 1, 1, 1, 1, 3, 4, 3, 4, 4, 4, 3, 1], device='cuda:0')
+            # print('self.terrain_types is ', self.terrain_types) # self.terrain_types is  tensor([0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4], device='cuda:0')
+            # print('self.env_class is:', self.env_class)  # self.env_class is: tensor([15., 15., 15., 15., 16., 16., 16., 18., 18., 18., 19., 19., 19., 20., 20., 20.], device='cuda:0')
+
 
             self.terrain_goals = torch.from_numpy(self.terrain.goals).to(self.device).to(torch.float)
             self.env_goals = torch.zeros(self.num_envs, self.cfg.terrain.num_goals + self.cfg.env.num_future_goal_obs, 3, device=self.device, requires_grad=False)
