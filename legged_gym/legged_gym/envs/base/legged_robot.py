@@ -661,7 +661,7 @@ class LeggedRobot(BaseTask):
         print('env_ids is', env_ids)
         print('self.command_ranges["lin_vel_x"][0] is ', self.command_ranges["lin_vel_x"][0])
         print('self.command_ranges["lin_vel_x"][1] is ', self.command_ranges["lin_vel_x"][1])
-        print('self.commands[env_ids, 0] is', self.commands[env_ids, 0])
+        print('self.commands[env_ids, 0] is', self.commands[:, 0])
 
 
         if self.cfg.commands.heading_command:
