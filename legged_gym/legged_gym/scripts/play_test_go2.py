@@ -202,7 +202,8 @@ def play(args):
 
         # try estimator here
         obs_est = obs.clone()
-        priv_states_estimated = estimator(obs_est[:, :53])
+        priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
+        print("priv_states_estimated is ", priv_states_estimated)
         obs_est[:, 53+132:53+132+9] = priv_states_estimated
 
         if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
@@ -210,9 +211,8 @@ def play(args):
             # Output: actions size is torch.Size([1, 12])
             actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor, actor_critic.py
             print("it is using depth")
-        else:                                            # if there is no camera
-            print("depth_latent is ", depth_latent)
-            actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)   # if robot dog has camera, this line is never used
+        else:                                            # if there is no camera. it is running line 312 of actor_critic.py, also using actor of actor_critic.py
+            actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)   # if robot dog has camera, this line is never used. And depth_latent is always none
             print("it is not using depth")
         
             
