@@ -203,7 +203,6 @@ def play(args):
         # try estimator here
         obs_est = obs.clone()
         priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
-        print("priv_states_estimated is ", priv_states_estimated)
         obs_est[:, 53+132:53+132+9] = priv_states_estimated
 
         if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
