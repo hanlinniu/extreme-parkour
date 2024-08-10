@@ -211,8 +211,8 @@ def play(args):
             actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor, actor_critic.py
             print("it is using depth")
         else:                                            # if there is no camera
+            actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)   # if robot dog has camera, this line is never used
             print("it is not using depth")
-            actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
         
             
         print("#####################################################################")
