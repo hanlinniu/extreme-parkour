@@ -209,7 +209,9 @@ def play(args):
             # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
             # Output: actions size is torch.Size([1, 12])
             actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor, actor_critic.py
+            print("it is using depth")
         else:                                            # if there is no camera
+            print("it is not using depth")
             actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
         
             
