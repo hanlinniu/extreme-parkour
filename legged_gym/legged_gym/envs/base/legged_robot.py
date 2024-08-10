@@ -657,13 +657,7 @@ class LeggedRobot(BaseTask):
         Args:
             env_ids (List[int]): Environments ids for which new commands are needed
         """
-        # self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
-        self.commands[env_ids, 0] = torch_rand_float(0.8, 0.8, (len(env_ids), 1), device=self.device).squeeze(1)
-        print('env_ids is', env_ids)
-        print('self.command_ranges["lin_vel_x"][0] is ', self.command_ranges["lin_vel_x"][0])
-        print('self.command_ranges["lin_vel_x"][1] is ', self.command_ranges["lin_vel_x"][1])
-        print('self.commands[env_ids, 0] is', self.commands[:, 0])
-
+        self.commands[env_ids, 0] = torch_rand_float(self.command_ranges["lin_vel_x"][0], self.command_ranges["lin_vel_x"][1], (len(env_ids), 1), device=self.device).squeeze(1)
 
         if self.cfg.commands.heading_command:
             self.commands[env_ids, 3] = torch_rand_float(self.command_ranges["heading"][0], self.command_ranges["heading"][1], (len(env_ids), 1), device=self.device).squeeze(1)
