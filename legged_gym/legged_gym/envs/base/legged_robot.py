@@ -429,7 +429,7 @@ class LeggedRobot(BaseTask):
                             self.delta_yaw[:, None], #[1,1]             # will be predicted by depth_encoder
                             self.delta_next_yaw[:, None], #[1,1]        # will be predicted by depth_encoder
                             0*self.commands[:, 0:2],  #[1,2]
-                            self.commands[:, 0:1],  #[1,1]              # self.commands[:, 0]
+                            self.commands[:, 0:1],  #[1,1]              # self.commands[:, 0]. it is a random velocity command for x direction, range [0.3, 0.8]
                             (self.env_class != 17).float()[:, None],  #[1,1]
                             (self.env_class == 17).float()[:, None],  #[1,1]
                             self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
@@ -445,7 +445,7 @@ class LeggedRobot(BaseTask):
         # print("self.delta_yaw[:, None] is: ", self.delta_yaw[:, None]) # self.delta_yaw[:, None] is:  tensor([[0.0150]], device='cuda:0')
         # print("self.delta_next_yaw[:, None] is: ", self.delta_next_yaw[:, None]) # self.delta_next_yaw[:, None] is:  tensor([[-0.1275]], device='cuda:0')
         # print("0*self.commands[:, 0:2] is: ", self.commands[:, 0:2].size()) # 0*self.commands[:, 0:2] is:  tensor([[0., 0.]], device='cuda:0'), torch.Size([1, 2])
-        print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
+        # print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
         # print("self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
         # print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')
         # print("self.dof_pos is: ", self.dof_pos) # self.dof_pos is:  tensor([[ 0.0136,  0.8286, -1.5374, -0.1634,  0.3541, -1.8591,  0.0653,  0.9042, -1.7504, -0.1747,  0.8909, -1.6740]], device='cuda:0')
@@ -1127,6 +1127,7 @@ class LeggedRobot(BaseTask):
             
             self.terrain_class = torch.from_numpy(self.terrain.terrain_type).to(self.device).to(torch.float)
             self.env_class[:] = self.terrain_class[self.terrain_levels, self.terrain_types]
+            print('self.env_class is:', self.env_class)
 
             self.terrain_goals = torch.from_numpy(self.terrain.goals).to(self.device).to(torch.float)
             self.env_goals = torch.zeros(self.num_envs, self.cfg.terrain.num_goals + self.cfg.env.num_future_goal_obs, 3, device=self.device, requires_grad=False)
