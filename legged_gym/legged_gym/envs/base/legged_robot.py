@@ -446,8 +446,8 @@ class LeggedRobot(BaseTask):
         # print("self.delta_next_yaw[:, None] is: ", self.delta_next_yaw[:, None]) # self.delta_next_yaw[:, None] is:  tensor([[-0.1275]], device='cuda:0')
         # print("0*self.commands[:, 0:2] is: ", self.commands[:, 0:2].size()) # 0*self.commands[:, 0:2] is:  tensor([[0., 0.]], device='cuda:0'), torch.Size([1, 2])
         # print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
-        # print("self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
-        # print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')
+        print("self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
+        print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')
         # print("self.dof_pos is: ", self.dof_pos) # self.dof_pos is:  tensor([[ 0.0136,  0.8286, -1.5374, -0.1634,  0.3541, -1.8591,  0.0653,  0.9042, -1.7504, -0.1747,  0.8909, -1.6740]], device='cuda:0')
         # print("self.default_dof_pos_all is: ", self.default_dof_pos_all) # self.default_dof_pos_all is:  tensor([[ 0.1000,  0.8000, -1.5000, -0.1000,  0.8000, -1.5000,  0.1000,  1.0000, -1.5000, -0.1000,  1.0000, -1.5000]], device='cuda:0')
         # print("self.obs_scales.dof_pos is: ", self.obs_scales.dof_pos) # self.obs_scales.dof_pos is:  1.0
