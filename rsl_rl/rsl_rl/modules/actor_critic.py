@@ -310,9 +310,11 @@ class ActorCriticRMA(nn.Module):
     def act_inference(self, observations, hist_encoding=False, eval=False, scandots_latent=None, **kwargs):
         if not eval:
             actions_mean = self.actor(observations, hist_encoding, eval, scandots_latent)
+            print("not eval")
             return actions_mean
         else:
             actions_mean, latent_hist, latent_priv = self.actor(observations, hist_encoding, eval=True)
+            print("it is eval")
             return actions_mean, latent_hist, latent_priv
 
     def evaluate(self, critic_observations, **kwargs):

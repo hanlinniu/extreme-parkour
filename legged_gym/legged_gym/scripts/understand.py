@@ -239,3 +239,11 @@ check line 220 of ppo.py.
 
 how to use estimator?
 check line 142 of ppo.py
+
+
+check the difference between these two in play_test_go2.py
+
+    actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor, actor_critic.py
+else:                                            # if there is no camera
+    actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+
