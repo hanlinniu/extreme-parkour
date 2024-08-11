@@ -270,7 +270,7 @@ to understand self.root_states
 for the real action might be:
 # actions_scaled = actions * self.cfg.control.action_scale    # action_scale = 0.5               in   def _compute_torques(self, actions):
 # action_command = actions_scaled + self.default_dof_pos_all
-
+# torques = self.motor_strength[0] * self.p_gains*(actions_scaled + self.default_dof_pos_all - self.dof_pos) - self.motor_strength[1] * self.d_gains*self.dof_vel 
 
 for default joint angles is :
 # class Go2RoughCfg( LeggedRobotCfg ):
