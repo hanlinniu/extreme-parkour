@@ -463,7 +463,7 @@ class LeggedRobot(BaseTask):
         # print("self.dof_vel is: ", self.dof_vel) # self.dof_vel is:  tensor([[-0.4667,  1.9083,  0.8580,  0.0050, -2.0108,  1.7907,  0.6926, -2.5343, -2.6336, -0.6898,  1.5044,  1.0122]], device='cuda:0')
         # print("self.obs_scales.dof_vel) is: ", self.obs_scales.dof_vel) # self.obs_scales.dof_vel) is:  0.05
         # print("self.action_history_buf[:, -1] is: ", self.action_history_buf[:, -1]) # self.action_history_buf[:, -1] is:  tensor([[-0.6797, -0.1288,  0.9153, -0.2940, -1.9257, -1.0479,  0.1157, -0.8192, -1.2619,  0.1995, -0.2665,  0.3668]], device='cuda:0')
-        # print("self.contact_filt.float()-0.5 is: ", self.contact_filt.float()-0.5) # self.contact_filt.float()-0.5 is:  tensor([[ 0.5000, -0.5000, -0.5000,  0.5000]], device='cuda:0'). It is not constant
+        print("self.contact_filt.float()-0.5 is: ", self.contact_filt.float()-0.5) # self.contact_filt.float()-0.5 is:  tensor([[ 0.5000, -0.5000, -0.5000,  0.5000]], device='cuda:0'). It is not constant
         # print("obs_buf is: ", obs_buf)
         # print("obs_buf size is: ", obs_buf.size()) # obs_buf size is:  torch.Size([1, 53])
 
