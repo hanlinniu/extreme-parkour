@@ -279,10 +279,12 @@ class LeggedRobot(BaseTask):
         self.roll, self.pitch, self.yaw = euler_from_quaternion(self.base_quat)
 
         contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
-        print('contact is ', contact)
-        print('self.feet_indices is ', self.feet_indices)
+        
+        print('self.feet_indices is ', self.feet_indices)   # [4, 8, 14, 18]
         print('self.contact_forces is ', self.contact_forces)
         print('self.contact_forces size is ', self.contact_forces.size())
+
+        print('contact is ', contact)
         print('self.last_contacts is ', self.last_contacts)
 
         self.contact_filt = torch.logical_or(contact, self.last_contacts)
