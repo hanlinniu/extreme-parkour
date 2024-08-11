@@ -299,3 +299,10 @@ for last action
 
 
 obs_buf = torch.cat((self.base_ang_vel, self.obs_scales.ang_vel),dim=-1)
+
+
+
+for contact_filt
+# # Need to filter the contacts because the contact reporting of PhysX is unreliable on meshes
+# contact = self.contact_forces[:, self.feet_indices, 2] > 1.
+# contact_filt = torch.logical_or(contact, self.last_contacts) 

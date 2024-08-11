@@ -283,7 +283,8 @@ class LeggedRobot(BaseTask):
         print('self.feet_indices is ', self.feet_indices)   # [4, 8, 14, 18]
         print('self.contact_forces is ', self.contact_forces)
         print('self.contact_forces size is ', self.contact_forces.size())
-
+        print('original_contact is ', self.contact_forces[:, self.feet_indices, 2] > 1.)
+        
         print('contact is ', contact)
         print('self.last_contacts is ', self.last_contacts)
 
