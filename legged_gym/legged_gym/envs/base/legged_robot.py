@@ -423,7 +423,7 @@ class LeggedRobot(BaseTask):
             self.delta_yaw = self.target_yaw - self.yaw
             self.delta_next_yaw = self.next_target_yaw - self.yaw
         obs_buf = torch.cat((#skill_vector,                          # obs_buf size is:  torch.Size([1, 53])
-                            self.base_ang_vel  * self.obs_scales.ang_vel,   # [1,3]
+                            self.base_ang_vel  * self.obs_scales.ang_vel,   # [1,3]         # self.obs_scales.ang_vel = 0.25
                             imu_obs,    #[1,2]                          # imu_obs = torch.stack((self.roll, self.pitch), dim=1)   #[1,2]
                             0*self.delta_yaw[:, None], #[1,1]
                             self.delta_yaw[:, None], #[1,1]             # will be predicted by depth_encoder
@@ -448,7 +448,7 @@ class LeggedRobot(BaseTask):
         # print("self.commands[:, 0:1] is: ", self.commands[:, 0:1]) # self.commands[:, 0:1] is:  tensor([[0.5403]], device='cuda:0'), torch.Size([1, 1])
         # print("(self.env_class != 17).float()[:, None] is: ", (self.env_class != 17).float()[:, None]) # self.env_class != 17).float()[:, None] is:  tensor([[1.]], device='cuda:0')
         # print("(self.env_class == 17).float()[:, None] is: ", (self.env_class == 17).float()[:, None]) # (self.env_class == 17).float()[:, None] is:  tensor([[0.]], device='cuda:0')
-        # print("self.dof_pos is: ", self.dof_pos) # self.dof_pos is:  tensor([[ 0.0136,  0.8286, -1.5374, -0.1634,  0.3541, -1.8591,  0.0653,  0.9042, -1.7504, -0.1747,  0.8909, -1.6740]], device='cuda:0')
+        print("self.dof_pos is: ", self.dof_pos) # self.dof_pos is:  tensor([[ 0.0136,  0.8286, -1.5374, -0.1634,  0.3541, -1.8591,  0.0653,  0.9042, -1.7504, -0.1747,  0.8909, -1.6740]], device='cuda:0')
         # print("self.default_dof_pos_all is: ", self.default_dof_pos_all) # self.default_dof_pos_all is:  tensor([[ 0.1000,  0.8000, -1.5000, -0.1000,  0.8000, -1.5000,  0.1000,  1.0000, -1.5000, -0.1000,  1.0000, -1.5000]], device='cuda:0')
         # print("self.obs_scales.dof_pos is: ", self.obs_scales.dof_pos) # self.obs_scales.dof_pos is:  1.0
         # print("self.dof_vel is: ", self.dof_vel) # self.dof_vel is:  tensor([[-0.4667,  1.9083,  0.8580,  0.0050, -2.0108,  1.7907,  0.6926, -2.5343, -2.6336, -0.6898,  1.5044,  1.0122]], device='cuda:0')

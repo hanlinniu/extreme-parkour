@@ -247,3 +247,21 @@ check the difference between these two in play_test_go2.py
 else:                                            # if there is no camera
     actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
 
+
+to understand self.root_states
+# self.base_quat[:] = self.root_states[:, 3:7]
+# self.base_lin_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 7:10])
+# self.base_ang_vel[:] = quat_rotate_inverse(self.base_quat, self.root_states[:, 10:13])
+
+# self.root_states[env_ids] = self.base_init_state
+# base_init_state_list = self.cfg.init_state.pos + self.cfg.init_state.rot + self.cfg.init_state.lin_vel + self.cfg.init_state.ang_vel  # base_init_state_list is a list with length 13
+# self.base_init_state = to_torch(base_init_state_list, device=self.device, requires_grad=False)
+
+# class init_state:
+#     pos = [0.0, 0.0, 1.] # x,y,z [m]
+#     rot = [0.0, 0.0, 0.0, 1.0] # x,y,z,w [quat]
+#     lin_vel = [0.0, 0.0, 0.0]  # x,y,z [m/s]
+#     ang_vel = [0.0, 0.0, 0.0]  # x,y,z [rad/s]
+#     default_joint_angles = { # target angles when action = 0.0
+#         "joint_a": 0., 
+#         "joint_b": 0.}
