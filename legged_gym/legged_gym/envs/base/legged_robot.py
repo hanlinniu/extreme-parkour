@@ -444,7 +444,7 @@ class LeggedRobot(BaseTask):
                             self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
                             self.reindex(self.dof_vel * self.obs_scales.dof_vel),  #[1,12],   self.obs_scales.dof_vel) is:  0.05
                             self.reindex(self.action_history_buf[:, -1]),   #[1,12]         # last action
-                            self.reindex_feet(self.contact_filt.float()-0.5),   #[1,4]
+                            self.reindex_feet(self.contact_filt.float()-0.5),   #[1,4]      # check if the legs contact with ground
                             ),dim=-1)
         
         # print("self.base_ang_vel is: ", self.base_ang_vel)  # self.base_ang_vel is:  tensor([[ 0.0464, -0.2849, -0.2755]], device='cuda:0')
