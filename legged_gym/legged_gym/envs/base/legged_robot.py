@@ -120,10 +120,7 @@ class LeggedRobot(BaseTask):
         actions = self.reindex(actions)
 
         actions.to(self.device)
-        print('self.action_history_buf[:, 1:].clone() is ', self.action_history_buf[:, 1:].clone())
-        print('actions[:, None, :].clone() is ', actions[:, None, :].clone())
         self.action_history_buf = torch.cat([self.action_history_buf[:, 1:].clone(), actions[:, None, :].clone()], dim=1)
-        print('self.action_history_buf is ', self.action_history_buf)
         if self.cfg.domain_rand.action_delay:
             if self.global_counter % self.cfg.domain_rand.delay_update_global_steps == 0:
                 if len(self.cfg.domain_rand.action_curr_step) != 0:
@@ -282,7 +279,12 @@ class LeggedRobot(BaseTask):
         self.roll, self.pitch, self.yaw = euler_from_quaternion(self.base_quat)
 
         contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
-        self.contact_filt = torch.logical_or(contact, self.last_contacts) 
+        print('contact is ', contact)
+        print('self.contact_forces is ', self.contact_forces)
+        print('self.last_contacts is ', self.last_contacts)
+
+        self.contact_filt = torch.logical_or(contact, self.last_contacts)
+        print('self.contact_filt is ', self.contact_filt)
         self.last_contacts = contact
         
         # self._update_jump_schedule()
@@ -437,7 +439,7 @@ class LeggedRobot(BaseTask):
                             (self.env_class == 17).float()[:, None],  #[1,1]      # 0 
                             self.reindex((self.dof_pos - self.default_dof_pos_all) * self.obs_scales.dof_pos),  #[1,12],  self.obs_scales.dof_pos is:  1.0
                             self.reindex(self.dof_vel * self.obs_scales.dof_vel),  #[1,12],   self.obs_scales.dof_vel) is:  0.05
-                            self.reindex(self.action_history_buf[:, -1]),   #[1,12]
+                            self.reindex(self.action_history_buf[:, -1]),   #[1,12]         # last action
                             self.reindex_feet(self.contact_filt.float()-0.5),   #[1,4]
                             ),dim=-1)
         

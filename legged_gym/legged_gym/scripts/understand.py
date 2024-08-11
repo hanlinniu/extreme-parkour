@@ -291,4 +291,11 @@ for default joint angles is :
 #         'RL_calf_joint': -1.5,    # [rad]
 #         'FR_calf_joint': -1.5,  # [rad]
 #         'RR_calf_joint': -1.5,    # [rad]
-      
+
+
+for last action
+# self.action_history_buf = torch.cat([self.action_history_buf[:, 1:].clone(), actions[:, None, :].clone()], dim=1)
+
+
+
+obs_buf = torch.cat((self.base_ang_vel, self.obs_scales.ang_vel),dim=-1)
