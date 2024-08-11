@@ -268,5 +268,27 @@ to understand self.root_states
 
 
 for the real action might be:
-# actions_scaled = actions * self.cfg.control.action_scale    # action_scale = 0.5
+# actions_scaled = actions * self.cfg.control.action_scale    # action_scale = 0.5               in   def _compute_torques(self, actions):
 # action_command = actions_scaled + self.default_dof_pos_all
+
+
+for default joint angles is :
+# class Go2RoughCfg( LeggedRobotCfg ):
+# class init_state( LeggedRobotCfg.init_state ):
+#     pos = [0.0, 0.0, 0.35] # x,y,z [m]
+#     default_joint_angles = { # = target angles [rad] when action = 0.0
+#         'FL_hip_joint': 0.1,   # [rad]
+#         'RL_hip_joint': 0.1,   # [rad]
+#         'FR_hip_joint': -0.1 ,  # [rad]
+#         'RR_hip_joint': -0.1,   # [rad]
+
+#         'FL_thigh_joint': 0.8,     # [rad]
+#         'RL_thigh_joint': 1.,   # [rad]
+#         'FR_thigh_joint': 0.8,     # [rad]
+#         'RR_thigh_joint': 1.,   # [rad]
+
+#         'FL_calf_joint': -1.5,   # [rad]
+#         'RL_calf_joint': -1.5,    # [rad]
+#         'FR_calf_joint': -1.5,  # [rad]
+#         'RR_calf_joint': -1.5,    # [rad]
+      

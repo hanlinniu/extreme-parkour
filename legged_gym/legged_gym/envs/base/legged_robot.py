@@ -685,7 +685,9 @@ class LeggedRobot(BaseTask):
         if control_type=="P":
             if not self.cfg.domain_rand.randomize_motor:  # TODO add strength to gain directly
                 torques = self.p_gains*(actions_scaled + self.default_dof_pos_all - self.dof_pos) - self.d_gains*self.dof_vel
+                print("used the first one !!!!!!!!!!!!!!!!!!!!!!!!!!!")
             else:
+                print("used the second one !!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 torques = self.motor_strength[0] * self.p_gains*(actions_scaled + self.default_dof_pos_all - self.dof_pos) - self.motor_strength[1] * self.d_gains*self.dof_vel
                 
         elif control_type=="V":
@@ -848,8 +850,6 @@ class LeggedRobot(BaseTask):
         for i in range(self.num_dofs):
             name = self.dof_names[i]
             angle = self.cfg.init_state.default_joint_angles[name]
-            print("name is ", name)
-            print("angle is ", angle)
             self.default_dof_pos[i] = angle
             found = False
             for dof_name in self.cfg.control.stiffness.keys():
