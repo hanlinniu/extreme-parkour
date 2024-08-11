@@ -120,7 +120,10 @@ class LeggedRobot(BaseTask):
         actions = self.reindex(actions)
 
         actions.to(self.device)
+        print('self.action_history_buf[:, 1:].clone() is ', self.action_history_buf[:, 1:].clone())
+        print('actions[:, None, :].clone() is ', actions[:, None, :].clone())
         self.action_history_buf = torch.cat([self.action_history_buf[:, 1:].clone(), actions[:, None, :].clone()], dim=1)
+        print('self.action_history_buf is ', self.action_history_buf)
         if self.cfg.domain_rand.action_delay:
             if self.global_counter % self.cfg.domain_rand.delay_update_global_steps == 0:
                 if len(self.cfg.domain_rand.action_curr_step) != 0:
