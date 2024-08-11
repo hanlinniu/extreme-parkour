@@ -281,6 +281,7 @@ class LeggedRobot(BaseTask):
         contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
         print('contact is ', contact)
         print('self.contact_forces is ', self.contact_forces)
+        print('self.contact_forces size is ', self.contact_forces.size())
         print('self.last_contacts is ', self.last_contacts)
 
         self.contact_filt = torch.logical_or(contact, self.last_contacts)
