@@ -265,3 +265,8 @@ to understand self.root_states
 #     default_joint_angles = { # target angles when action = 0.0
 #         "joint_a": 0., 
 #         "joint_b": 0.}
+
+
+for the real action might be:
+# actions_scaled = actions * self.cfg.control.action_scale    # action_scale = 0.5
+# action_command = actions_scaled + self.default_dof_pos_all
