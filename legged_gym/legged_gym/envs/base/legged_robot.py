@@ -279,17 +279,16 @@ class LeggedRobot(BaseTask):
         self.roll, self.pitch, self.yaw = euler_from_quaternion(self.base_quat)
 
         contact = torch.norm(self.contact_forces[:, self.feet_indices], dim=-1) > 2.
-        
-        print('self.feet_indices is ', self.feet_indices)   # [4, 8, 14, 18]
-        print('self.contact_forces is ', self.contact_forces)
-        print('self.contact_forces size is ', self.contact_forces.size())
-        print('original_contact is ', self.contact_forces[:, self.feet_indices, 2] > 1.)
-        
-        print('contact is ', contact)
-        print('self.last_contacts is ', self.last_contacts)
-
         self.contact_filt = torch.logical_or(contact, self.last_contacts)
-        print('self.contact_filt is ', self.contact_filt)
+        
+        # print('self.feet_indices is ', self.feet_indices)   # [4, 8, 14, 18]
+        # print('self.contact_forces is ', self.contact_forces)
+        # print('self.contact_forces size is ', self.contact_forces.size())  # self.contact_forces size is  torch.Size([1, 19, 3])
+        # print('original_contact is ', self.contact_forces[:, self.feet_indices, 2] > 1.) #s elf.last_contacts is  tensor([[ True, False,  True,  True]], device='cuda:0')
+        # print('contact is ', contact)  # contact is  tensor([[ True, False, False,  True]], device='cuda:0')
+        # print('self.last_contacts is ', self.last_contacts)  # self.last_contacts is  tensor([[ True, False,  True,  True]], device='cuda:0')
+        # print('self.contact_filt is ', self.contact_filt) # self.contact_filt is  tensor([[ True, False,  True,  True]], device='cuda:0')
+        #                                                   # self.contact_filt.float()-0.5 is:  tensor([[ 0.5000, -0.5000,  0.5000,  0.5000]], device='cuda:0')
         self.last_contacts = contact
         
         # self._update_jump_schedule()
