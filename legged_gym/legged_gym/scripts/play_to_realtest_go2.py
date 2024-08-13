@@ -52,27 +52,6 @@ from rsl_rl.modules import *
 from rsl_rl.modules import Estimator
 
 import pickle
-def save_estimator(estimator, folder_path, filename="estimator.pkl"):
-    if not os.path.exists(folder_path):
-        os.makedirs(folder_path)
-
-    save_path = os.path.join(folder_path, filename)
-    
-    # Save the estimator using pickle
-    with open(save_path, 'wb') as f:
-        pickle.dump(estimator, f)
-    
-    print(f"Estimator saved to {save_path}")
-
-def load_estimator(folder_path, filename="estimator.pkl"):
-    load_path = os.path.join(folder_path, filename)
-    
-    # Load the estimator using pickle
-    with open(load_path, 'rb') as f:
-        estimator = pickle.load(f)
-    
-    print(f"Estimator loaded from {load_path}")
-    return estimator
 
 
 def save_model(model, folder_path, filename):
@@ -98,6 +77,26 @@ def load_model(folder_path, filename):
     return model
 
 
+def save_step_data(tensor, folder_path, filename):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    
+    save_path = os.path.join(folder_path, filename)
+    
+    # Save the tensor using torch.save
+    torch.save(tensor, save_path)
+    
+    print(f"Data saved to {save_path}")
+
+def load_step_data(folder_path, filename):
+    load_path = os.path.join(folder_path, filename)
+    
+    # Load the depth tensor using torch.load
+    tensor = torch.load(load_path)
+    
+    print(f"Data loaded from {load_path}")
+    return tensor
+
 
 def get_load_path(root, load_run=-1, checkpoint=-1, model_name_include="model"):
     if checkpoint==-1:
@@ -118,7 +117,7 @@ def play(args):
     # override some parameters for testing
     if args.nodelay:
         env_cfg.domain_rand.action_delay_view = 0
-    env_cfg.env.num_envs = 16 if not args.save else 64    #16 if not args.save else 64
+    env_cfg.env.num_envs = 1 if not args.save else 64    #16 if not args.save else 64
     env_cfg.env.episode_length_s = 60
     env_cfg.commands.resampling_time = 60
     env_cfg.terrain.num_rows = 5
@@ -171,10 +170,11 @@ def play(args):
     ppo_runner: OnPolicyRunner
     # load policy
     train_cfg.runner.resume = True
-    # ppo_runner, train_cfg, log_pth = task_registry.make_alg_runner(log_root = log_pth, env=env, name=args.task, args=args, train_cfg=train_cfg, return_log_dir=True)
+    ppo_runner, train_cfg, log_pth = task_registry.make_alg_runner(log_root = log_pth, env=env, name=args.task, args=args, train_cfg=train_cfg, return_log_dir=True)
     
 
-    save_folder = os.path.expanduser("~/extreme-parkour/legged_gym/legged_gym/scripts/saved_models")
+    save_model_folder = os.path.expanduser("~/extreme-parkour/legged_gym/legged_gym/scripts/saved_models")
+    save_data_folder = os.path.expanduser("~/extreme-parkour/legged_gym/legged_gym/scripts/saved_data")
 
 
     # if args.use_jit:
@@ -195,7 +195,7 @@ def play(args):
     # # save the estimator
     # save_model(estimator, folder_path=save_folder, filename="estimator.pkl")
     # Later, load the estimator
-    estimator = load_model(folder_path=save_folder, filename="estimator.pkl")
+    estimator = load_model(folder_path=save_model_folder, filename="estimator.pkl")
     print("Loaded estimator is: ", estimator)
 
 
@@ -205,7 +205,7 @@ def play(args):
     # # save depth_encoder
     # save_model(depth_encoder, folder_path=save_folder, filename="depth_encoder.pkl")
     # Later, load the depth_encoder
-    depth_encoder = load_model(folder_path=save_folder, filename="depth_encoder.pkl")
+    depth_encoder = load_model(folder_path=save_model_folder, filename="depth_encoder.pkl")
     print("Loaded depth_encoder is: ", depth_encoder)
 
 
@@ -214,9 +214,8 @@ def play(args):
     # # save depth_actor
     # save_model(depth_actor, folder_path=save_folder, filename="depth_actor.pkl")
     # Later, load the depth_actor
-    depth_actor = load_model(folder_path=save_folder, filename="depth_actor.pkl")
+    depth_actor = load_model(folder_path=save_model_folder, filename="depth_actor.pkl")
     print("Loaded depth_actor is: ", depth_actor)
-
 
 
     actions = torch.zeros(env.num_envs, 12, device=env.device, requires_grad=False)
@@ -234,7 +233,40 @@ def play(args):
         # if infos["depth"] is not None:
         #     print("infos[depth] is : ", infos["depth"])
         #     print("infos[depth] size is : ", infos["depth"].size())
-        
+
+        if i==150:
+            # save_step_data(infos["depth"], folder_path=save_data_folder, filename="step_500_depth_data.pth")
+            # save_step_data(obs, folder_path=save_data_folder, filename="step_500_obs_data.pth")
+            # print('saved depth data is ', infos["depth"])
+            # print('saved obs data is ', obs)
+
+            infos["depth"] = load_step_data(folder_path=save_data_folder, filename="step_500_depth_data.pth")
+            obs = load_step_data(folder_path=save_data_folder, filename="step_500_obs_data.pth")
+            print('loaded depth data is ', infos["depth"])
+            print('loaded obs data is ', obs)
+
+
+            obs_student = obs[:, :53].clone()
+            obs_student[:, 6:8] = 0
+            ##################################################################################
+            # Input: infos[depth] (depth_image) size is  torch.Size([1, 58, 87]), obs_student (proprioception) size is  torch.Size([1, 53]) 
+            # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
+            depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+            ##################################################################################
+            # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
+            # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
+            depth_latent = depth_latent_and_yaw[:, :-2]
+            yaw = depth_latent_and_yaw[:, -2:]
+            obs[:, 6:8] = 1.5*yaw
+
+            obs_est = obs.clone()
+            priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
+            obs_est[:, 53+132:53+132+9] = priv_states_estimated
+            actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            # actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            print('Predicted action is: ', actions)
+
+            break
 
         if env.cfg.depth.use_camera:
             if infos["depth"] is not None:
