@@ -46,33 +46,56 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 from time import time, sleep
 from legged_gym.utils import webviewer
+from rsl_rl.env import VecEnv
+from rsl_rl.runners import OnPolicyRunner
+from rsl_rl.modules import *
+from rsl_rl.modules import Estimator
 
 import pickle
-
-def save_env(env, folder_path, filename="env.pkl"):
-    # Create directory if it doesn't exist
+def save_estimator(estimator, folder_path, filename="estimator.pkl"):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-    
-    # Full path for the environment file
+
     save_path = os.path.join(folder_path, filename)
     
-    # Save the environment
+    # Save the estimator using pickle
     with open(save_path, 'wb') as f:
-        pickle.dump(env, f)
+        pickle.dump(estimator, f)
     
-    print(f"Environment saved to {save_path}")
+    print(f"Estimator saved to {save_path}")
 
-def load_env(folder_path, filename="env.pkl"):
-    # Full path for the environment file
+def load_estimator(folder_path, filename="estimator.pkl"):
     load_path = os.path.join(folder_path, filename)
     
-    # Load the environment
+    # Load the estimator using pickle
     with open(load_path, 'rb') as f:
-        env = pickle.load(f)
+        estimator = pickle.load(f)
     
-    print(f"Environment loaded from {load_path}")
-    return env
+    print(f"Estimator loaded from {load_path}")
+    return estimator
+
+
+def save_model(model, folder_path, filename):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    save_path = os.path.join(folder_path, filename)
+    
+    # Save the model using pickle
+    with open(save_path, 'wb') as f:
+        pickle.dump(model, f)
+    
+    print(f"model saved to {save_path}")
+
+def load_model(folder_path, filename):
+    load_path = os.path.join(folder_path, filename)
+    
+    # Load the model using pickle
+    with open(load_path, 'rb') as f:
+        model = pickle.load(f)
+    
+    print(f"model loaded from {load_path}")
+    return model
 
 
 
@@ -95,7 +118,7 @@ def play(args):
     # override some parameters for testing
     if args.nodelay:
         env_cfg.domain_rand.action_delay_view = 0
-    env_cfg.env.num_envs = 1 if not args.save else 64    #16 if not args.save else 64
+    env_cfg.env.num_envs = 16 if not args.save else 64    #16 if not args.save else 64
     env_cfg.env.episode_length_s = 60
     env_cfg.commands.resampling_time = 60
     env_cfg.terrain.num_rows = 5
@@ -138,38 +161,68 @@ def play(args):
     # prepare environment
     env: LeggedRobot
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
-    print("env is ", env)
-    save_env(env, folder_path="~/extreme-parkour/legged_gym/legged_gym/scripts")
-    # env = load_env(folder_path="~/extreme-parkour/legged_gym/legged_gym/scripts") 
-
+    print("env is: ", env)
 
     obs = env.get_observations()
 
     if args.web:
         web_viewer.setup(env)
 
+    ppo_runner: OnPolicyRunner
     # load policy
     train_cfg.runner.resume = True
-    ppo_runner, train_cfg, log_pth = task_registry.make_alg_runner(log_root = log_pth, env=env, name=args.task, args=args, train_cfg=train_cfg, return_log_dir=True)
+    # ppo_runner, train_cfg, log_pth = task_registry.make_alg_runner(log_root = log_pth, env=env, name=args.task, args=args, train_cfg=train_cfg, return_log_dir=True)
     
-    if args.use_jit:
-        path = os.path.join(log_pth, "traced")
-        model, checkpoint = get_load_path(root=path, checkpoint=args.checkpoint)
-        path = os.path.join(path, model)
-        print("Loading jit for policy: ", path)
-        policy_jit = torch.jit.load(path, map_location=env.device)
-        print("it is loading base policy ##############################")
-    else:
-        policy = ppo_runner.get_inference_policy(device=env.device)             # this is the by default one
-        print("it is loading base policy111111111 ##############################")
 
-    estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
-    if env.cfg.depth.use_camera:
-        depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)     # it is from on_policy_runner.py
+    save_folder = os.path.expanduser("~/extreme-parkour/legged_gym/legged_gym/scripts/saved_models")
+
+
+    # if args.use_jit:
+    #     path = os.path.join(log_pth, "traced")
+    #     model, checkpoint = get_load_path(root=path, checkpoint=args.checkpoint)
+    #     path = os.path.join(path, model)
+    #     print("Loading jit for policy: ", path)
+    #     policy_jit = torch.jit.load(path, map_location=env.device)
+    #     print("it is loading base policy ##############################")
+    # else:
+    #     policy = ppo_runner.get_inference_policy(device=env.device)             # this is the by default one
+    #     print("it is loading base policy111111111 ##############################")
+
+
+
+    # estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
+    # print("estimator is: ", estimator)
+    # # save the estimator
+    # save_model(estimator, folder_path=save_folder, filename="estimator.pkl")
+    # Later, load the estimator
+    estimator = load_model(folder_path=save_folder, filename="estimator.pkl")
+    print("Loaded estimator is: ", estimator)
+
+
+
+    # if env.cfg.depth.use_camera:
+    #     depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)     # it is from on_policy_runner.py
+    # # save depth_encoder
+    # save_model(depth_encoder, folder_path=save_folder, filename="depth_encoder.pkl")
+    # Later, load the depth_encoder
+    depth_encoder = load_model(folder_path=save_folder, filename="depth_encoder.pkl")
+    print("Loaded depth_encoder is: ", depth_encoder)
+
+
+ 
+    # depth_actor = ppo_runner.get_depth_actor_inference_policy(device=env.device)
+    # # save depth_actor
+    # save_model(depth_actor, folder_path=save_folder, filename="depth_actor.pkl")
+    # Later, load the depth_actor
+    depth_actor = load_model(folder_path=save_folder, filename="depth_actor.pkl")
+    print("Loaded depth_actor is: ", depth_actor)
+
+
 
     actions = torch.zeros(env.num_envs, 12, device=env.device, requires_grad=False)
     infos = {}
-    infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
+    # infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
+    infos["depth"] = env.depth_buffer.clone().to('cuda:0')[:, -1] if True else None
     # infos["depth"] size is  torch.Size([1, 58, 87])
 
 
@@ -178,20 +231,6 @@ def play(args):
         print("#####################################################################")
         print("i is ", i)
         
-        # print("nv.max_episode_length is ", int(env.max_episode_length))
-        # if args.use_jit:
-        #     if env.cfg.depth.use_camera:
-        #         if infos["depth"] is not None:
-        #             depth_latent = torch.ones((env_cfg.env.num_envs, 32), device=env.device)
-        #             actions, depth_latent = policy_jit(obs.detach(), True, infos["depth"], depth_latent)
-        #         else:
-        #             depth_buffer = torch.ones((env_cfg.env.num_envs, 58, 87), device=env.device)
-        #             actions, depth_latent = policy_jit(obs.detach(), False, depth_buffer, depth_latent)
-        #     else:
-        #         obs_jit = torch.cat((obs.detach()[:, :env_cfg.env.n_proprio+env_cfg.env.n_priv], obs.detach()[:, -env_cfg.env.history_len*env_cfg.env.n_proprio:]), dim=1)
-        #         actions = policy(obs_jit)
-        # else:
-
         # if infos["depth"] is not None:
         #     print("infos[depth] is : ", infos["depth"])
         #     print("infos[depth] size is : ", infos["depth"].size())
@@ -239,14 +278,17 @@ def play(args):
         priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
         obs_est[:, 53+132:53+132+9] = priv_states_estimated
 
-        if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
-            # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
-            # Output: actions size is torch.Size([1, 12])
-            actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor of actor_critic.py
-            print("it is using depth")
-        else:                                            # if there is no camera. it is running line 312 of actor_critic.py, also using actor of actor_critic.py
-            actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)   # if robot dog has camera, this line is never used. And depth_latent is always none
-            print("it is not using depth")
+        actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+
+        # if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
+        #     # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
+        #     # Output: actions size is torch.Size([1, 12])
+        #     # actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)  # it is defined in actor of actor_critic.py
+        #     actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+        #     print("it is using depth")
+        # else:                                            # if there is no camera. it is running line 312 of actor_critic.py, also using actor of actor_critic.py
+        #     # actions = policy(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)   # if robot dog has camera, this line is never used. And depth_latent is always none
+        #     print("it is not using depth")
         
             
         print("#####################################################################")
