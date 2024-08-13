@@ -138,6 +138,7 @@ def play(args):
     # prepare environment
     env: LeggedRobot
     env, _ = task_registry.make_env(name=args.task, args=args, env_cfg=env_cfg)
+    print("env is ", env)
     save_env(env, folder_path="~/extreme-parkour/legged_gym/legged_gym/scripts")
     # env = load_env(folder_path="~/extreme-parkour/legged_gym/legged_gym/scripts") 
 
