@@ -18,6 +18,7 @@ from rsl_rl.env import VecEnv
 from rsl_rl.runners import OnPolicyRunner
 from rsl_rl.modules import *
 from rsl_rl.modules import Estimator
+import time
 
 import pickle
 
@@ -114,6 +115,7 @@ def play():
         # actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
         actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
         print(f'Predicted {i} action is: ', actions)
+        time.sleep(0.3)
         if i==101:
             break
     
