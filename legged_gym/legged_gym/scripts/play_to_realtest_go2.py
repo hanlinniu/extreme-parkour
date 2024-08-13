@@ -190,31 +190,31 @@ def play(args):
 
 
 
-    # estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
+    estimator = ppo_runner.get_estimator_inference_policy(device=env.device)
     # print("estimator is: ", estimator)
     # # save the estimator
-    # save_model(estimator, folder_path=save_folder, filename="estimator.pkl")
+    # save_model(estimator, folder_path=save_model_folder, filename="estimator.pkl")
     # Later, load the estimator
-    estimator = load_model(folder_path=save_model_folder, filename="estimator.pkl")
+    # estimator = load_model(folder_path=save_model_folder, filename="estimator.pkl")
     print("Loaded estimator is: ", estimator)
 
 
 
-    # if env.cfg.depth.use_camera:
-    #     depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)     # it is from on_policy_runner.py
-    # # save depth_encoder
-    # save_model(depth_encoder, folder_path=save_folder, filename="depth_encoder.pkl")
+    if env.cfg.depth.use_camera:
+        depth_encoder = ppo_runner.get_depth_encoder_inference_policy(device=env.device)     # it is from on_policy_runner.py
+    # save depth_encoder
+    # save_model(depth_encoder, folder_path=save_model_folder, filename="depth_encoder.pkl")
     # Later, load the depth_encoder
-    depth_encoder = load_model(folder_path=save_model_folder, filename="depth_encoder.pkl")
+    # depth_encoder = load_model(folder_path=save_model_folder, filename="depth_encoder.pkl")
     print("Loaded depth_encoder is: ", depth_encoder)
 
 
  
-    # depth_actor = ppo_runner.get_depth_actor_inference_policy(device=env.device)
+    depth_actor = ppo_runner.get_depth_actor_inference_policy(device=env.device)
     # # save depth_actor
-    # save_model(depth_actor, folder_path=save_folder, filename="depth_actor.pkl")
+    # save_model(depth_actor, folder_path=save_model_folder, filename="depth_actor.pkl")
     # Later, load the depth_actor
-    depth_actor = load_model(folder_path=save_model_folder, filename="depth_actor.pkl")
+    # depth_actor = load_model(folder_path=save_model_folder, filename="depth_actor.pkl")
     print("Loaded depth_actor is: ", depth_actor)
 
 
@@ -223,6 +223,34 @@ def play(args):
     # infos["depth"] = env.depth_buffer.clone().to(ppo_runner.device)[:, -1] if ppo_runner.if_depth else None
     infos["depth"] = env.depth_buffer.clone().to('cuda:0')[:, -1] if True else None
     # infos["depth"] size is  torch.Size([1, 58, 87])
+
+
+    # infos["depth"] = load_step_data(folder_path=save_data_folder, filename="step_500_depth_data.pth")
+    # obs = load_step_data(folder_path=save_data_folder, filename="step_500_obs_data.pth")
+    # print('loaded depth data is ', infos["depth"])
+    # print('loaded obs data is ', obs)
+
+
+    # obs_student = obs[:, :53].clone()
+    # obs_student[:, 6:8] = 0
+    # ##################################################################################
+    # # Input: infos[depth] (depth_image) size is  torch.Size([1, 58, 87]), obs_student (proprioception) size is  torch.Size([1, 53]) 
+    # # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
+    # depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+    # ##################################################################################
+    # # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
+    # # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
+    # depth_latent = depth_latent_and_yaw[:, :-2]
+    # yaw = depth_latent_and_yaw[:, -2:]
+    # obs[:, 6:8] = 1.5*yaw
+
+    # obs_est = obs.clone()
+    # priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
+    # obs_est[:, 53+132:53+132+9] = priv_states_estimated
+    # actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+    # # actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+    # print('Predicted action is: ', actions)
+
 
 
 ############################################# loop starts from here
@@ -234,38 +262,41 @@ def play(args):
         #     print("infos[depth] is : ", infos["depth"])
         #     print("infos[depth] size is : ", infos["depth"].size())
 
-        if i==150:
-            # save_step_data(infos["depth"], folder_path=save_data_folder, filename="step_500_depth_data.pth")
-            # save_step_data(obs, folder_path=save_data_folder, filename="step_500_obs_data.pth")
-            # print('saved depth data is ', infos["depth"])
-            # print('saved obs data is ', obs)
+        if i<100:
+            step_depth_filename = f"step_{i}_depth_data.pth"
+            step_obs_filename = f"step_{i}_obs_data.pth"
+            save_step_data(infos["depth"], folder_path=save_data_folder, filename=step_depth_filename)
+            save_step_data(obs, folder_path=save_data_folder, filename=step_obs_filename)
+            print('saved depth data is ', infos["depth"])
+            print('saved obs data is ', obs)
 
-            infos["depth"] = load_step_data(folder_path=save_data_folder, filename="step_500_depth_data.pth")
-            obs = load_step_data(folder_path=save_data_folder, filename="step_500_obs_data.pth")
-            print('loaded depth data is ', infos["depth"])
-            print('loaded obs data is ', obs)
+            # infos["depth"] = load_step_data(folder_path=save_data_folder, filename=step_depth_filename)
+            # obs = load_step_data(folder_path=save_data_folder, filename=step_obs_filename)
+            # print('loaded depth data is ', infos["depth"])
+            # print('loaded obs data is ', obs)
 
 
-            obs_student = obs[:, :53].clone()
-            obs_student[:, 6:8] = 0
-            ##################################################################################
-            # Input: infos[depth] (depth_image) size is  torch.Size([1, 58, 87]), obs_student (proprioception) size is  torch.Size([1, 53]) 
-            # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
-            depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
-            ##################################################################################
-            # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
-            # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
-            depth_latent = depth_latent_and_yaw[:, :-2]
-            yaw = depth_latent_and_yaw[:, -2:]
-            obs[:, 6:8] = 1.5*yaw
+            # obs_student = obs[:, :53].clone()
+            # obs_student[:, 6:8] = 0
+            # ##################################################################################
+            # # Input: infos[depth] (depth_image) size is  torch.Size([1, 58, 87]), obs_student (proprioception) size is  torch.Size([1, 53]) 
+            # # Output: depth_latent_and_yaw size is :  torch.Size([1, 34])
+            # depth_latent_and_yaw = depth_encoder(infos["depth"], obs_student)
+            # ##################################################################################
+            # # Input:  depth_latent_and_yaw size is :  torch.Size([1, 34])
+            # # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
+            # depth_latent = depth_latent_and_yaw[:, :-2]
+            # yaw = depth_latent_and_yaw[:, -2:]
+            # obs[:, 6:8] = 1.5*yaw
 
-            obs_est = obs.clone()
-            priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
-            obs_est[:, 53+132:53+132+9] = priv_states_estimated
-            actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
-            # actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
-            print('Predicted action is: ', actions)
+            # obs_est = obs.clone()
+            # priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
+            # obs_est[:, 53+132:53+132+9] = priv_states_estimated
+            # actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            # # actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+            # print(f'Predicted {i} action is: ', actions)
 
+        if i==101:
             break
 
         if env.cfg.depth.use_camera:
@@ -310,7 +341,9 @@ def play(args):
         priv_states_estimated = estimator(obs_est[:, :53])         # output is 9
         obs_est[:, 53+132:53+132+9] = priv_states_estimated
 
-        actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+        # actions = depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+        actions = ppo_runner.alg.depth_actor(obs_est.detach(), hist_encoding=True, scandots_latent=depth_latent)
+        print(f'Predicted {i} action is: ', actions)
 
         # if hasattr(ppo_runner.alg, "depth_actor"):       # if there is 3D camera
         #     # Input: obs size is torch.Size([1, 753]), depth_latent size is :  torch.Size([1, 32])
