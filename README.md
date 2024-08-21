@@ -1,4 +1,4 @@
-# Extreme Parkour with Legged Robots #
+# Learning Parkour with Legged Robots #
 
 ### Installation ###
 ```bash
