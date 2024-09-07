@@ -28,10 +28,9 @@
 #
 # Copyright (c) 2021 ETH Zurich, Nikita Rudin
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '3'
 
 import numpy as np
-import os
-os.environ["CUDA_VISIBLE_DEVICES"] = '3'
 
 from datetime import datetime
 import isaacgym
