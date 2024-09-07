@@ -30,6 +30,7 @@
 
 from legged_gym import LEGGED_GYM_ROOT_DIR
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '3'
 import code
 
 import isaacgym

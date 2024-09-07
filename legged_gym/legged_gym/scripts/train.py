@@ -31,6 +31,8 @@ import os
 
 import numpy as np
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = '3'
+
 from datetime import datetime
 import isaacgym
 from legged_gym.envs import *
@@ -39,10 +41,6 @@ from shutil import copyfile
 import wandb
 import torch
 
-num_visible_devices = torch.cuda.device_count()
-if num_visible_devices==1:
-    os.environ["CUDA_VISIBLE_DEVICES"] = '0'
-else: os.environ["CUDA_VISIBLE_DEVICES"] = '3'
 
 def train(args):
     args.headless = True
