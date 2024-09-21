@@ -53,7 +53,7 @@ def save_step_data(tensor, folder_path, filename):
     # Save the tensor using torch.save
     torch.save(tensor, save_path)
     
-    print(f"Data saved to {save_path}")
+    # print(f"Data saved to {save_path}")
 
 def load_step_data(folder_path, filename):
     load_path = os.path.join(folder_path, filename)
@@ -61,7 +61,7 @@ def load_step_data(folder_path, filename):
     # Load the depth tensor using torch.load
     tensor = torch.load(load_path)
     
-    print(f"Data loaded from {load_path}")
+    # print(f"Data loaded from {load_path}")
     return tensor
 
 
@@ -88,8 +88,8 @@ def play():
         step_obs_filename = f"step_{i}_obs_data.pth"
         infos["depth"] = load_step_data(folder_path=save_data_folder, filename=step_depth_filename)
         obs = load_step_data(folder_path=save_data_folder, filename=step_obs_filename)
-        print('loaded depth data is ', infos["depth"])
-        print('loaded obs data is ', obs)
+        # print('loaded depth data is ', infos["depth"])
+        # print('loaded obs data is ', obs)
 
         if infos["depth"] is not None:
             obs_student = obs[:, :53].clone()
@@ -103,8 +103,9 @@ def play():
             # Output:  depth_latent size is :  torch.Size([1, 32]);  yaw size is : torch.Size([1, 2])
             depth_latent = depth_latent_and_yaw[:, :-2]
             yaw = depth_latent_and_yaw[:, -2:]
+            print("loaded depth data exists")
         else:
-            print("it is using depth camera, infos has no depth info")
+            print("loaded depth data is none")
             
         obs[:, 6:8] = 1.5*yaw
 

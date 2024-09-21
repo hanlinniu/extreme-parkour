@@ -306,3 +306,9 @@ for contact_filt
 # # Need to filter the contacts because the contact reporting of PhysX is unreliable on meshes
 # contact = self.contact_forces[:, self.feet_indices, 2] > 1.
 # contact_filt = torch.logical_or(contact, self.last_contacts) 
+
+
+tutorial for real robot
+# https://github.com/unitreerobotics/unitree_sdk2_python/blob/master/example/low_level/lowlevel_control.py
+# https://support.unitree.com/home/en/developer/Python
+
